@@ -3,8 +3,11 @@ const express = require("express");
 const router = express.Router();
 const productController = require("../controllers/products");
 
-// GET
+// GET ALL PRODUCT
 router.get("/", productController.getAllProducts);
+
+//GET PRODUCT THEO ID - XEM CHI TIẾT
+router.get("/:id", productController.getProductById);
 
 // POST
 router.post("/", productController.addProduct);

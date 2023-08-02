@@ -1,5 +1,30 @@
 const productModel = require("../data/db");
 
+//GET PRODUCT THEO ID -XEM CHI TIẾT
+const getProductById = (req, res) => {
+  const productId = req.params.id;
+  productModel.query(
+    "SELECT * FROM product WHERE id = ?",
+    [productId],
+    (err, results) => {
+      if (err) {
+        console.error("Lỗi truy vấn: " + err.stack);
+        res.status(500).json({ error: "Lỗi truy vấn dữ liệu" });
+        return;
+      }
+      if (results.length === 0) {
+        res
+          .status(404)
+          .json({ error: "Không tìm thấy sản phẩm với ID đã cho" });
+        return;
+      }
+      const product = results[0];
+      res.json(product);
+    }
+  );
+};
+
+//GET ALL PRODUCT
 const getAllProducts = (req, res) => {
   productModel.query("SELECT * FROM product", (err, results) => {
     if (err) {
@@ -10,7 +35,7 @@ const getAllProducts = (req, res) => {
     res.json(results);
   });
 };
-
+//POST
 const addProduct = (req, res) => {
   const {
     product_id,
@@ -49,7 +74,7 @@ const addProduct = (req, res) => {
     });
   });
 };
-
+//UPDATE
 const updateProduct = (req, res) => {
   const productId = req.params.id;
   const {
@@ -64,6 +89,7 @@ const updateProduct = (req, res) => {
     cost_price,
     selling_price,
   } = req.body;
+
   const updatedProduct = {
     product_id,
     product_name,
@@ -119,4 +145,5 @@ module.exports = {
   addProduct,
   updateProduct,
   deleteProduct,
+  getProductById,
 };
