@@ -8,9 +8,10 @@ const authRouter = require('./routers/auth');
 const bodyParser = require('body-parser');
 dotenv.config();// sài .env
 const app = express();
+app.use(express.json());
 app.use(cors());
 app.use(cookieParser());// tạo cookie 
-app.use(bodyParser.json());
+
 app.use(
   bodyParser.urlencoded({
     extended: true,
