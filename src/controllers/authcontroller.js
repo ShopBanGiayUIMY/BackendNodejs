@@ -1,6 +1,3 @@
-// const bcrypt = require("bcrypt"); // hash password
-// const jwt = require("jsonwebtoken"); // tạo token
-// const Queryuser = require("../Querydb/Queryuser");
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import Queryuser from '../Querydb/Queryuser.js';
@@ -154,5 +151,4 @@ const authController = {
   },
 };
 
-// module.exports = authController;
 export default authController;

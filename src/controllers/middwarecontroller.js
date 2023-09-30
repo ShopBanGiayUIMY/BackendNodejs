@@ -31,5 +31,4 @@ const middwarecontroller = {
         });
     }
 };
-// module.exports = middwarecontroller;
 export default middwarecontroller;

@@ -3,5 +3,4 @@ const Queryuser = {
     loginUser:`SELECT * FROM Users WHERE username = ?`,
 }
 
-// module.exports = Queryuser;
 export default Queryuser;
