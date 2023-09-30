@@ -1,3 +1,9 @@
+import express from "express";
+import bodyParser from "body-parser";
+import ProductRouter from "./src/routes/Products.js";
+import logger from "./src/middleware/Logger.js";
+
+const port = 3000;
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -8,6 +14,11 @@ const authRouter = require('./routers/auth');
 const bodyParser = require('body-parser');
 dotenv.config();// sài .env
 const app = express();
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(logger);
+app.use('/api/v1/products', ProductRouter);
+app.listen(port, () => console.log(`Server started on port ${port}`));
+
 app.use(express.json());
 app.use(cors());
 app.use(cookieParser());// tạo cookie 
