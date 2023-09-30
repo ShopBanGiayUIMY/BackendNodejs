@@ -1,5 +1,5 @@
 // const userController = require('../controllers/usercontroller');
-const middwarecontroller = require('../controllers/middwarecontroller');
+const middwarecontroller = require('../src/controllers/middwarecontroller');
 const router = require('express').Router();
 
 // get all users

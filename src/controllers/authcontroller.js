@@ -1,6 +1,9 @@
-const bcrypt = require("bcrypt"); // hash password
-const jwt = require("jsonwebtoken"); // tạo token
-const Queryuser = require("../Querydb/Queryuser");
+// const bcrypt = require("bcrypt"); // hash password
+// const jwt = require("jsonwebtoken"); // tạo token
+// const Queryuser = require("../Querydb/Queryuser");
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import Queryuser from '../Querydb/Queryuser.js';
 // generate token
 let refreshTokens = [];
 const authController = {
@@ -19,6 +22,7 @@ const authController = {
           },
           (err, result) => {
             if (err) {
+              console.log(err)
               return res
                 .status(500)
                 .json({ error: "Error registering the user" });
@@ -150,4 +154,5 @@ const authController = {
   },
 };
 
-module.exports = authController;
+// module.exports = authController;
+export default authController;

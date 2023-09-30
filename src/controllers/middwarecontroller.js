@@ -1,6 +1,4 @@
-const jwt = require('jsonwebtoken');
-
-
+import jwt from 'jsonwebtoken';
 const middwarecontroller = {
     verifyToken: (req, res, next) => {
         const token = req.headers.token;
@@ -33,4 +31,5 @@ const middwarecontroller = {
         });
     }
 };
-module.exports = middwarecontroller;
+// module.exports = middwarecontroller;
+export default middwarecontroller;
