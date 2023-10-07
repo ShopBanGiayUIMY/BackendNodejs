@@ -15,7 +15,8 @@
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "mysql2": "^3.6.1",
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "sequelize": "^6.33.0"
   },
   "scripts": {
     "start": "nodemon app.js"
