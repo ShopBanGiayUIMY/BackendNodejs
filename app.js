@@ -1,13 +1,13 @@
 import express from "express";
 import bodyParser from "body-parser";
-import ProductRouter from "./src/routes/Products.js";
-import logger from "./src/middleware/Logger.js";
+import ProductRouter from "./routes/Products.js";
+import logger from "./middleware/Logger.js";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import myConnection from "express-myconnection";
 import mysql from "mysql2";
-import authRouter from "./src/routes/auth.js";
+import authRouter from "./routes/auth.js";
 dotenv.config();
 
 const port = 3000;
