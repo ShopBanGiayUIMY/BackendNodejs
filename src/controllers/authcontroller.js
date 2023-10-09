@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import Queryuser from '../Querydb/Queryuser.js';
+import Queryuser from '../Querydb/Userdb.js';
 // generate token
 let refreshTokens = [];
 const authController = {
@@ -25,6 +25,7 @@ const authController = {
                 .json({ error: "Error registering the user" });
             }
             res.status(200).json(result);
+            console.log("đăng ký thành công tài khoản"+req.body.username)
           }
         );
       });
@@ -36,7 +37,7 @@ const authController = {
   generateAccessToken: (user) => {
     return jwt.sign(
       {
-        id: user.id,
+        id: user.user_id,
         admin: user.admin,
       },
       process.env.JWT_ACCESS_KEY,
@@ -46,7 +47,7 @@ const authController = {
   generateRefreshToken: (user) => {
     return jwt.sign(
       {
-        id: user.id,
+        id: user.user_id,
         admin: user.admin,
       },
       process.env.JWT_REFRESH_KEY,
@@ -75,7 +76,6 @@ const authController = {
               return res.status(404).json({ error: "User not found" });
             }
             const user = result[0];
-
             // So sánh password nhập vào và password trong database
             const validPassword = await bcrypt.compare(
               req.body.password,
@@ -99,6 +99,7 @@ const authController = {
               });
               const { password, ...info } = user; // lấy hết các trường trong user._doc trừ password
               res.status(200).json({ ...info, accesstoken });
+              console.log("đăng nhập thành công tài khoản "+user.username)
             }
           }
         );
@@ -137,7 +138,6 @@ const authController = {
             res.status(200).json({ accesstoken: newAccessToken });
             console.log(refreshTokens);
         }
-        // xóa refreshtoken cũ trong mảng refreshTokens
         
       });
   },
