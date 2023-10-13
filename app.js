@@ -37,5 +37,5 @@ app.use(myConnection(mysql, {
 
 // Router
 app.use('/api/v1',Routers);
- app.listen(port, () => console.log(`Server started on port ${port}`));
-// app.listen(port,"192.168.1.10", () => console.log(`Server started on port ${port}`));
+//  app.listen(port, () => console.log(`Server started on port ${port}`));
+ app.listen(port,"192.168.1.12", () => console.log(`Server started on port ${port}`));  
