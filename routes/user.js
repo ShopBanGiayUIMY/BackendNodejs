@@ -1,9 +1,7 @@
-// const userController = require('../controllers/usercontroller');
-const middwarecontroller = require('../src/controllers/middwarecontroller');
-const router = require('express').Router();
+import express from "express";
+import UserController from "../controllers/Usercontroller.js";
+const router = express.Router();
+router.get('/:id', UserController.getInfoUser);
 
-// get all users
-router.get('/',middwarecontroller.verifyToken, userController.getAllUsers);
-// sử dụng middwarecontroller.verifyToken để xác thực token trước khi thực hiện hành động tiếp theo
-router.delete('/:id',middwarecontroller.verifyAdmin, userController.deleteUser);
-module.exports = router;
+
+export default router;
