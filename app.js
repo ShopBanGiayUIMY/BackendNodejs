@@ -10,7 +10,7 @@ import mysql from "mysql2";
 import Routers from "./src/routes/Routers.js";
 dotenv.config();
 
-const port = 8080;
+const port = 3000;
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(logger);
