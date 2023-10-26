@@ -10,7 +10,7 @@ const ProductController = {
       }
       const data = rows.map((row) => {
         return {
-          id: row.id,
+          id: row.product_id,
           name: row.name,
           price: row.price,
           quantity: row.quantity,

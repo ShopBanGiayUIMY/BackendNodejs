@@ -7,7 +7,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import myConnection from "express-myconnection";
 import mysql from "mysql2";
-import authRouter from "./src/routes/auth.js";
+import Routers from "./src/routes/Routers.js";
 dotenv.config();
 
 const port = 3000;
@@ -36,5 +36,6 @@ app.use(myConnection(mysql, {
 }, 'single'));
 
 // Router
-app.use('/api/v1/auth',authRouter);
-app.listen(port, () => console.log(`Server started on port ${port}`));
+app.use('/api/v1',Routers);
+//  app.listen(port, () => console.log(`Server started on port ${port}`));
+ app.listen(port,"192.168.1.12", () => console.log(`Server started on port ${port}`));  

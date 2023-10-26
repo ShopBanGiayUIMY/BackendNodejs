@@ -29,6 +29,18 @@ const middwarecontroller = {
                 res.status(403).json("Bạn không có quyền truy cập");
             }
         });
-    }
+    },
+    verifyUser: (req, res, next) => {
+        middwarecontroller.verifyToken(req, res, () => {
+            if (req.user.id == req.params.id)
+            // nếu id của user trong token trùng với id trong params thì cho phép truy cập
+            {
+                next();
+            }
+            else {
+                res.status(403).json("Bạn không có quyền truy cập");
+            }
+        });
+    },
 };
 export default middwarecontroller;
