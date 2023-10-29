@@ -25,7 +25,7 @@ CREATE TABLE `users` (
 CREATE TABLE `categories` (
   `category_id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `name` varchar(100) NOT NULL,
-  `image`varchar(200) DEFAULT NULL,
+  `image`varchar(200) DEFAULT NULL
 );
 CREATE TABLE `products` (
   `product_id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -144,7 +144,19 @@ CREATE TABLE `auth_user` (
   FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
 );
 
-
+CREATE TABLE vouchers (
+  voucher_id INT AUTO_INCREMENT PRIMARY KEY,
+  voucher_name VARCHAR(255) NOT NULL,
+  voucher_code VARCHAR(255) NOT NULL,
+  start_time TIMESTAMP NULL,
+  end_time TIMESTAMP NULL,
+  voucher_type INT NOT NULL,
+  reward_type INT NOT NULL,
+  usage_quantity INT NOT NULL,
+  discount_amount FLOAT NOT NULL,
+  max_price FLOAT NOT NULL,
+  item_id_list json NULL
+);
 
 
 
