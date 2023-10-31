@@ -157,6 +157,14 @@ CREATE TABLE vouchers (
   max_price FLOAT NOT NULL,
   item_id_list json NULL
 );
+-- thêm role vào bảng auth_user
+ALTER TABLE auth_users
+ADD COLUMN role INT DEFAULT 0;
+
+ALTER TABLE auth_users
+ADD COLUMN refreshtoken VARCHAR(1000);
+
+
 
 
 
