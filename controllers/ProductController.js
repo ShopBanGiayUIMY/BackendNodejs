@@ -11,11 +11,9 @@ const ProductController = {
       const data = rows.map((row) => {
         return {
           id: row.product_id,
-          name: row.name,
-          price: row.price,
-          quantity: row.quantity,
-          description: row.description,
-          image: row.image,
+          name: row.product_name,
+          price: row.product_price,
+          description: row.product_description,
           thumbnail: row.thumbnail,
         }
       });
@@ -26,9 +24,10 @@ const ProductController = {
     const db = connection();
     db.connect();
     const id = req.params.id;
-    const query = 'SELECT p.*, i.image_url FROM products p JOIN product_image i ON p.id = i.product_id WHERE p.id = ?';
+    const query = 'SELECT p.*, i.image_url FROM products p JOIN product_image i ON p.product_id = i.product_id WHERE p.product_id = ?';
     db.query(query, id, async (err, rows) => {
       if (err) {
+        console.log(err);
         res.status(500).send({ error: 'server error' });
         return;
       }
@@ -37,11 +36,11 @@ const ProductController = {
         return;
       }
       const resBody = {
-          id: rows[0].id,
-          name: rows[0].name,
-          price: rows[0].price,
-          quantity: rows[0].quantity,
-          description: rows[0].description,
+          id: rows[0].product_id,
+          name: rows[0].product_name,
+          price: rows[0].product_price,
+          quantity: rows[0].product_quantity,
+          description: rows[0].product_description,
           thumbnail: rows[0].thumbnail,
           images: rows.map(row => row.image_url),
         }
