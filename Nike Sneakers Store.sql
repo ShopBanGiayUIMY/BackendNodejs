@@ -1,5 +1,5 @@
 CREATE DATABASE nikesneakerstore character set utf8mb4 collate UTF8MB4_GENERAL_CI;
-
+USE nikesneakerstore;
 DROP TABLE IF EXISTS `cart_items`;
 DROP TABLE IF EXISTS `product_details`;
 DROP TABLE IF EXISTS `carts`;
