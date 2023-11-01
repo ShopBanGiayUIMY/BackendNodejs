@@ -9,7 +9,10 @@ import cors from "cors";
 import myConnection from "express-myconnection";
 import mysql from "mysql2";
 import Routers from "./routes/Routers.js";
+import associateModel from "./models/index.js";
+
 dotenv.config();
+associateModel();
 
 const port = 3000;
 const app = express();
