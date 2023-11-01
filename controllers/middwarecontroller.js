@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 const middwarecontroller = {
     verifyToken: (req, res, next) => {
-        const token = req.headers.token;
+        const token = req.headers.token || req.headers.authorization;
         if (token) {
             // ví dụ Bearer token
             const accessToken = token.split(" ")[1];// lấy token từ header và cắt bỏ phần Bearer
@@ -9,6 +9,7 @@ const middwarecontroller = {
                 if (err) {
                     return res.status(403).json("Token đã hết hạn hoặc không hợp lệ");
                 }
+                console.log(user);
                 req.user = user;
                 next();
             }
