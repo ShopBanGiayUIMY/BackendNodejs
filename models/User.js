@@ -35,7 +35,8 @@ const User = sequelize.define('User', {
   createdAt: false,
   updatedAt: false,
 });
-
-User.hasMany(sequelize.models.Cart, { foreignKey: 'user_id' })
+// User.association = function(models) {
+//   User.hasMany(models.Cart, { foreignKey: 'user_id' })
+// }
 
 export default User;

@@ -17,6 +17,9 @@ const Cart = sequelize.define('Cart', {
   createdAt: false,
   updatedAt: false,
 });
-Cart.belongsTo(sequelize.models.Cart, { foreignKey: 'user_id' })
+// Cart.associate = function(models) {
+//   Cart.hasMany(models.CartItem, { foreignKey: 'cart_id' })
+//   Cart.belongsTo(models.User, { foreignKey: 'user_id' })
+// }
 
 export default Cart;

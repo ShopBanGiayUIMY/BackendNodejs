@@ -9,7 +9,7 @@ const Product = sequelize.define('Product', {
     allowNull: false,
   },
   product_name: {
-    type: DataTypes.VARCHAR(100),
+    type: DataTypes.STRING(100),
     allowNull: false,
   },
   product_description: {
@@ -26,7 +26,7 @@ const Product = sequelize.define('Product', {
     allowNull: false,
   },
   thumbnail: {
-    type: DataTypes.VARCHAR(100),
+    type: DataTypes.STRING(100),
     allowNull: true,
     defaultValue: null,
   },
@@ -36,6 +36,11 @@ const Product = sequelize.define('Product', {
   createdAt: false,
   updatedAt: false,
 });
+// Product.associate = function(models) {
+//   Product.hasMany(models.ProductDetail, { foreignKey: 'product_id' })
+//   Product.hasMany(models.ProductImage, { foreignKey: 'product_id' })
+//   // Product.belongsTo(models.Category, { foreignKey: 'category_id' })
+// }
 // Cart.belongsTo(sequelize.models.Cart, { foreignKey: 'user_id' })
 
 export default Product;

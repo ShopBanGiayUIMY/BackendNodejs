@@ -1,12 +1,16 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../database/connection');
-const Product = require('./Product');
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/Sequelize.js';
+import Product from './Product.js';
 
 const ProductDetail = sequelize.define('ProductDetail', {
-  id: {
+  detail_id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
+    allowNull: false,
+  },
+  product_id: {
+    type: DataTypes.INTEGER,
     allowNull: false,
   },
   color: {
@@ -22,8 +26,14 @@ const ProductDetail = sequelize.define('ProductDetail', {
     allowNull: false,
     defaultValue: 0,
   },
+}, {
+  sequelize,
+  tableName: 'product_details',
+  createdAt: false,
+  updatedAt: false,
 });
+// ProductDetail.associatie = function(models) {
+//   ProductDetail.belongsTo(models.Product, { foreignKey: 'product_id' })
+// }
 
-ProductDetail.belongsTo(Product);
-
-module.exports = ProductDetail;
+export default ProductDetail;
