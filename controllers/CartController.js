@@ -1,14 +1,34 @@
+import { where } from 'sequelize';
 import Cart from '../models/Cart.js';
 import User from '../models/User.js';
+import CartItem from '../models/CartItem.js';
+import Product from '../models/Product.js';
+import ProductDetail from '../models/ProductDetail.js';
 
 export const CartsController = {
   index: async (req, res) => {
     try {
-      const carts = await Cart.findAll();
-      const users = await User.findAll();
-      res.status(200).json(carts);
+      const userId = req.params.userId;
+      const carts = await Cart.findAll({
+        where: { user_id: req.user.id },
+        include: [
+          {
+            model: CartItem,
+            include: [{
+              model: ProductDetail,
+              include: Product
+            }]
+          }
+        ]
+      }).then((carts) => {
+        res.status(200).json(carts);
+      }).catch((err) => {
+        
+        res.status(500).json({ message: err.message });
+      });
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      console.log('abc')
+      res.status(500);
     }
   },
 

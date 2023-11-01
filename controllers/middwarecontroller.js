@@ -12,8 +12,7 @@ const middwarecontroller = {
                 console.log(user);
                 req.user = user;
                 next();
-            }
-            );
+            });
         }
         else {
             res.status(401).json("Bạn chưa đăng nhập");
