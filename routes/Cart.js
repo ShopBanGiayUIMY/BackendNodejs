@@ -1,9 +1,10 @@
 import express from 'express';
 import { CartsController } from '../controllers/CartController.js';
+import middwarecontroller from '../controllers/middwarecontroller.js';
 const router = express.Router();
 
 // GET /carts
-router.get('/', CartsController.index);
+router.get('/',middwarecontroller.verifyToken, CartsController.index);
 
 // GET /carts/:id
 router.get('/:id', (req, res) => {
