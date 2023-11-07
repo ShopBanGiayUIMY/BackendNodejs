@@ -1,27 +1,21 @@
 import Categorydb from "../Querydb/Categorydb.js";
+import Category from "../models/category.model.js";
+import Product from "../models/product.model.js";
 const CategoryController = {
   // get all categories
-
-  Categoryname: async (req, res) => {
-    try {
-        req.getConnection((err, conn) => {
-            if (err) {
-                return res.send(err)
-            }
-            conn.query(Categorydb.getallCategory, (err, rows) => {
-                if (err) {
-                    return res.send(err)
-                }
-                res.status(200).json(rows);
-                console.log("lấy danh mục thành công ");
-            })
-        })
-    } catch (error) {
-        
+    getCategoryName: async (req, res) => {
+        try {
+            const categories = await Category.findAll();
+            res.status(200).json(categories);
+            console.log("Lấy danh mục thành công");
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Lỗi khi lấy danh mục' });
+        }
     }
-  
-},
+,
 // get category by id
+
 Categoryid: async (req, res) => {
     try {
         req.getConnection((err, conn) => {
