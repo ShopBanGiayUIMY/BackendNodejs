@@ -1,6 +1,6 @@
 import express from 'express';
-import { CartsController } from '../controllers/CartController.js';
-import middwarecontroller from '../controllers/middwarecontroller.js';
+import { CartsController } from '../../controllers/CartController.js';
+import middwarecontroller from '../../controllers/middwarecontroller.js';
 const router = express.Router();
 
 // GET /carts

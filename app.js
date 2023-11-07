@@ -13,12 +13,12 @@ import path from "path";
 import expressLayout from "express-ejs-layouts";
 import session from "express-session";
 import { fileURLToPath } from 'url';
+import associateModel from './src/models/index.js'
 
 
 dotenv.config();
 associateModel();
 
-const port = 8080;
 const app = express();
 
 // View engine setup
@@ -49,9 +49,9 @@ app.use(myConnection(mysql, {
 }, 'single'));
 
 // Routes
-app.use('/api/v1/products', ProductRouter);
+// app.use('/api/v1/products', ProductRouter);
 
 app.use('/api/v1', RoutersUser);
 app.use('/v1/admin', RouterAdmin);
 
-app.listen(port, "192.168.0.105", () => console.log(`Server started on port ${port}`));
+app.listen(process.env.SERVER_PORT, process.env.HOST_NAME, () => console.log(`Server started on port ${process.env.SERVER_PORT}`));
