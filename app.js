@@ -18,18 +18,11 @@ const port = 3000;
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(logger);
-app.use('/api/v1/carts', CartRouter)
-app.use('/api/v1/products', ProductRouter);
 
 app.use(express.json());
 app.use(cors());
 app.use(cookieParser());// tạo cookie 
 
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
-  }),
-);
 // Kết nối
 app.use(myConnection(mysql, {
     host: process.env.DB_HOST,
