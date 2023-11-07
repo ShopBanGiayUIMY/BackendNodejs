@@ -9,7 +9,6 @@ const middwarecontroller = {
                 if (err) {
                     return res.status(403).json("Token đã hết hạn hoặc không hợp lệ");
                 }
-                console.log(user);
                 req.user = user;
                 next();
             });
