@@ -7,22 +7,13 @@ const router = express.Router();
 router.get('/',middwarecontroller.verifyToken, CartsController.index);
 
 // GET /carts/:id
-router.get('/:id', (req, res) => {
-  res.send('GET /carts/:id')
-  // Return a specific cart by ID
-});
+router.get('/:id', middwarecontroller.verifyToken, CartsController.show);
 
 // POST /carts
-router.post('/', (req, res) => {
-  res.send('POST /carts')
-  // Create a new cart
-});
+router.post('/', middwarecontroller.verifyToken, CartsController.create);
 
 // PUT /carts/:id
-router.put('/:id', (req, res) => {
-  res.send('PUT /carts/:id')
-  // Update a specific cart by ID
-});
+router.patch('/:id', middwarecontroller.verifyToken, CartsController.update);
 
 // DELETE /carts/:id
 router.delete('/:id', (req, res) => {
