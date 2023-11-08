@@ -1,5 +1,5 @@
 CREATE DATABASE nikesneakerstore character set utf8mb4 collate UTF8MB4_GENERAL_CI;
-USE nikesneakerstore;
+
 DROP TABLE IF EXISTS `cart_items`;
 DROP TABLE IF EXISTS `product_details`;
 DROP TABLE IF EXISTS `carts`;
@@ -12,7 +12,7 @@ DROP TABLE IF EXISTS `order_details`;
 DROP TABLE IF EXISTS `product_ratings`;
 DROP TABLE IF EXISTS `product_reviews`;
 DROP TABLE IF EXISTS `payment_methods`; 
-
+DROP TABLE IF EXISTS `discount_codes`; 
 CREATE TABLE `users` (
   `user_id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `username` varchar(50) UNIQUE,
@@ -25,7 +25,7 @@ CREATE TABLE `users` (
 CREATE TABLE `categories` (
   `category_id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `name` varchar(100) NOT NULL,
-  `image`varchar(200) DEFAULT NULL
+  `image`varchar(200) DEFAULT NULL,
 );
 CREATE TABLE `products` (
   `product_id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -119,14 +119,6 @@ CREATE TABLE `shipping_addresses` (
   `postal_code` varchar(20) NOT NULL,
   FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
 );
-CREATE TABLE `discount_codes` (
-  `code_id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `code` varchar(20) NOT NULL,
-  `discount_amount` decimal(10,2) NOT NULL,
-  `condition_code` VARCHAR(100) NOT NULL,
-  `single_use` boolean NOT NULL DEFAULT true,
-  `expiry_date` date NOT NULL
-);
 CREATE TABLE `purchase_history` (
   `purchase_id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `user_id` int NOT NULL,
@@ -143,7 +135,6 @@ CREATE TABLE `auth_user` (
   `verificationToken` VARCHAR(500) NOT NULL,
   FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
 );
-
 CREATE TABLE vouchers (
   voucher_id INT AUTO_INCREMENT PRIMARY KEY,
   voucher_name VARCHAR(255) NOT NULL,
@@ -155,7 +146,8 @@ CREATE TABLE vouchers (
   usage_quantity INT NOT NULL,
   discount_amount FLOAT NOT NULL,
   max_price FLOAT NOT NULL,
-  item_id_list json NULL
+  item_id_list json NULL,
+  
 );
 -- thêm role vào bảng auth_user
 ALTER TABLE auth_users
@@ -163,9 +155,33 @@ ADD COLUMN role INT DEFAULT 0;
 
 ALTER TABLE auth_users
 ADD COLUMN refreshtoken VARCHAR(1000);
+--  đổi tên item_id_list item_product_id_list
+ALTER TABLE vouchers
+CHANGE COLUMN item_id_list item_product_id_list json NULL;
+-- thêm 2 trường vào vouchers đọc chi tiết ở file excel
+ALTER TABLE vouchers
+ADD COLUMN item_user_id_list JSON NULL,
+ADD COLUMN voucher_purpose INT DEFAULT 0;
+
+CREATE TABLE vouchers_user (
+  vouchers_user_id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT unique NOT NULL ,
+  voucher_id JSON,
+  voucher_history JSON,
+FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
 
 
 
 
+SELECT *
+FROM vouchers
+WHERE voucher_id IN (SELECT JSON_UNQUOTE(JSON_EXTRACT(vu.voucher_id, '$[0]')) AS voucher_id
+FROM vouchers_user AS vu
+WHERE vu.user_id = 1);
 
+
+SELECT JSON_VALUE(vu.voucher_id, '$[0]') AS voucher_id
+FROM vouchers_user AS vu
+WHERE vu.user_id = 1;
 
