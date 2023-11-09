@@ -1,5 +1,7 @@
 CREATE DATABASE nikesneakerstore character set utf8mb4 collate UTF8MB4_GENERAL_CI;
 
+USE nikesneakerstore;
+
 DROP TABLE IF EXISTS `cart_items`;
 DROP TABLE IF EXISTS `product_details`;
 DROP TABLE IF EXISTS `carts`;
@@ -25,7 +27,7 @@ CREATE TABLE `users` (
 CREATE TABLE `categories` (
   `category_id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `name` varchar(100) NOT NULL,
-  `image`varchar(200) DEFAULT NULL,
+  `image`varchar(200) DEFAULT NULL
 );
 CREATE TABLE `products` (
   `product_id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -146,14 +148,13 @@ CREATE TABLE vouchers (
   usage_quantity INT NOT NULL,
   discount_amount FLOAT NOT NULL,
   max_price FLOAT NOT NULL,
-  item_id_list json NULL,
-  
+  item_id_list json NULL
 );
 -- thêm role vào bảng auth_user
-ALTER TABLE auth_users
+ALTER TABLE auth_user
 ADD COLUMN role INT DEFAULT 0;
 
-ALTER TABLE auth_users
+ALTER TABLE auth_user
 ADD COLUMN refreshtoken VARCHAR(1000);
 --  đổi tên item_id_list item_product_id_list
 ALTER TABLE vouchers
@@ -184,4 +185,3 @@ WHERE vu.user_id = 1);
 SELECT JSON_VALUE(vu.voucher_id, '$[0]') AS voucher_id
 FROM vouchers_user AS vu
 WHERE vu.user_id = 1;
-
