@@ -1,10 +1,8 @@
-import middwarecontroller from '../../middleware/middwarecontroller.js';
-import authController from '../../controllers/auth.User.controller.js';
-import indexController from '../../controllers/indexcontroller.js';
+import middwarecontroller from '../../controllers/middwarecontroller.js';
+import authController from '../../controllers/authcontroller.js';
 import express from 'express';
 const router = express.Router();
 
-router.get('/', indexController.index);
 router.post('/register',authController.registerUser);
 router.post('/login',authController.loginUser);
 router.post('/refresh_token',authController.refreshToken);
