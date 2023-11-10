@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import Queryuser from '../Querydb/Userdb.js';
+import Queryuser from '../../Querydb/Userdb.js';
 import crypto from "crypto";
 import nodemailer from "nodemailer";
 // generate token

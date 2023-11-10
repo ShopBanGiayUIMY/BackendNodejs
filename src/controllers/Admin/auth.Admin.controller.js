@@ -1,5 +1,5 @@
-import Users from "../models/user.model.js";
-import AuthAdmin from "../models/auth.model.js";
+import Users from "../../models/User.js";
+import AuthAdmin from "../../models/auth.model.js";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
@@ -26,9 +26,6 @@ const authAdminController = {
       process.env.JWT_REFRESH_KEY,
       { expiresIn: "365d" }
     );
-  },
-  dashboard: async (req, res) => {
-    return res.redirect('/v1/admin/dashboard')
   },
   loginAdmin: async (req, res, next) => {
     const { username, password } = req.body;

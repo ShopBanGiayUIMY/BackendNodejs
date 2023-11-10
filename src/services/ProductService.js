@@ -1,9 +1,20 @@
 import Product from "../models/Product.js"
+import Category from "../models/Category.js"
 
-export const ProductService = {
+ const ProductService = {
   getListProduct: async () => {
     try {
-      const result = await Product.findAll();
+      const result = await Product.findAll({
+        include: [
+         {
+          model: Category,
+          attributes: [
+            "name",
+            "image",
+          ]
+         }
+        ],
+      });
       return result;
     } catch (e) {
       throw e.message
@@ -18,3 +29,4 @@ export const ProductService = {
     }
   }
 }
+export default ProductService;
