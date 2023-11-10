@@ -17,4 +17,4 @@ export const ProductService = {
       throw e.message;
     }
   }
-}                              
+}
