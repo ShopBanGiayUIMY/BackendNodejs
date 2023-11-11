@@ -7,6 +7,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
+  <style>
+    .product-img {
+      width: 100px;
+      height: 100px;
+      object-fit: initial;
+      border-radius: 10px;
+    }
+    .btn-success {
+      padding: 7px 11px 7px 12px;
+    }
+  </style>
 </head>
 
 <body id="page-top">
@@ -381,11 +392,11 @@
                           <%= product.price %>
                         </td>
                         <td class="text-center">
-                          <button class="btn btn-primary btn-sm trash" data-bs-toggle="modal" data-bs-target="#comfirmDeleteModal"
+                          <button class="btn btn-primary  trash" data-bs-toggle="modal" data-bs-target="#comfirmDeleteModal"
                             onclick="onDelete('<%= product._id %>')">
                             <i class="fas fa-trash-alt"></i>
                           </button>
-                          <a class="btn btn-success btn-sm edit" href="/products/edit/<%= product._id %>">
+                          <a class="btn btn-success edit" href="/products/edit/<%= product._id %>">
                             <i class="fas fa-edit"></i>
                           </a>
                         </td>

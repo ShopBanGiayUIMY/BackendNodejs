@@ -4,8 +4,6 @@ import express from 'express';
 const router = express.Router();
 
 router.get('/login', authAdminController.loginAdmin);
-router.post('/login',authAdminController.loginAdmin,middwarecontroller.verifyToken,middwarecontroller.verifyAdmin,(req,res)=>{
-    res.redirect('/admin/dashboard');
-});
+router.post('/login',authAdminController.loginAdmin);
 router.get('/logout',authAdminController.logoutAdmin);
 export default router;  

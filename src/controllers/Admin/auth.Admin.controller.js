@@ -11,7 +11,7 @@ const authAdminController = {
     return jwt.sign(
       {
         id: user.user_id,
-        admin: "sucess",
+        admin: "success",
       },
       process.env.JWT_ACCESS_KEY,
       { expiresIn: "30d" }
@@ -21,7 +21,7 @@ const authAdminController = {
     return jwt.sign(
       {
         id: user.user_id,
-        admin: "sucess",
+        admin: "success",
       },
       process.env.JWT_REFRESH_KEY,
       { expiresIn: "365d" }
@@ -42,18 +42,19 @@ const authAdminController = {
             if (authAdmin && authAdmin.role == 1) {
               const accesstokens = authAdminController.generateAccessToken(authAdmin);
               console.log(accesstokens);
-              res.cookie("accesstokens", accesstokens, {
+              res.cookie("TokenAdmin", accesstokens, {
                 httpOnly: true,
                 path: "/",
                 sameSite: "strict",
                 secure: false,
               });
+              console.log("dsdsddddđs",req.cookies);
               await AuthAdmin.update(
                 { refreshtoken: authAdminController.generateRefreshToken(authAdmin) },
                 { where: { user_id: user.user_id } }
               );
               msg = "Đăng nhập thành công !";
-              next();
+              req.redirect("/admin/dashboard");
             }
             else{
               msg = "Bạn không có quyền truy cập !";
@@ -71,7 +72,7 @@ const authAdminController = {
 
   refreshToken: async (req, res) => {},
   logoutAdmin: async (req, res) => {
-    res.clearCookie("accesstokens");
+    res.clearCookie("TokenAdmin");
     res.status(200).json("Đăng xuất thành công");
   },
 };

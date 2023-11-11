@@ -4,6 +4,7 @@ const router = express.Router();
 
 router.get('/',ProductAdminController.index);
 router.get('/create',ProductAdminController.create);
+router.post('/create',ProductAdminController.create);
 
 
 export default router;

@@ -2,9 +2,8 @@ import jwt from "jsonwebtoken";
 let msg = "";
 const middwarecontroller = {
   verifyToken: (req, res, next) => {
-    if (req.headers.token) {
-      // ví dụ Bearer token
-      const accessToken = token.split(" ")[1]; // lấy token từ header và cắt bỏ phần Bearer
+    if (req.headers.token && req.method === "post") {
+      const accessToken = req.headers.token.split(" ")[1];
       jwt.verify(accessToken, process.env.JWT_ACCESS_KEY, (err, user) => {
         if (err) {
           console.log("Token đã hết hạn hoặc không hợp lệ");
@@ -13,39 +12,40 @@ const middwarecontroller = {
         req.user = user;
         next();
       });
-    } else if (req.cookies.accesstokens) {
-      const accessToken = req.cookies.accesstokens;
-      jwt.verify(accessToken, process.env.JWT_ACCESS_KEY, (err, user) => {
-        if (err) {
-          console.log("Token đã hết hạn hoặc không hợp lệ");
-          return res.status(403).json("Token đã hết hạn hoặc không hợp lệ");
+    } else if (req.cookies.TokenAdmin) {
+        const accessToken = req.cookies.TokenAdmin;
+        console.log("Đã đọc được token từ cookie: " + accessToken);
+        if (accessToken) {
+          jwt.verify(accessToken, process.env.JWT_ACCESS_KEY, (err, user) => {
+            if (err) {
+              console.log("Token đã hết hạn hoặc không hợp lệ");
+              return res.status(403).json("Token đã hết hạn hoặc không hợp lệ");
+            }
+            req.user = user;
+            next();
+          });
         }
-        req.user = user;
-        next();
-      });
-    } else {
-      console.log("Bạn chưa đăng nhập");
-    res.status(403).json("Bạn chưa đăng nhập");
-    }
+      }
+      else {
+        res.redirect("/admin/auth/login");
+      }
+    
   },
   verifyAdmin: (req, res, next) => {
-    console.log("ưqwqw", req.method);
-
     middwarecontroller.verifyToken(req, res, () => {
       if (!req.user) {
-        console.log("Bạn chưa đăng nhập");
-        next();
+        return res.status(403).json("Bạn chưa đăng nhậep");
       } else {
-        if (req.method === "GET" && req.user.admin === "sucess") {
+        if (req.method === "GET" && req.user.admin === "success") {
           next();
-          return;
         } else {
           console.log("Bạn không có quyền truy cập");
-          res.status(403).json("Bạn không có quyền truy cập");
+          return res.status(403).json("Bạn không có quyền truy cập");
         }
       }
     });
   },
+
   verifyUser: (req, res, next) => {
     middwarecontroller.verifyToken(req, res, () => {
       if (req.user.id == req.params.id) {
