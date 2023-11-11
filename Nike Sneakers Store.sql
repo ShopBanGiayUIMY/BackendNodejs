@@ -1,7 +1,5 @@
 CREATE DATABASE nikesneakerstore character set utf8mb4 collate UTF8MB4_GENERAL_CI;
 
-USE nikesneakerstore;
-
 DROP TABLE IF EXISTS `cart_items`;
 DROP TABLE IF EXISTS `product_details`;
 DROP TABLE IF EXISTS `carts`;
@@ -27,7 +25,7 @@ CREATE TABLE `users` (
 CREATE TABLE `categories` (
   `category_id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `name` varchar(100) NOT NULL,
-  `image`varchar(200) DEFAULT NULL
+  `image`varchar(200) DEFAULT NULL,
 );
 CREATE TABLE `products` (
   `product_id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -51,6 +49,7 @@ CREATE TABLE `product_details` (
   `color` varchar(50) NOT NULL,
   `size` varchar(10) NOT NULL,
   `stock` int NOT NULL,
+  
   FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`)
 );
 CREATE TABLE `carts` (
@@ -148,13 +147,17 @@ CREATE TABLE vouchers (
   usage_quantity INT NOT NULL,
   discount_amount FLOAT NOT NULL,
   max_price FLOAT NOT NULL,
-  item_id_list json NULL
+  item_id_list json NULL,
+  
 );
 -- thêm role vào bảng auth_user
-ALTER TABLE auth_user
+ALTER TABLE auth_users
 ADD COLUMN role INT DEFAULT 0;
 
-ALTER TABLE auth_user
+ALTER TABLE product_image
+MODIFY image_url text DEFAULT NULL ;
+
+ALTER TABLE auth_users
 ADD COLUMN refreshtoken VARCHAR(1000);
 --  đổi tên item_id_list item_product_id_list
 ALTER TABLE vouchers
@@ -163,6 +166,11 @@ CHANGE COLUMN item_id_list item_product_id_list json NULL;
 ALTER TABLE vouchers
 ADD COLUMN item_user_id_list JSON NULL,
 ADD COLUMN voucher_purpose INT DEFAULT 0;
+
+ALTER TABLE product_details
+ADD COLUMN time TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+
+
 
 CREATE TABLE vouchers_user (
   vouchers_user_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -185,3 +193,4 @@ WHERE vu.user_id = 1);
 SELECT JSON_VALUE(vu.voucher_id, '$[0]') AS voucher_id
 FROM vouchers_user AS vu
 WHERE vu.user_id = 1;
+
