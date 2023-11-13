@@ -1,6 +1,5 @@
-import Categorydb from "../Querydb/Categorydb.js";
-import Category from "../models/category.model.js";
-import Product from "../models/product.model.js";
+import Categorydb from "../../Querydb/Categorydb.js";
+import Category from "../../models/Category.js";
 const CategoryController = {
   // get all categories
     getCategoryName: async (req, res) => {

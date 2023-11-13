@@ -24,11 +24,11 @@
           </div>
         <form method="post">
             <div class="user-box">
-                <input type="text"  required="" name="username">
+                <input type="text"  required="" name="username" >
                 <label>Username</label>
             </div>
             <div class="user-box">
-                <input type="password" name="password" required="">
+                <input type="password" name="password" required="" autocomplete="off" >
                 <label>Password</label>
             </div>
             
@@ -42,7 +42,17 @@
         </form>
     </div>  
     <script type='text/javascript'></script>
-
+    <script>
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+        
+    </script>
+ <script>
+    history.pushState(null, null, window.location.href);
+    history.back();
+    window.onpopstate = () => history.forward();
+  </script>
 </body>
 
 </html>

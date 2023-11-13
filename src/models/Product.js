@@ -2,6 +2,7 @@ import { DataTypes } from 'sequelize';
 import sequelize from '../config/Sequelize.js';
 
 const Product = sequelize.define('Product', {
+  
   product_id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -36,11 +37,4 @@ const Product = sequelize.define('Product', {
   createdAt: false,
   updatedAt: false,
 });
-// Product.associate = function(models) {
-//   Product.hasMany(models.ProductDetail, { foreignKey: 'product_id' })
-//   Product.hasMany(models.ProductImage, { foreignKey: 'product_id' })
-//   // Product.belongsTo(models.Category, { foreignKey: 'category_id' })
-// }
-// Cart.belongsTo(sequelize.models.Cart, { foreignKey: 'user_id' })
-
 export default Product;
