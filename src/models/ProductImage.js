@@ -12,7 +12,7 @@ const ProductImage = sequelize.define('ProductImage', {
     type: DataTypes.INTEGER,
     allowNull: false
   },
-  imageUrl: {
+  image_url: {
     type: DataTypes.STRING,
     allowNull: false
   }

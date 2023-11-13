@@ -1,9 +1,9 @@
-import Cart from '../models/Cart.js';
-import User from '../models/User.js';
-import CartItem from '../models/CartItem.js';
-import Product from '../models/Product.js';
-import ProductDetail from '../models/ProductDetail.js';
-import { CartService } from '../services/cartService.js';
+import Cart from '../../models/Cart.js';
+import User from '../../models/User.js';
+import CartItem from '../../models/CartItem.js';
+import Product from '../../models/Product.js';
+import ProductDetail from '../../models/ProductDetail.js';
+import { CartService } from '../../services/cartService.js';
 
 export const CartsController = {
   index: async (req, res) => {

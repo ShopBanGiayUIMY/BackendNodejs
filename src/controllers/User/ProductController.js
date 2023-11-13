@@ -1,5 +1,4 @@
-import connection from "../config/Connection.js";
-
+import connection from "../../config/Connection.js";
 const ProductController = {
   index: async (req, res) => {
     const db = connection();

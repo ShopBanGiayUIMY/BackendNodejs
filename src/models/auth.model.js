@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../Conection/DbHelper.js';
-import Users from './user.model.js';
+import Users from './User.js';
 const AuthUser = sequelize.define('auth_users', {
   auth_id: {
     type: DataTypes.INTEGER,
