@@ -1,4 +1,4 @@
-import Queryuser from '../Querydb/Userdb.js';
+import Queryuser from '../../Querydb/Userdb.js';
 const UserController = {
     getInfoUser:async (req, res) => {
         const user_id = req.params.id

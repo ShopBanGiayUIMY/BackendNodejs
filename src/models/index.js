@@ -3,6 +3,7 @@ import CartItem from './CartItem.js';
 import Product from './Product.js';
 import ProductDetail from './ProductDetail.js';
 import ProductImage from './ProductImage.js';
+import Category from './Category.js';
 import User from './User.js';
 
 export default () => {
@@ -19,5 +20,6 @@ export default () => {
   
   Product.hasMany(ProductImage, { foreignKey: 'product_id' });
   ProductImage.belongsTo(Product, { foreignKey: 'product_id' });
+  Product.belongsTo(Category, { foreignKey: 'category_id' });
 }
 
