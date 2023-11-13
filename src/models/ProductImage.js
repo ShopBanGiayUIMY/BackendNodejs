@@ -1,6 +1,5 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/Sequelize.js';
-import Product from './Product.js';
 
 const ProductImage = sequelize.define('ProductImage', {
   id: {
@@ -12,7 +11,7 @@ const ProductImage = sequelize.define('ProductImage', {
     type: DataTypes.INTEGER,
     allowNull: false
   },
-  imageUrl: {
+  image_url: {
     type: DataTypes.STRING,
     allowNull: false
   }
@@ -22,10 +21,6 @@ const ProductImage = sequelize.define('ProductImage', {
   createdAt: false,
   updatedAt: false,
 });
-
-// ProductImage.associate = function(model) {
-//   ProductImage.belongsTo(model.product, { foreignKey: 'product_id' });
-// };
 
 
 export default ProductImage;
