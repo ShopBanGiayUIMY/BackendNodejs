@@ -4,7 +4,7 @@ const DashboardController = {
         res.render('Screen/dashboard', { title: 'Dashboard', layout: layout });
     },
     alert: (req, res) => {
-        res.render('Screen/alert', { title: 'Alert', layout: layout });
+        res.render('Screen/discount', { title: 'Alert', layout: layout });
     },
 }
 export default DashboardController;

@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import sequelize from '../Conection/DbHelper.js';
+import sequelize from '../Connection/Sequelize.js';
 
 const Category = sequelize.define('Category', {
     category_id: {

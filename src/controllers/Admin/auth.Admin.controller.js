@@ -57,14 +57,15 @@ const authAdminController = {
                 { refreshtoken: authAdminController.generateRefreshToken(authAdmin) },
                 { where: { user_id: user.user_id } }
               );
-  
-              msg = "Đăng nhập thành công !";
-              return res.redirect("/admin/dashboard"); 
+               return res.redirect("/admin/dashboard"); 
+               
             } else {
-              msg = "Bạn không có quyền truy cập !";
+              res.render("Login/login", { msg: "Bạn không có quyền truy cập !", layout: layout, title: "Đăng nhập" });
+             
             }
           } else {
-            msg = "Tài khoản hoặc mật khẩu không đúng !";
+            
+            res.render("Login/login", { msg: "Tài khoản hoặc mật khẩu không đúng !", layout: layout, title: "Đăng nhập" });
           }
         }
       } catch (error) {
@@ -73,13 +74,17 @@ const authAdminController = {
     }
   
     // If none of the conditions are met, render the login page with the appropriate message
-    return res.render("Login/login", { msg, layout: layout, title: "Đăng nhập" });
+    if(req.method == "GET"){
+      return res.render("Login/login", { msg, layout: layout, title: "Đăng nhập" });
+    }
+    
   },
   
 
   refreshToken: async (req, res) => {},
-  logoutAdmin: async (req, res) => {
+  logoutAdmin: async (req, res,next) => {
     res.clearCookie("TokenAdmin");
+    console.log("Đăng xuất thành công");
     res.redirect("/admin/auth/login");
   },
 };
