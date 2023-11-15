@@ -20,11 +20,15 @@ router.post("/edit/:id", ProductAdminController.edit);
 
 router.get("/detail/:id", ProductAdminController.detail);
 
-router.get(
-  "/delete",
+// router.get(
+//   "/delete",
+//   middwarecontroller.verifyAdmin,
+//   ProductAdminController.delete
+// );
+router.delete(
+  "/delete/:id",
   middwarecontroller.verifyAdmin,
   ProductAdminController.delete
 );
-router.post("/delete", ProductAdminController.delete);
 
 export default router;

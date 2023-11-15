@@ -139,7 +139,7 @@ const ProductService = {
           product_id: productId,
         },
       });
-
+      console.log("aaaa", deletedProductCount);
       return deletedProductCount > 0;
     } catch (e) {
       throw e.message;

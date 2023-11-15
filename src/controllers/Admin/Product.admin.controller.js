@@ -125,41 +125,42 @@ const ProductAdminController = {
   },
 
   // Xóa sản phẩm
-  delete: async (req, res) => {
+  delete: async (req, res, next) => {
     const productId = req.params.id;
+    console.log("đang xoá ", productId);
 
     try {
       const result = await ProductService.deleteProduct(productId);
-
       if (result) {
-        res.redirect("/admin/products");
+        res.end();
       }
     } catch (error) {
       console.error("Error deleting product:", error);
       res.status(500).send("Internal Server Error");
     }
   },
-
-  // Xem chi tiết sản phẩm
   detail: async (req, res) => {
     const productId = req.params.id;
-
     try {
       const product = await ProductService.getProductDetail(productId);
-
+      const categories = await CategoryService.getAllCategories(); // Lấy thông tin danh mục
       res.render("product/detailsProduct", {
         layout: layout,
         title: "Product Detail",
         product: {
-          id: product.product_id,
-          name: product.product_name,
-          price: product.product_price,
-          description: product.product_description,
+          id: productId,
+          name: product.name, // Đảm bảo rằng product trả về các thuộc tính cần thiết từ service
+          price: product.price,
+          description: product.description,
           thumbnail: product.thumbnail,
+          // Thêm các thuộc tính cần thiết khác từ service vào đây
+          // Ví dụ: color, size, stock, quantity, image_url,...
           category: {
-            name: product.Category.name,
-            image: product.Category.image,
+            // Đưa thông tin danh mục vào đây nếu đã có
+            // Ví dụ: name: product.Category.name,
+            //        image: product.Category.image,
           },
+          categories: categories, // Truyền danh sách các danh mục xuống view
         },
       });
     } catch (error) {
@@ -167,6 +168,39 @@ const ProductAdminController = {
       res.status(500).send("Internal Server Error");
     }
   },
+  // color, size
+  // detail: async (req, res) => {
+  //   const productId = req.params.id;
+
+  //   try {
+  //     const productDetail = await ProductDetail.findOne({
+  //       where: {
+  //         product_id: productId,
+  //       },
+  //     });
+
+  //     if (!productDetail) {
+  //       return res.status(404).send("Không tìm thấy thông tin chi tiết sản phẩm");
+  //     }
+
+  //     res.render("product/detailsProduct", {
+  //       layout: layout,
+  //       title: "Chi tiết sản phẩm",
+  //       product: {
+  //         id: productId,
+  //         color: productDetail.color,
+  //         size: productDetail.size,
+  //         stock: productDetail.stock,
+  //         // Thêm các thông tin khác của sản phẩm từ service hoặc các model khác vào đây
+  //         // Ví dụ: name, price, description, thumbnail,...
+  //         // Đảm bảo lấy thông tin từ service hoặc model tương ứng
+  //       },
+  //     });
+  //   } catch (error) {
+  //     console.error("Lỗi khi lấy thông tin chi tiết sản phẩm:", error);
+  //     res.status(500).send("Lỗi Server");
+  //   }
+  // },
 };
 
 export default ProductAdminController;
