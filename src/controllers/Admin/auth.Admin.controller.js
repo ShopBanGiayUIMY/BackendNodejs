@@ -60,12 +60,12 @@ const authAdminController = {
                return res.redirect("/admin/dashboard"); 
                
             } else {
-              res.render("Login/login", { msg: "Bạn không có quyền truy cập !", layout: layout, title: "Đăng nhập" });
+              res.render("login/login", { msg: "Bạn không có quyền truy cập !", layout: layout, title: "Đăng nhập" });
              
             }
           } else {
             
-            res.render("Login/login", { msg: "Tài khoản hoặc mật khẩu không đúng !", layout: layout, title: "Đăng nhập" });
+            res.render("login/login", { msg: "Tài khoản hoặc mật khẩu không đúng !", layout: layout, title: "Đăng nhập" });
           }
         }
       } catch (error) {
@@ -75,7 +75,7 @@ const authAdminController = {
   
     // If none of the conditions are met, render the login page with the appropriate message
     if(req.method == "GET"){
-      return res.render("Login/login", { msg, layout: layout, title: "Đăng nhập" });
+      return res.render("login/login", { msg, layout: layout, title: "Đăng nhập" });
     }
     
   },
