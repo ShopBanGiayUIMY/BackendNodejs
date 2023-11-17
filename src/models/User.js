@@ -31,7 +31,7 @@ const User = sequelize.define('User', {
   }
 }, {
   sequelize,
-  tableName: 'Users',
+  tableName: 'users',
   createdAt: false,
   updatedAt: false,
 });

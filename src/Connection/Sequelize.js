@@ -8,7 +8,7 @@ const dbConfig={
 const sequelize = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.password, {
   host: dbConfig.host,
   dialect: 'mysql',
-  logging: false,
+  // logging: false,
 });
 sequelize.authenticate().then(() => {
   console.log('Kết nối thành công.');
