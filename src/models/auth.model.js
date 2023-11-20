@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import sequelize from '../Conection/DbHelper.js';
+import sequelize from '../Connection/Sequelize.js';
 import Users from './User.js';
 const AuthUser = sequelize.define('auth_users', {
   auth_id: {

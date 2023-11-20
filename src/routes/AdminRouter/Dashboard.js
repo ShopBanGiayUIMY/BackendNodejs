@@ -10,8 +10,7 @@ router.get("/admin", middwarecontroller.verifyAdmin, (req, res) => {
   res.redirect("/admin/dashboard");
 });
 
-router.get(
-  "/admin/dashboard",
+router.get("/admin/dashboard",
   middwarecontroller.verifyAdmin,
   DashboardController.index
 );
