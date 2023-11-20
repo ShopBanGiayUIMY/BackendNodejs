@@ -1,4 +1,6 @@
+import Category from "../models/Category.js";
 import Product from "../models/Product.js"
+import ProductDetail from "../models/ProductDetail.js";
 import ProductImage from "../models/ProductImage.js"
 export const ProductService = {
   getListProduct: async () => {
@@ -19,10 +21,18 @@ export const ProductService = {
   getProductById: async (productId) => {
     try {
       const result = await Product.findByPk(productId, {
-        include: [{
-          model: ProductImage,
-          attributes: ["image_url"]
-        }]
+        include: [
+          {
+            model: ProductImage,
+            attributes: ["image_url"]
+          },
+          {
+            model: ProductDetail,
+          },
+          {
+            model: Category,
+          }
+        ]
       });
       return result;
     } catch (e) {

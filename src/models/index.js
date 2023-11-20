@@ -20,6 +20,8 @@ export default () => {
   
   Product.hasMany(ProductImage, { foreignKey: 'product_id' });
   ProductImage.belongsTo(Product, { foreignKey: 'product_id' });
+
   Product.belongsTo(Category, { foreignKey: 'category_id' });
+  Category.hasMany(Product, { foreignKey: 'category_id'})
 }
 

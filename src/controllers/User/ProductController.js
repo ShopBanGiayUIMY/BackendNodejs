@@ -1,4 +1,5 @@
 import connection from '../../config/Connection.js';
+import ProductService from '../../services/ProductService.js';
 const ProductController = {
   index: async (req, res) => {
     const db = connection();
@@ -21,31 +22,15 @@ const ProductController = {
     })
   },
   show: async (req, res) => {
-    const db = connection();
-    db.connect();
-    const id = req.params.id;
-    const query = 'SELECT p.*, i.image_url FROM products p JOIN product_image i ON p.product_id = i.product_id WHERE p.product_id = ?';
-    db.query(query, id, async (err, rows) => {
-      if (err) {
-        console.log(err);
-        res.status(500).send({ error: 'server error' });
-        return;
+    ProductService.getProductById(req.params.id)
+    .then(product => {
+      if (product)
+        res.status(200).json(product)
+      else {
+        res.status(404).json({message: "not found"})
       }
-      if (rows.length === 0) {
-        res.status(404).send({ message: `Not found product with id = ${req.params.id}` });
-        return;
-      }
-      const resBody = {
-          id: rows[0].product_id,
-          name: rows[0].product_name,
-          price: rows[0].product_price,
-          quantity: rows[0].product_quantity,
-          description: rows[0].product_description,
-          thumbnail: rows[0].thumbnail,
-          images: rows.map(row => row.image_url),
-        }
-      // console.log(data);
-      res.status(200).send(resBody);
+    }).catch(e => {
+      res.status(500).json({message: e.message})
     })
   }
 };
