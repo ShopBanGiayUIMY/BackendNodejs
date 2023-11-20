@@ -23,9 +23,9 @@ const authController = {
       to: email,
       subject: "Xác thực tài khoản",
       html: `<p style="color: #007bff; font-size: 18px;">Xin chào '${username}', Bạn hãy ấn vào link để xác nhận nhé:</p>
-           <p><a href="http://192.168.137.193:8080/api/v1/auth/verify/${verificationToken}" style="text-decoration: none; color: #007bff; font-weight: bold;">Xác nhận tài khoản</a></p>
+           <p><a href="http://192.168.0.105:3000/api/v1/auth/verify/${verificationToken}" style="text-decoration: none; color: #007bff; font-weight: bold;">Xác nhận tài khoản</a></p>
            <img src="URL_ẢNH_CỦA_BẠN" alt="Mô tả của ảnh" style="width: 300px; height: 200px;">`,
-      text: `Xin chào '${username}', Bạn hãy ấn vào link để xác nhận nhé: http://192.168.2.106:8080/api/v1/auth/verify/${verificationToken}`,
+      text: `Xin chào '${username}', Bạn hãy ấn vào link để xác nhận nhé: http://192.168.0.105:3000/api/v1/auth/verify/${verificationToken}`,
     };
 
     // Send the email
