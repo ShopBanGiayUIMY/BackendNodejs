@@ -77,7 +77,7 @@ const authController = {
             .json({ error: "Error connecting to database" });
         }
         conn.query(
-          'SELECT * FROM auth_user WHERE verificationToken = ?',
+          'SELECT * FROM auth_users WHERE verificationToken = ?',
           [verificationToken],
           async (err, result) => {
             if (err) {
@@ -89,7 +89,7 @@ const authController = {
             const auth = result[0];
             // Cập nhật trường verified trong bảng Users thành true
             conn.query(
-              'UPDATE auth_user SET verified = "true", verificationToken = "đã xác nhận" WHERE auth_id = ?;',
+              'UPDATE auth_users SET verified = "true", verificationToken = "đã xác nhận" WHERE auth_id = ?;',
               [auth.auth_id],
               (err, result) => {
                 if (err) {
@@ -141,7 +141,7 @@ const authController = {
     
                 // Thêm dữ liệu vào bảng auth_user với user_id và verificationToken
                 conn.query(
-                    'INSERT INTO auth_user (user_id, verificationToken) VALUES (?, ?)',
+                    'INSERT INTO auth_users (user_id, verificationToken) VALUES (?, ?)',
                     [user_id, verificationToken, auth_code],
                     (err, authUserResult) => {
                         if (err) {
@@ -327,7 +327,7 @@ const authController = {
             const auth_code = authController.generateRandomSixDigits();
             console.log("mã otp là",auth_code);
             conn.query(
-                'UPDATE auth_user SET auth_code = ? WHERE user_id = ?;',
+                'UPDATE auth_users SET auth_code = ? WHERE user_id = ?;',
                 [auth_code,user.user_id],
                 (err, result) => {
                     if (err) {

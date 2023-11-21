@@ -40,13 +40,13 @@ app.use(cors());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'src', 'public')));
 // Database connection
-// app.use(myConnection(mysql, {
-//     host: process.env.DB_HOST,
-//     user: process.env.DB_USER,
-//     password: process.env.DB_PASSWORD,
-//     port: process.env.DB_PORT,
-//     database: process.env.DB_DATABASE
-// }, 'single'));
+app.use(myConnection(mysql, {
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    port: process.env.DB_PORT,
+    database: process.env.DB_DATABASE
+}, 'single'));
 
 // Routes
 // app.use('/api/v1/products', ProductRouter);
