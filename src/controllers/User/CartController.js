@@ -4,6 +4,7 @@ import CartItem from '../../models/CartItem.js';
 import Product from '../../models/Product.js';
 import ProductDetail from '../../models/ProductDetail.js';
 import { CartService } from '../../services/cartService.js';
+import ProductService from '../../services/ProductService.js';
 
 export const CartsController = {
   index: async (req, res) => {
@@ -38,23 +39,8 @@ export const CartsController = {
 
 
   create: async (req, res) => {
-    //have not verify product_detail
-    const { product_detail_id, quantity } = req.body;
     try {
-      const cart = await Cart.create(
-        {
-          user_id: req.user.id,
-        }
-      );
-      if (product_detail_id && quantity) {
-        const cartItem = await CartItem.create(
-          {
-            cart_id: cart.cart_id,
-            product_detail_id: product_detail_id,
-            quantity: quantity,
-          }
-        )
-      }
+      const cart = await CartService.createCart(req.user.id)
       res.status(201).json(cart);
     } catch (e) {
       res.status(500).json("server error")
@@ -67,22 +53,15 @@ export const CartsController = {
     const cart = await Cart.findByPk(req.params.id);
     if (cart) {
       if (cart.user_id === req.user.id) {
-        console.log(req.body)
-        const cartItem = await CartItem.update(
-          {
-            quantity: req.body.quantity
-          },
-          {
-            where: {
-              cart_id: cart.cart_id,
-              product_detail_id: req.body.product_detail_id
-            }
-          }
-        ).then(a => {
-          console.log(a)
-        })
-        res.status(200).json()
+        console.log("is cart of user")
+        const result = await CartService.addProductToCart(
+          req.params.id,
+          req.body.product_detail_id,
+          req.body.quantity
+        )
+        res.status(200).json(result)
       } else {
+        console.log("403")
         res.status(403).json()
       }
     } else {
