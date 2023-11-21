@@ -14,6 +14,7 @@
       object-fit: initial;
       border-radius: 10px;
     }
+
     .btn-success {
       padding: 7px 11px 7px 12px;
     }
@@ -330,15 +331,15 @@
               <div class="table-container">
                 <div class="row element-button">
                   <div class="col-sm-2">
-    
+
                     <a class="btn btn-add btn-sm" href="/admin/products/create" title="Thêm"><i class="fas fa-plus"></i>
                       Tạo mới sản phẩm</a>
                   </div>
                   <div class="col-sm-2">
-                    <a class="btn btn-delete btn-sm nhap-tu-file" type="button" title="Nhập" onclick="myFunction(this)"><i
-                        class="fas fa-file-upload"></i> Tải từ file</a>
+                    <a class="btn btn-delete btn-sm nhap-tu-file" type="button" title="Nhập"
+                      onclick="myFunction(this)"><i class="fas fa-file-upload"></i> Tải từ file</a>
                   </div>
-    
+
                   <div class="col-sm-2">
                     <a class="btn btn-delete btn-sm print-file" type="button" title="In" onclick="myApp.printTable()"><i
                         class="fas fa-print"></i> In dữ liệu</a>
@@ -347,7 +348,7 @@
                     <a class="btn btn-delete btn-sm print-file js-textareacopybtn" type="button" title="Sao chép"><i
                         class="fas fa-copy"></i> Sao chép</a>
                   </div>
-    
+
                   <div class="col-sm-2">
                     <a class="btn btn-excel btn-sm" href="" title="In"><i class="fas fa-file-excel"></i> Xuất Excel</a>
                   </div>
@@ -355,7 +356,7 @@
                     <a class="btn btn-delete btn-sm pdf-file" type="button" title="In" onclick="myFunction(this)"><i
                         class="fas fa-file-pdf"></i> Xuất PDF</a>
                   </div>
-                 
+
                 </div>
                 <hr />
                 <table id="productTable" class="table table-bordered table-hover" style="width: 100%">
@@ -365,7 +366,7 @@
                       <th>Tên</th>
                       <th>Danh mục</th>
                       <th>Hình ảnh</th>
-                     
+
                       <th>Giá tiền</th>
                       <th>Chức năng</th>
                     </tr>
@@ -374,7 +375,7 @@
                     <% data.map((product)=>{ %>
                       <tr>
                         <td style="width: 200px;">
-                          <a href="/products/<%= product._id %>" class="text-black">
+                          <a href="products/detail/<%= product.id %>" class="text-black">
                             <%= product.id %>
                           </a>
                         </td>
@@ -387,16 +388,16 @@
                         <td class="text-center">
                           <img class="product-img" src="<%= product.thumbnail %>" alt="!lỗi hiển thị ảnh" />
                         </td>
-                        
+
                         <td>
                           <%= product.price %>
                         </td>
                         <td class="text-center">
-                          <button class="btn btn-primary  trash" data-bs-toggle="modal" data-bs-target="#comfirmDeleteModal"
-                            onclick="onDelete('<%= product._id %>')">
+                          <button class="btn btn-primary  trash" data-bs-toggle="modal"
+                            data-bs-target="#comfirmDeleteModal" onclick="onDeleteProduct('<%= product.id %>')">
                             <i class="fas fa-trash-alt"></i>
                           </button>
-                          <a class="btn btn-success edit" href="/products/edit/<%= product._id %>">
+                          <a class="btn btn-success edit" href="products/edit/<%= product.id %>">
                             <i class="fas fa-edit"></i>
                           </a>
                         </td>
@@ -457,8 +458,12 @@
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
   <script src="js/ruang-admin.min.js"></script>
+
+
+  <!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
   <script>
-     var myApp = new function () {
+    var myApp = new function () {
       this.printTable = function () {
         var tab = document.getElementById('productTable');
         var win = window.open('', '', 'height=700,width=700');
@@ -467,6 +472,37 @@
         win.print();
       }
     }
+
+    onDeleteProduct = (value) => {
+      swal({
+        title: "Cảnh báo",
+        text: "Bạn có muốn xoá sản phẩm này?",
+        buttons: ["Hủy", "OK"]
+      }).then((result) => {
+        if (result) {
+          fetch(`products/delete/${value}`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+              // You may include additional headers if needed
+            },
+          })
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Xoá không thành công');
+              }
+              window.location.href = "/admin/products";
+            })
+            .then(data => {
+              // Handle success if needed
+            })
+            .catch(error => {
+              console.error('Error:', error);
+            });
+        }
+      });
+    };
+
   </script>
 </body>
 
