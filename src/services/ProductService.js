@@ -85,6 +85,7 @@ export const ProductService = {
     return productDetail.stock >= quantity 
   },
   // Cập nhật thông tin sản phẩm
+  //TODO: need to fix
   updateProduct: async (
     productId,
     product_name,
@@ -141,6 +142,7 @@ export const ProductService = {
     }
   },
 
+  //TODO: need to fix
   deleteProduct: async (productId) => {
     try {
       // Xóa thông tin ảnh sản phẩm
@@ -165,6 +167,7 @@ export const ProductService = {
       throw e.message;
     }
   },
+  //TODO: need to fix
   getProductDetail: async (productId) => {
     try {
       const productDetail = await ProductDetail.findOne({
