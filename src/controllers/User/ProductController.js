@@ -4,7 +4,7 @@ const ProductController = {
   index: async (req, res) => {
     const db = connection();
     db.connect();
-    db.query('SELECT * FROM products', async (err, rows, fields) => {
+    db.query("SELECT * FROM products", async (err, rows, fields) => {
       if (err) {
         res.status(500).send({ error: err });
         return;
@@ -16,10 +16,10 @@ const ProductController = {
           price: row.product_price,
           description: row.product_description,
           thumbnail: row.thumbnail,
-        }
+        };
       });
       res.send(data);
-    })
+    });
   },
   show: async (req, res) => {
     ProductService.getProductById(req.params.id)

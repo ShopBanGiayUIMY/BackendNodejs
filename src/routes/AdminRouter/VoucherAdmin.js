@@ -3,7 +3,7 @@ import VoucherAdminController from "../../controllers/Admin/Discount.Admin.contr
 import middwarecontroller from "../../middleware/middwarecontroller.js";
 const router = express.Router();
 
- router.get('/',middwarecontroller.verifyAdmin,VoucherAdminController.index);
+router.get('',VoucherAdminController.index);
 router.get('/create',middwarecontroller.verifyAdmin,VoucherAdminController.create);
 router.post('/create',VoucherAdminController.create);
 

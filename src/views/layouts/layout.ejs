@@ -18,13 +18,15 @@
   <link rel="stylesheet" href="/stylesheets/table.css" />
   <link rel="stylesheet" href="/stylesheets/index.css" />
   <link rel="stylesheet" href="/css/menu_tab.css">
+  
 <link rel="stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css"
 rel="stylesheet">
 </head>
 
 <body onload="time()">
   <%- body %>
-  
+  <script src="/js/voucher.js"></script>
+
   <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
   <script src="/js/ruang-admin.min.js"></script>
@@ -33,7 +35,6 @@ rel="stylesheet">
     <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="/javascripts/app.js"></script>
     <script>
-
       function time() {
         var today = new Date();
         var weekday = new Array(7);
@@ -75,5 +76,5 @@ rel="stylesheet">
     </script>
     
 </body>
-<%- include('../partials/footer'); %>
+
 </html>

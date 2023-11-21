@@ -23,11 +23,11 @@
         <div class="sidebar-brand-icon">
           <img src="/img/logo/logo.png">
         </div>
-        <div class="sidebar-brand-text mx-3" style="font-weight: 500;">Snake Nike Store</div>
+        <div class="sidebar-brand-text mx-3" style="font-weight: 500;" style="font-weight: 500;">Snake Nike Store</div>
       </a>
       <hr class="sidebar-divider my-0">
-      <li class="nav-item">
-        <a class="nav-link" href="index.html">
+      <li class="nav-item active">
+        <a class="nav-link" href="/admin/dashboard">
           <i class="fas fa-fw fa-tachometer-alt"></i>
           <span>Dashboard</span></a>
       </li>
@@ -38,88 +38,45 @@
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBootstrap"
           aria-expanded="true" aria-controls="collapseBootstrap">
-          <i class="fab fa-product-hunt" style="font-size: 20px;"></i>
+          <i class="fab fa-product-hunt"  style="font-size: 20px;"></i>
           <span>Product Manager</span>
         </a>
         <div id="collapseBootstrap" class="collapse" aria-labelledby="headingBootstrap" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Products Manager</h6>
-            <a class="collapse-item" href="/admin/products">Danh sách sản phẩm</a>
-            <a class="collapse-item" href="buttons.html">Thêm Sản phẩm</a>
-            <a class="collapse-item" href="dropdowns.html">Dropdowns</a>
-            <a class="collapse-item" href="modals.html">Modals</a>
-            <a class="collapse-item" href="popovers.html">Popovers</a>
-            <a class="collapse-item" href="progress-bar.html">Progress Bars</a>
+            <a class="collapse-item " href="/admin/products">Danh sách sản phẩm</a>
+            <a class="collapse-item" href="/admin/products/create">Thêm Sản phẩm</a>
           </div>
         </div>
       </li>
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#customerManager"
           aria-expanded="true" aria-controls="customerManager">
-          <i class="fa fa-user" style="font-size: 20px;"></i>
+          <i class="fa fa-user" style="font-size: 20px;" ></i>
           <span>Customer Manager</span>
         </a>
         <div id="customerManager" class="collapse" aria-labelledby="headingBootstrap" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Products Manager</h6>
+            <h6 class="collapse-header">Customer Manager</h6>
             <a class="collapse-item" href="/admin/products">Danh sách khách hàng</a>
-            <!-- <a class="collapse-item" href="dropdowns.html">Dropdowns</a>
-            <a class="collapse-item" href="modals.html">Modals</a>
-            <a class="collapse-item" href="popovers.html">Popovers</a>
-            <a class="collapse-item" href="progress-bar.html">Progress Bars</a> -->
           </div>
         </div>
       </li>
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#discountsclick" aria-expanded="true"
-          aria-controls="discountsclick">
+      <li class="nav-item active">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#discountsclick"
+          aria-expanded="true" aria-controls="discountsclick">
           <img src="https://cdn-icons-png.flaticon.com/512/1874/1874938.png" style="width: 20px; height: 20px;">
           <span>Discounts</span>
         </a>
         <div id="discountsclick" class="collapse" aria-labelledby="headingBootstrap" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Products Manager</h6>
-            <a class="collapse-item" href="/admin/products">Danh sách khách hàng</a>
-            <!-- <a class="collapse-item" href="dropdowns.html">Dropdowns</a>
-            <a class="collapse-item" href="modals.html">Modals</a>
-            <a class="collapse-item" href="popovers.html">Popovers</a>
-            <a class="collapse-item" href="progress-bar.html">Progress Bars</a> -->
+            <h6 class="collapse-header">Vouchers Manager</h6>
+            <a class="collapse-item" href="/admin/voucher/">Danh sách Voucher</a>
+            <a class="collapse-item active" href="/admin/voucher/create">Thêm Voucher</a>
           </div>
         </div>
       </li>
-
-
       <hr class="sidebar-divider">
-      <div class="sidebar-heading">
-        Examples
-      </div>
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePage" aria-expanded="true"
-          aria-controls="collapsePage">
-          <i class="fas fa-fw fa-columns"></i>
-          <span>Pages</span>
-        </a>
-        <div id="collapsePage" class="collapse" aria-labelledby="headingPage" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Example Pages</h6>
-
-            <a class="collapse-item" href="404.html">404 Page</a>
-            <a class="collapse-item" href="blank.html">Blank Page</a>
-          </div>
-        </div>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="charts.html">
-          <i class="fas fa-fw fa-chart-area"></i>
-          <span>Charts</span>
-        </a>
-      </li>
-
-
-      <hr class="sidebar-divider">
-
-
-
       <hr class="sidebar-divider">
       <div class="version" id="version-ruangadmin"></div>
     </ul>
@@ -133,29 +90,33 @@
           </button>
           <ul class="navbar-nav ml-auto">
             <li class="nav-item dropdown no-arrow">
-              <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown"
+              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-search fa-fw"></i>
+                <img class="img-profile rounded-circle" src="img/boy.png" style="max-width: 60px">
+                <span class="ml-2 d-none d-lg-inline text-white small">Maman Ketoprak</span>
               </a>
-              <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
-                aria-labelledby="searchDropdown">
-                <form class="navbar-search">
-                  <div class="input-group">
-                    <input type="text" class="form-control bg-light border-1 small"
-                      placeholder="What do you want to look for?" aria-label="Search" aria-describedby="basic-addon2"
-                      style="border-color: #3f51b5;">
-                    <div class="input-group-append">
-                      <button class="btn1 btn1-primary" type="button">
-                        <i class="fas fa-search fa-sm"></i>
-                      </button>
-                    </div>
-                  </div>
-                </form>
+              <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                <a class="dropdown-item" href="#">
+                  <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Profile
+                </a>
+                <a class="dropdown-item" href="#">
+                  <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Settings
+                </a>
+                <a class="dropdown-item" href="#">
+                  <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Activity Log
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal" data-target="#logoutModal">
+                  <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Logout
+                </a>
               </div>
             </li>
 
 
-            <div class="topbar-divider d-none d-sm-block"></div>
           </ul>
         </nav>
         <!-- Topbar -->
@@ -413,7 +374,7 @@
                                 <div class="next-input-wrapper search-area ">
 
                                   <div class="chosen-container">
-                                    <input type="hidden" name="item_product_id_list" id="item_product_id_list">
+                                    <input type="hidden" name="item_product_id_list" id="item_product_id_list"  >
                                     <select id="multipleChosen_product" multiple="true" class="chosen-select">
                                       <option value="" disabled selected>Chọn sản phẩm</option>
                                       <% products.forEach(item=> { %>
@@ -424,6 +385,7 @@
                                     </select>
                                   </div>
                                   <script>
+                             
                                     $(document).ready(function () {
                                       // Initialize Chosen
                                       $("#multipleChosen_product").chosen({
@@ -431,8 +393,11 @@
                                         placeholder_text_multiple: "Select options",
                                         search_contains: true
                                       });
+                                      document.getElementById('item_product_id_list').value = '[]';
+                                    document.getElementById('item_user_id_list').value = '[]';
 
                                       // Add event listener for change event
+
                                       $("#multipleChosen_product").on('change', function (event, params) {
                                         console.log('Selected Values:', $(this).val());
                                         const jsonInput = document.getElementById('item_product_id_list');
@@ -647,7 +612,7 @@
                             </style>
 
                             <div id="chonkhachhang">
-                              <input type="hidden" name="item_user_id_list" id="item_user_id_list">
+                              <input type="hidden" name="item_user_id_list" id="item_user_id_list" value="[]">
                               <div class="chosen-container">
                                 <select id="multipleChosen" multiple="true" class="chosen-select">
                                   <option value="" disabled selected>Chọn khách hàng</option>
@@ -746,15 +711,15 @@
                                 <label for="discount_starts_at" class="next-label">Ngày bắt đầu</label>
 
                                 <!-- Thêm ID cho phần input ngày bắt đầu -->
-                                <input name="start_date" type="hidden" id="start_full_time">
-                                <input type="text" id="datepickerstart"
+                                <input name="start_date" type="hidden" id="start_full_time" required>
+                                <input type="text" id="datepickerstart" required
                                   class="next-input next-input--invisible input-date" placeholder="Ngày bắt đầu">
                               </div>
-                              <div class="next-input-wrapper">
+                              <div class="next-input-wrapper" >
                                 <label for="discount_starts_at" class="next-label">Thời điểm</label>
                                 <div class='input-group date' id='datetimepicker'>
                                   <!-- Thêm ID cho phần input thời điểm -->
-                                  <input type='text' class="next-input next-input--invisible input-date hasDatepicker"
+                                  <input type='text' required class="next-input next-input--invisible input-date hasDatepicker"
                                     placeholder="Thời điểm bắt đầu">
                                 </div>
                               </div>

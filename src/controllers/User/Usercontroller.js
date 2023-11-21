@@ -1,4 +1,5 @@
 import Queryuser from '../../Querydb/Userdb.js';
+const layout = "layouts/layout";
 const UserController = {
     getInfoUser:async (req, res) => {
         const user_id = req.params.id

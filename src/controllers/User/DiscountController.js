@@ -4,7 +4,7 @@ const VoucherController = {
         try {
             console.log(req.user.id);
             if(req.user.id){
-                const result = await VoucherService.getListVoucherUser(req.user.id);
+                const result = await VoucherService.getListVoucher(req.user.id);
                 res.status(200).json(result);
             }
            

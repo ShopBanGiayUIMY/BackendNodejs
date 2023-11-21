@@ -14,31 +14,29 @@ const middwarecontroller = {
         next();
       });
     } else if (req.cookies.TokenAdmin) {
-        const accessToken = req.cookies.TokenAdmin;
-        console.log("Đã đọc được token từ cookie: " + accessToken);
-        if (accessToken) {
-          jwt.verify(accessToken, process.env.JWT_ACCESS_KEY, (err, user) => {
-            if (err) {
-              console.log("Token đã hết hạn hoặc không hợp lệ");
-              return res.status(403).json("Token đã hết hạn hoặc không hợp lệ");
-            }
-            req.user = user;
-            next();
-          });
-        }
+      const accessToken = req.cookies.TokenAdmin;
+      console.log("Đã đọc được token từ cookie: " + accessToken);
+      if (accessToken) {
+        jwt.verify(accessToken, process.env.JWT_ACCESS_KEY, (err, user) => {
+          if (err) {
+            console.log("Token đã hết hạn hoặc không hợp lệ");
+            return res.status(403).json("Token đã hết hạn hoặc không hợp lệ");
+          }
+          req.user = user;
+          next();
+        });
       }
-      else {
-        console.log("Bạn chưa đăng nhập");
-        return res.redirect("/admin/auth/login");
-      }
-    
+    } else {
+      console.log("Bạn chưa đăng nhập");
+      return res.redirect("/admin/auth/login");
+    }
   },
   verifyAdmin: (req, res, next) => {
     middwarecontroller.verifyToken(req, res, () => {
       if (!req.user) {
         return res.redirect("/admin/auth/login");
       } else {
-        if ( req.user.admin === "success") {
+        if (req.user.admin === "success") {
           next();
         } else {
           console.log("Bạn không có quyền truy cập");
