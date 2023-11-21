@@ -5,8 +5,10 @@ import UserService from "../../services/UserService.js";
 const VoucherAdminController = {
   index: async (req, res) => {
     try {
+      res.render("voucher/voucher", { title: "Quản lý voucher", layout: layout });
     } catch (e) {
       console.log(e.message);
+     
     }
   },
   create: async (req, res) => {
