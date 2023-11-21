@@ -77,5 +77,12 @@ export const ProductService = {
       throw e.message;
     }
   },
+  canAddToCart: async (
+    productDetailId,
+    quantity
+  ) => {
+    const productDetail = await ProductDetail.findByPk(productDetailId)
+    return productDetail.stock >= quantity 
+  }
 };
 export default ProductService;
