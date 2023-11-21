@@ -11,7 +11,52 @@ const VoucherService = {
       throw e.message;
     }
   },
-  getListVoucherUser: async (value) => {
+  updateVoucher: async (voucher) => {
+    try {
+      const result = await Discount.update(voucher, {
+        where: {
+          voucher_id: voucher.voucher_id,
+        },
+      });
+      return result;
+    } catch (e) {
+      throw e.message;
+    }
+  },
+  deleteVoucher: async (voucher) => {
+    try {
+      const result = await Discount.destroy({
+        where: {
+          voucher_id: voucher.voucher_id,
+        },
+      });
+      return result;
+    } catch (e) {
+      throw e.message;
+    }
+  },
+
+  Getvoucherbyid: async (voucher) => {
+    try {
+      const result = await Discount.findOne({
+        where: {
+          voucher_id: voucher.voucher_id,
+        },
+      });
+      return result;
+    } catch (e) {
+      throw e.message;
+    }
+  },
+  getfullvoucher: async () => {
+    try {
+      const result = await Discount.findAll();
+      return result;
+    } catch (e) {
+      throw e.message;
+    }
+  },
+  getListVoucher: async (value) => {
     const user = await AuthUser.findOne({
       where: {
         user_id: value,
