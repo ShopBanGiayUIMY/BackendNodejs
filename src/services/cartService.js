@@ -2,6 +2,7 @@ import Cart from '../models/Cart.js';
 import CartItem from '../models/CartItem.js';
 import Product from '../models/Product.js';
 import ProductDetail from '../models/ProductDetail.js';
+import ProductService from './ProductService.js';
 
 export const CartService = {
   getListCart: async (userId) => {
@@ -80,6 +81,57 @@ export const CartService = {
     } catch (e) {
       throw e.message;
     }
-    
+  },
+  createCart: async (userId) => {
+    try {
+      const cart = await Cart.create(
+        {
+          user_id: userId
+        }
+      );
+      return cart;
+    } catch (e) {
+      throw e.message;
+    }
+  },
+  addProductToCart: async (
+    cartId,
+    productDetailId,
+    quantity
+  ) => {
+    try {
+      const cartItem = await CartItem.findAll({
+        where: {
+          cart_id: cartId,
+          product_detail_id: productDetailId
+        }
+      })
+      if (await ProductService.canAddToCart(productDetailId, quantity)) {
+        if (cartItem.length > 0) {
+          console.log(cartItem)
+          await CartItem.update({
+            quantity: quantity
+          }, {
+            where: {
+              product_detail_id: productDetailId,
+              cart_id: cartId
+            }
+          })
+          return {message: "update quantity of cart item success"};
+        } else {
+          await CartItem.create({
+            cart_id: cartId,
+            product_detail_id: productDetailId,
+            quantity: quantity
+          })
+          return {message: "add to cart success"};
+        }
+      } else {
+        console.log("error");
+        return {message: "stock of product is not available"};
+      }
+    } catch (e) {
+      throw e.message;
+    }
   }
 }
