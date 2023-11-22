@@ -38,6 +38,8 @@ const ProductController = {
           .send({ message: `Not found product with id = ${req.params.id}` });
         return;
       }
+      const imagesString = rows[0].image_url;
+      const parsedImages = JSON.parse(imagesString);
       const resBody = {
         id: rows[0].product_id,
         name: rows[0].product_name,
@@ -45,10 +47,11 @@ const ProductController = {
         quantity: rows[0].product_quantity,
         description: rows[0].product_description,
         thumbnail: rows[0].thumbnail,
-        images: rows.map((row) => row.image_url),
+        images: parsedImages,
       };
       // console.log(data);
-      res.status(200).send(resBody);
+      res.status(200).json(resBody);
+      console.log(rows);
     });
   },
 };
