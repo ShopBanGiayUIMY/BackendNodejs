@@ -95,7 +95,6 @@ const VoucherAdminController = {
         const item_product_id_list_arr = item_product_id_list
           .split(",")
           .map(Number);
-          
         const item_user_id_list_arr = item_user_id_list.split(",").map(Number);
 
         const voucher = {
@@ -105,8 +104,8 @@ const VoucherAdminController = {
           max_price,
           voucher_type,
           reward_type,
-          item_product_id_list: item_product_id_list != '[]' ? item_product_id_list_arr : '[]',
-          item_user_id_list: item_user_id_list != '[]' ? item_user_id_list_arr : '[]',
+          item_product_id_list: item_product_id_list != '[]' ? JSON.stringify(item_product_id_list_arr) : '[]',
+          item_user_id_list: item_user_id_list != '[]' ? JSON.stringify(item_user_id_list_arr) : '[]',
           usage_quantity,
           start_time: start_date,
           end_time: end_date,
