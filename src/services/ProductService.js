@@ -66,7 +66,7 @@ export const ProductService = {
         stock: 10,
         quantity,
       });
-      const urls = JSON.stringify(image_url);
+      const urls = image_url;
       await ProductImage.create({
         image_url: urls,
         product_id,

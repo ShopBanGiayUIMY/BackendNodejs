@@ -13,7 +13,7 @@ const ProductImage = sequelize.define('ProductImage', {
     allowNull: false
   },
   image_url: {
-    type: DataTypes.STRING,
+    type: DataTypes.JSON,
     allowNull: false
   }
 }, {
