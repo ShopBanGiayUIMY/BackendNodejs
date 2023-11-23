@@ -109,6 +109,13 @@ export const CartService = {
       if (await ProductService.canAddToCart(productDetailId, quantity)) {
         if (cartItem.length > 0) {
           console.log(cartItem)
+          if (quantity === 0) {
+            await CartItem.destroy({where: {
+              product_detail_id: productDetailId,
+              cart_id: cartId
+            }})
+            return {message: "delete cart item success"}
+          }
           await CartItem.update({
             quantity: quantity
           }, {
