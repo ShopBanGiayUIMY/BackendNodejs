@@ -25,7 +25,7 @@ const UserAdminController = {
         };
       });
 
-      res.render("User/user", { data, layout: layout, title: "Người dùng" });
+      res.render("User/users", { data, layout: layout, title: "Người dùng" });
     } catch (error) {
       console.error("Lỗi khi lấy danh sách người dùng:", error);
       res.status(500).send("Lỗi máy chủ nội bộ");
