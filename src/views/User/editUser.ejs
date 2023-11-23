@@ -472,40 +472,34 @@
                                             </div>
                                             <div class="form-group col-md-3">
                                                 <label class="control-label">Tên sản phẩm</label>
-                                                <input class="form-control" type="text" id="product_name"
-                                                    name="product_name" required value="<%=product.name%>">
+                                                <input class="form-control" type="text" id="user_name" name="user_name"
+                                                    required value="<%=user.username%>">
                                             </div>
-                                            <!-- description: product.product_description,
-                                            thumbnail: product.thumbnail,
-                                            category_id: product.category_id,
-                                            quantity: product.quantity, -->
 
                                             <div class="form-group  col-md-3">
                                                 <label class="control-label">Số lượng</label>
                                                 <input class="form-control" type="number" id="quantity" name="quantity"
-                                                    required value="<%=product.price%>">
+                                                    required value="<%=user.email%>">
                                             </div>
-                                            <!-- <div class="form-group col-md-3 ">
-                                                <label for="exampleSelect1" class="control-label">Tình trạng</label>
-                                                <select class="form-control" id="status_id" name="status_id" required
-                                                    disabled>
-                                                    <option disabled selected>-- Chọn tình trạng --</option>
-                                                    {{#each status}}
-                                                    <option value="{{this.status_id}}">{{this.status_name}}</option>
-                                                    {{/each}}
-                                                </select>
-                                            </div> -->
+                                            <div class="form-group  col-md-3">
+                                                <label class="control-label">Số lượng</label>
+                                                <input class="form-control" type="number" id="quantity" name="quantity"
+                                                    required value="<%=user.phone%>">
+                                            </div>
+                                            <div class="form-group  col-md-3">
+                                                <label class="control-label">Số lượng</label>
+                                                <input class="form-control" type="number" id="quantity" name="quantity"
+                                                    required value="<%=user.full_name%>">
+                                            </div>
+                                            <div class="form-group  col-md-3">
+                                                <label class="control-label">Số lượng</label>
+                                                <input class="form-control" type="number" id="quantity" name="quantity"
+                                                    required value="<%=user.address%>">
+                                            </div>
+
                                             <div class="form-group col-md-3">
                                                 <label for="exampleSelect1" class="control-label">Danh mục</label>
-                                                <select id="category_id" class="form-control" name="category_id"
-                                                    required>
-                                                    <option value="" disabled selected>Chọn danh mục</option>
-                                                    <% categories.forEach(item=> { %>
-                                                        <option value="<%= item.id %>">
-                                                            <%= item.name %>
-                                                        </option>
-                                                        <% }); %>
-                                                </select>
+
                                             </div>
                                             <div class="form-group col-md-3 ">
                                                 <label for="exampleSelect1" class="control-label">Nhà cung cấp</label>

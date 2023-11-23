@@ -9,6 +9,18 @@ const UserService = {
       throw e.message;
     }
   },
+  addUserProduct: async (userId, productId) => {
+    try {
+      const user = await User.findByPk(userId);
+      if (user) {
+        await user.addProduct(productId);
+        return true;
+      }
+      return false;
+    } catch (e) {
+      throw e.message;
+    }
+  },
 
   // Thêm chức năng lấy danh sách sản phẩm của người dùng
   getUserProducts: async (userId) => {

@@ -13,12 +13,12 @@ const router = express.Router();
 router.get("", UserAdminController.index);
 
 // Hiển thị form sửa thông tin người dùng
-router.get("/:id/edit", UserAdminController.edit);
+router.get("/edit/:id", UserAdminController.edit);
 
 // Cập nhật thông tin người dùng sau khi sửa đổi
-router.post("/:id/update", UserAdminController.update);
+router.post("/update/:id", UserAdminController.update);
 
 // Xóa người dùng
-router.delete("/:id/delete", UserAdminController.delete);
+router.delete("/delete/:id", UserAdminController.delete);
 
 export default router;

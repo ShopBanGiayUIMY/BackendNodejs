@@ -201,7 +201,7 @@
                                                         onclick="onDeleteProduct('<%= user.id %>')">
                                                         <i class="fas fa-trash-alt"></i>
                                                     </button>
-                                                    <a class="btn btn-success edit" href="products/edit/<%= user.id %>">
+                                                    <a class="btn btn-success edit" href="users/edit/<%= user.id %>">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
                                                 </td>
@@ -268,7 +268,7 @@
                 buttons: ["Hủy", "OK"]
             }).then((result) => {
                 if (result) {
-                    fetch(`products/delete/${value}`, {
+                    fetch(`user/delete/${value}`, {
                         method: 'DELETE',
                         headers: {
                             'Content-Type': 'application/json',
@@ -279,7 +279,7 @@
                             if (!response.ok) {
                                 throw new Error('Xoá không thành công');
                             }
-                            window.location.href = "/admin/products";
+                            window.location.href = "/admin/user";
                         })
                         .then(data => {
                             // Handle success if needed

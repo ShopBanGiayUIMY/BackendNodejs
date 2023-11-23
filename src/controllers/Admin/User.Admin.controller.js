@@ -30,7 +30,7 @@ const UserAdminController = {
     const userId = req.params.id;
     // Lấy thông tin người dùng để hiển thị form sửa đổi thông tin
     try {
-      const user = await UserService.getUserById(userId);
+      const user = await UserService.getListUser(userId);
       if (user) {
         res.render("User/editUser", {
           layout: layout,
