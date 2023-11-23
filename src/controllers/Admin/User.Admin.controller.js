@@ -17,18 +17,41 @@ const UserAdminController = {
           address: user.address,
         };
       });
-
       res.render("User/users", { data, layout: layout, title: "User" });
     } catch (error) {
       console.error("Lỗi khi lấy danh sách người dùng:", error);
       res.status(500).send("Lỗi máy chủ nội bộ");
     }
   },
-
-  // Sửa thông tin người dùng
+  createUserForm: async (req, res) => {
+    res.render("User/addUser", {
+      layout: layout,
+      title: "Tạo mới người dùng",
+    });
+  },
+  createUser: async (req, res) => {
+    const { username, email, password, phone, full_name, address } = req.body;
+    try {
+      const result = await UserService.createUser(
+        username,
+        email,
+        password,
+        phone,
+        full_name,
+        address
+      );
+      if (result) {
+        res.redirect("/admin/users"); // Chuyển hướng sau khi tạo mới thành công
+      } else {
+        res.status(500).send("Không thể tạo mới người dùng");
+      }
+    } catch (error) {
+      console.error("Lỗi khi tạo mới người dùng:", error);
+      res.status(500).send("Lỗi máy chủ nội bộ");
+    }
+  },
   edit: async (req, res) => {
     const userId = req.params.id;
-    // Lấy thông tin người dùng để hiển thị form sửa đổi thông tin
     try {
       const user = await UserService.getListUser(userId);
       if (user) {
