@@ -67,9 +67,14 @@ const authAdminController = {
                 layout: layout,
                 title: "Đăng nhập",
               });
+              res.render("login/login", {
+                msg: "Bạn không có quyền truy cập !",
+                layout: layout,
+                title: "Đăng nhập",
+              });
             }
           } else {
-            res.render("login/login", {
+            res.render("Login/login", {
               msg: "Tài khoản hoặc mật khẩu không đúng !",
               layout: layout,
               title: "Đăng nhập",
@@ -83,7 +88,7 @@ const authAdminController = {
 
     // If none of the conditions are met, render the login page with the appropriate message
     if (req.method == "GET") {
-      return res.render("login/login", {
+      return res.render("Login/login", {
         msg,
         layout: layout,
         title: "Đăng nhập",
