@@ -67,11 +67,6 @@ const authAdminController = {
                 layout: layout,
                 title: "Đăng nhập",
               });
-              res.render("login/login", {
-                msg: "Bạn không có quyền truy cập !",
-                layout: layout,
-                title: "Đăng nhập",
-              });
             }
           } else {
             res.render("Login/login", {

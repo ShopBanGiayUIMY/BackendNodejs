@@ -8,7 +8,8 @@
   <meta name="description" content="">
   <meta name="author" content="">
   <link href="img/logo/logo.png" rel="icon">
-  <title>Snake Nike Store - 404 Page</title>
+  <script src="/vendor/jquery/jquery.min.js"></script>
+  <title>Snake Nike Store - Dashboard</title>
   <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
   <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
   <link href="css/ruang-admin.min.css" rel="stylesheet">
@@ -22,11 +23,11 @@
         <div class="sidebar-brand-icon">
           <img src="/img/logo/logo.png">
         </div>
-        <div class="sidebar-brand-text mx-3" style="font-weight: 500;">Snake Nike Store</div>
+        <div class="sidebar-brand-text mx-3" style="font-weight: 500;" style="font-weight: 500;">Snake Nike Store</div>
       </a>
       <hr class="sidebar-divider my-0">
-      <li class="nav-item">
-        <a class="nav-link" href="index.html">
+      <li class="nav-item active">
+        <a class="nav-link" href="/admin/dashboard">
           <i class="fas fa-fw fa-tachometer-alt"></i>
           <span>Dashboard</span></a>
       </li>
@@ -37,81 +38,45 @@
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBootstrap"
           aria-expanded="true" aria-controls="collapseBootstrap">
-          <i class="far fa-fw fa-window-maximize"></i>
-          <span>Bootstrap UI</span>
+          <i class="fab fa-product-hunt" style="font-size: 20px;"></i>
+          <span>Product Manager</span>
         </a>
         <div id="collapseBootstrap" class="collapse" aria-labelledby="headingBootstrap" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Bootstrap UI</h6>
-            <a class="collapse-item" href="/admin/products">Alerts</a>
-            <a class="collapse-item" href="buttons.html">Buttons</a>
-            <a class="collapse-item" href="dropdowns.html">Dropdowns</a>
-            <a class="collapse-item" href="modals.html">Modals</a>
-            <a class="collapse-item" href="popovers.html">Popovers</a>
-            <a class="collapse-item" href="progress-bar.html">Progress Bars</a>
+            <h6 class="collapse-header">Products Manager</h6>
+            <a class="collapse-item" href="/admin/products">Danh sách sản phẩm</a>
+            <a class="collapse-item" href="buttons.html">Thêm Sản phẩm</a>
           </div>
         </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseForm" aria-expanded="true"
-          aria-controls="collapseForm">
-          <i class="fab fa-fw fa-wpforms"></i>
-          <span>Forms</span>
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#customerManager"
+          aria-expanded="true" aria-controls="customerManager">
+          <i class="fa fa-user" style="font-size: 20px;"></i>
+          <span>Customer Manager</span>
         </a>
-        <div id="collapseForm" class="collapse" aria-labelledby="headingForm" data-parent="#accordionSidebar">
+        <div id="customerManager" class="collapse" aria-labelledby="headingBootstrap" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Forms</h6>
-            <a class="collapse-item" href="form_basics.html">Form Basics</a>
-            <a class="collapse-item" href="form_advanceds.html">Form Advanceds</a>
+            <h6 class="collapse-header">Customer Manager</h6>
+            <a class="collapse-item" href="/admin/user">Danh sách người dùng</a>
           </div>
         </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTable" aria-expanded="true"
-          aria-controls="collapseTable">
-          <i class="fas fa-fw fa-table"></i>
-          <span>Tables</span>
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#discountsclick" aria-expanded="true"
+          aria-controls="discountsclick">
+          <img src="https://cdn-icons-png.flaticon.com/512/1874/1874938.png" style="width: 20px; height: 20px;">
+          <span>Discounts</span>
         </a>
-        <div id="collapseTable" class="collapse" aria-labelledby="headingTable" data-parent="#accordionSidebar">
+        <div id="discountsclick" class="collapse" aria-labelledby="headingBootstrap" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Tables</h6>
-            <a class="collapse-item" href="simple-tables.html">Simple Tables</a>
-            <a class="collapse-item" href="datatables.html">DataTables</a>
+            <h6 class="collapse-header">Vouchers Manager</h6>
+            <a class="collapse-item" href="/admin/voucher/">Danh sách Voucher</a>
+            <a class="collapse-item" href="/admin/voucher/create">Thêm Voucher</a>
           </div>
         </div>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="ui-colors.html">
-          <i class="fas fa-fw fa-palette"></i>
-          <span>UI Colors</span>
-        </a>
       </li>
       <hr class="sidebar-divider">
-      <div class="sidebar-heading">
-        Examples
-      </div>
-      <li class="nav-item active">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePage" aria-expanded="true"
-          aria-controls="collapsePage">
-          <i class="fas fa-fw fa-columns"></i>
-          <span>Pages</span>
-        </a>
-        <div id="collapsePage" class="collapse show" aria-labelledby="headingPage" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Example Pages</h6>
-            <a class="collapse-item" href="login.html">Login</a>
-            <a class="collapse-item" href="register.html">Register</a>
-            <a class="collapse-item active" href="404.html">404 Page</a>
-            <a class="collapse-item" href="blank.html">Blank Page</a>
-          </div>
-        </div>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="charts.html">
-          <i class="fas fa-fw fa-chart-area"></i>
-          <span>Charts</span>
-        </a>
-      </li>
       <hr class="sidebar-divider">
       <div class="version" id="version-ruangadmin"></div>
     </ul>
@@ -308,12 +273,79 @@
 
         <!-- Container Fluid-->
         <div class="container-fluid" id="container-wrapper">
-          <div class="text-center">
-            <img src="img/error.svg" style="max-height: 100px;" class="mb-3">
-            <h3 class="text-gray-800 font-weight-bold">Oopss!</h3>
-            <p class="lead text-gray-800 mx-auto">404 Page Not Found</p>
-            <a href="index.html">&larr; Back to Dashboard</a>
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="./">Home</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+            </ol>
           </div>
+
+          <div class="row ">
+            <!-- Earnings (Monthly) Card Example -->
+            <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+            <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+            <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+            <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+            <div class="containers">
+              <table id="example" class="table table-striped" cellspacing="0" width="100%">
+                <thead>
+                  <tr>
+                    <th style="width: 16.67%; text-align: center;">Order</th>
+                    <th style="width: 16.67%; text-align: center;">Description</th>
+                    <th style="width: 16.67%;text-align: center;">Deadline</th>
+                    <th style="width: 16.67%;text-align: center;">Status</th>
+                    <th style="width: 16.67%;text-align: center;">Amount</th>
+                    <th style="width: 16.67%; text-align: center;">Actions</th>
+
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="text-align: center;">29</td>
+                    <td style="text-align: center;">Blue-Ray cover</td>
+                    <td style="text-align: center;">2018/03/15</td>
+                    <td style="text-align: center;">To Do</td>
+                    <td style="text-align: center;">sa</td>
+                    <td style="text-align: center;">
+                      <button type="button" class="btn btn-primary btn-xs dt-edit" style="margin-right: 8px;">
+                        <span class="fas fa-trash-alt" aria-hidden="true"></span>
+                      </button>
+                      <button type="button" class="btn btn-danger btn-xs dt-delete">
+                        <span class="fas fa-edit" aria-hidden="true"></span>
+                      </button>
+                    </td>
+                  </tr>
+                  <!-- Add more rows as needed -->
+                </tbody>
+              </table>
+
+
+              <!-- Modal -->
+              <div id="myModal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+
+                  <!-- Modal content-->
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                      <h4 class="modal-title">Row information</h4>
+                    </div>
+                    <div class="modal-body">
+
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--Row-->
+
 
           <!-- Modal Logout -->
           <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabelLogout"
@@ -331,33 +363,12 @@
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Cancel</button>
-                  <a href="login.html" class="btn btn-primary">LogOut</a>
+                  <form action="/admin/auth/logout" method="POST">
+                    <button type="submit" class="btn btn-primary">Logout</button>
                 </div>
               </div>
             </div>
           </div>
-
-          <!-- Modal Logout -->
-          <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabelLogout"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabelLogout">Ohh No!</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  <p>Are you sure you want to logout?</p>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Cancel</button>
-                  <a href="login.html" class="btn btn-primary">Logout</a>
-                </div>
-              </div>
-            </div>
-          </div>        
 
         </div>
         <!---Container Fluid-->
@@ -366,9 +377,8 @@
       <footer class="sticky-footer bg-white">
         <div class="container my-auto">
           <div class="copyright text-center my-auto">
-            <span>copyright &copy; <script>
-                document.write(new Date().getFullYear());
-              </script> - developed by
+            <span>copyright &copy;
+              <script> document.write(new Date().getFullYear()); </script> - developed by
               <b><a href="https://github.com/huyfpl" target="_blank">Nguyễn Văn Huy</a></b>
             </span>
           </div>
@@ -387,7 +397,46 @@
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
   <script src="js/ruang-admin.min.js"></script>
+  <script src="vendor/chart.js/Chart.min.js"></script>
+  <script src="js/demo/chart-area-demo.js"></script>
+  <script>
+    history.pushState(null, null, window.location.href);
+    history.back();
+    window.onpopstate = () => history.forward();
 
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+  <script>
+    onDeleteUser = (value) => {
+      swal({
+        title: "Cảnh báo",
+        text: "Bạn có muốn xoá sản phẩm này?",
+        buttons: ["Hủy", "OK"]
+      }).then((result) => {
+        if (result) {
+          fetch(`products/delete/${value}`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+              // You may include additional headers if needed
+            },
+          })
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Xoá không thành công');
+              }
+              window.location.href = "/admin/products";
+            })
+            .then(data => {
+              // Handle success if needed
+            })
+            .catch(error => {
+              console.error('Error:', error);
+            });
+        }
+      });
+    };
+  </script>
 </body>
 
-</html> 
+</html>

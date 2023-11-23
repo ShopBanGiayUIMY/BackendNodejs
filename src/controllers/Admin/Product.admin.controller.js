@@ -30,11 +30,11 @@ const ProductAdminController = {
         category_id,
         quantity,
       } = req.body;
+
       const imageArray = JSON.parse(`[${product_image}]`);
       const thumbnail = imageArray[0];
-      const image_url = imageArray;
-      console.log("hitrtr", image_url);
-
+      const image_url1 =  imageArray;
+      const image_url = image_url1;
       const result = await ProductService.createProduct(
         product_name,
         product_price,

@@ -4,6 +4,7 @@ import middwarecontroller from "../../middleware/middwarecontroller.js";
 const router = express.Router();
 
 router.get('',middwarecontroller.verifyUser,DiscountController.index);
+
 // router.get('/:id',ProductController.show);
 
 export default router;
