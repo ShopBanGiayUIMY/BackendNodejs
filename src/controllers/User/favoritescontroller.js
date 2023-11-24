@@ -7,13 +7,13 @@ const FavoritesController = {
         const result = await FavoritesService.getFavorites(req.user.id);
         const data = result.map((item) => {
           return {
-            id: item.id,
-            ProductId: item.product_id,
-            ProductName: item.Product.product_name,
-            ProductDescription: item.Product.product_description,
-            ProductPrice: item.Product.product_price,
+            idFavorite: item.id,
+            id: item.product_id,
+            name: item.Product.product_name,
+            description: item.Product.product_description,
+            price: item.Product.product_price,
             ProductCategory: item.Product.category_id,
-            ProductThumbnail: item.Product.thumbnail,
+            thumbnail: item.Product.thumbnail,
           };
         });
         console.log(data);
