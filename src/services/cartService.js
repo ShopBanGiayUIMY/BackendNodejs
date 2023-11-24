@@ -81,5 +81,6 @@ export const CartService = {
       throw e.message;
     }
     
-  }
+  },
+  
 }

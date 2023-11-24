@@ -9,6 +9,7 @@ export const CartsController = {
   index: async (req, res) => {
     await CartService.getListCart(req.user.id)
     .then((carts) => {
+      console.log(carts)
       res.status(200).json(carts);
     }).catch((err) => {
       res.status(500).json({ message: err.message });
@@ -22,7 +23,9 @@ export const CartsController = {
     .then((carts) => {
       if (carts) {
         if (carts.user_id === req.user.id) {
+      
           res.status(200).json(carts);
+     
         } else {
           res.status(403).json();
         }
@@ -62,8 +65,9 @@ export const CartsController = {
   },
 
   update: async (req, res) => {
-    console.log(req.params.id)
-    console.log(req.user.id)
+    console.log(req.params.id,"updateiddcart")
+    console.log(req.user.id,"updateiuser")
+    console.log(req.body.product_detail_id,"updatebody")
     const cart = await Cart.findByPk(req.params.id);
     if (cart) {
       if (cart.user_id === req.user.id) {
@@ -81,7 +85,7 @@ export const CartsController = {
         ).then(a => {
           console.log(a)
         })
-        res.status(200).json()
+        res.status(200).json({ message: 'Cart updated successfully',success:true});
       } else {
         res.status(403).json()
       }
