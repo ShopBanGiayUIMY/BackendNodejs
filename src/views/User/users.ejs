@@ -136,14 +136,8 @@
                 </nav>
                 <div class="container-fluid" id="container-wrapper">
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Danh sách sản phẩm</h1>
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item">
-                                <a href="./dashboard">Dashboard</a>
-                            </li>
-                            <li class="breadcrumb-item">Products Manager</li>
-                            <li class="breadcrumb-item active" aria-current="page">Products</li>
-                        </ol>
+                        <h1 class="h3 mb-0 text-gray-800">Danh sách người dùng </h1>
+
                     </div>
                     <div class="row">
                         <div class="main-content px-4" style="overflow: scroll">
@@ -153,7 +147,7 @@
 
                                         <a class="btn btn-add btn-sm" href="/admin/users/create" title="Thêm"><i
                                                 class="fas fa-plus"></i>
-                                            Tạo mới sản phẩm</a>
+                                            Tạo mới người dùng</a>
                                     </div>
                                 </div>
                                 <hr />
@@ -259,7 +253,7 @@
                 buttons: ["Hủy", "OK"]
             }).then((result) => {
                 if (result) {
-                    fetch(`user/delete/${value}`, {
+                    fetch(`users/delete/${value}`, {
                         method: 'DELETE',
                         headers: {
                             'Content-Type': 'application/json',
@@ -270,7 +264,7 @@
                             if (!response.ok) {
                                 throw new Error('Xoá không thành công');
                             }
-                            window.location.href = "/admin/user";
+                            window.location.href = "/admin/users";
                         })
                         .then(data => {
                             // Handle success if needed

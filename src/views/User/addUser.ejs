@@ -248,38 +248,16 @@
                 <!-- Container Fluid-->
                 <div class="container-fluid" id="container-wrapper">
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Thêm sản phẩm</h1>
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item">
-                                <a href="./dashboard">Dashboard</a>
-                            </li>
-                            <li class="breadcrumb-item">Products Manager</li>
-                            <li class="breadcrumb-item active" aria-current="page">Create</li>
-                        </ol>
+                        <h1 class="h3 mb-0 text-gray-800">Thêm người dùng</h1>
+
                     </div>
                     <div class="row">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="tile">
-                                    <h3 class="tile-title">Tạo mới sản phẩm</h3>
+                                    <h3 class="tile-title">Tạo mới người dùng</h3>
                                     <div class="tile-body">
-                                        <div class="row element-button">
-                                            <div class="col-sm-2">
-                                                <a class="btn btn-add btn-sm" data-toggle="modal"
-                                                    data-target="#exampleModalCenter"><i class="fas fa-folder-plus"></i>
-                                                    Thêm nhà cung cấp</a>
-                                            </div>
-                                            <div class="col-sm-2">
-                                                <a class="btn btn-add btn-sm" data-toggle="modal"
-                                                    data-target="#adddanhmuc"><i class="fas fa-folder-plus"></i> Thêm
-                                                    danh mục</a>
-                                            </div>
-                                            <div class="col-sm-2">
-                                                <a class="btn btn-add btn-sm" data-toggle="modal"
-                                                    data-target="#addtinhtrang"><i class="fas fa-folder-plus"></i> Thêm
-                                                    tình trạng</a>
-                                            </div>
-                                        </div>
+
                                         <form class="row" action="/admin/products/create" method="post">
                                             <div class="form-group col-md-3">
                                                 <label class="control-label">Mã sản phẩm </label>
@@ -287,192 +265,40 @@
                                                     disabled>
                                             </div>
                                             <div class="form-group col-md-3">
-                                                <label class="control-label">Tên sản phẩm</label>
-                                                <input class="form-control" type="text" id="product_name"
-                                                    name="product_name" required>
+                                                <label class="control-label">Tên người dùng</label>
+                                                <input class="form-control" type="text" id="username" name="username"
+                                                    required>
                                             </div>
 
 
                                             <div class="form-group  col-md-3">
-                                                <label class="control-label">Số lượng</label>
-                                                <input class="form-control" type="number" id="quantity" name="quantity"
+                                                <label class="control-label">Email</label>
+                                                <input class="form-control" type="text" id="email" name="email"
                                                     required>
                                             </div>
-                                            <div class="form-group col-md-3 ">
-                                                <label for="exampleSelect1" class="control-label">Tình trạng</label>
-                                                <select class="form-control" id="status_id" name="status_id" required
-                                                    disabled>
-                                                    <option disabled selected>-- Chọn tình trạng --</option>
-                                                    {{#each status}}
-                                                    <option value="{{this.status_id}}">{{this.status_name}}</option>
-                                                    {{/each}}
-                                                </select>
+                                            <div class="form-group  col-md-3">
+                                                <label class="control-label">Phone</label>
+                                                <input class="form-control" type="number" id="phone" name="phone"
+                                                    required>
+                                            </div>
+                                            <div class="form-group  col-md-3">
+                                                <label class="control-label">Full_name</label>
+                                                <input class="form-control" type="text" id="full_name" name="full_name"
+                                                    required>
+                                            </div>
+                                            <div class="form-group  col-md-3">
+                                                <label class="control-label">Address</label>
+                                                <input class="form-control" type="text" id="address" name="address"
+                                                    required>
                                             </div>
 
-                                            <div class="form-group col-md-3 ">
-                                                <label for="exampleSelect1" class="control-label">Nhà cung cấp</label>
-                                                <select class="form-control" id="exampleSelect1">
-                                                    <option>-- Chọn nhà cung cấp --</option>
-                                                    <option>Phong vũ</option>
-                                                    <option>Thế giới di động</option>
-                                                    <option>FPT</option>
-                                                    <option>Võ Trường</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group col-md-3">
-                                                <label class="control-label">Giá bán</label>
-                                                <input class="form-control" type="text" id="product_price"
-                                                    name="product_price" required>
-                                            </div>
-                                            <div class="form-group col-md-3">
-                                                <label class="control-label">Giá vốn</label>
-                                                <input class="form-control" type="text" id="cost_price"
-                                                    name="cost_price" required>
-                                            </div>
-                                            <div class="form-group col-md-12">
-                                                <label class="control-label">Ảnh sản phẩm</label>
-                                                <div class="imageUpload">
-                                                    <input type="file" class="inp" accept="image/*" multiple
-                                                        id="file-input" onchange="checkIfFileSelected()" />
-                                                    <input type="hidden" name="product_image" id="product_image"
-                                                        value="" />
-                                                    <button onclick="selectImage()" class="selectImage" type="button">
-                                                        <i class="fas fa-cloud-upload-alt"></i> Chọn ảnh</button>
-                                                    <span class="fileimagedata"></span>
-
-                                                    <div id="progress-bar-loading">
-                                                        <span class="number" data-value="100"></span>
-                                                        <svg height="150" width="150" class="circle">
-                                                            <circle cx="75" cy="75" r="65" stroke-width="20"
-                                                                fill="none" />
-                                                        </svg>
-                                                    </div>
-
-
-
-                                                </div>
-
-
-                                            </div>
-
-                                            <div class="form-group col-md-12">
-                                                <label class="control-label">Mô tả sản phẩm</label>
-                                                <textarea class="form-control" name="product_description"
-                                                    id="product_description"></textarea>
-                                            </div>
 
                                     </div>
-                                    <button class="btn btn-save" type="submit" style="margin-top: -2px;">Lưu
-                                        lại</button>
-                                    <a class="btn btn-cancel" href="/">Hủy bỏ</a>
+                                    <button type="submit" class="btn"
+                                        style="width: 300px; color: white;background-color: #001c40;">Thêm mới </button>
+                                    <!-- <a class="btn btn-cancel" href="/">Hủy bỏ</a> -->
                                 </div>
                                 </form>
-                                <div style="background-color: rgba(0, 0, 0, 0.4); z-index: 9999;" class="modal fade "
-                                    id="exampleModalCenter" tabindex="-1" role="dialog"
-                                    aria-labelledby="exampleModalCenterTitle" data-backdrop="static"
-                                    data-keyboard="false">
-                                    <div class="modal-dialog modal-dialog-centered" role="document">
-                                        <div class="modal-content">
-
-                                            <div class="modal-body">
-                                                <div class="row">
-                                                    <div class="form-group  col-md-12">
-                                                        <span class="thong-tin-thanh-toan">
-                                                            <h5>Thêm mới nhà cung cấp</h5>
-                                                        </span>
-                                                    </div>
-                                                    <div class="form-group col-md-12">
-                                                        <label class="control-label">Nhập tên chức vụ mới</label>
-                                                        <input class="form-control" type="text" required>
-                                                    </div>
-                                                </div>
-                                                <BR>
-                                                <button class="btn btn-save" type="button">Lưu lại</button>
-                                                <a class="btn btn-cancel" data-dismiss="modal" href="#">Hủy bỏ</a>
-                                                <BR>
-                                            </div>
-                                            <div class="modal-footer">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div style="background-color: rgba(0, 0, 0, 0.4); z-index: 9999;" class="modal fade"
-                                    id="adddanhmuc" tabindex="-1" role="dialog"
-                                    aria-labelledby="exampleModalCenterTitle" data-backdrop="static"
-                                    data-keyboard="false">
-                                    <div class="modal-dialog modal-dialog-centered" role="document">
-                                        <div class="modal-content">
-
-                                            <div class="modal-body">
-                                                <div class="row">
-                                                    <div class="form-group  col-md-12">
-                                                        <span class="thong-tin-thanh-toan">
-                                                            <h5>Thêm mới danh mục </h5>
-                                                        </span>
-                                                    </div>
-                                                    <div class="form-group col-md-12">
-                                                        <label class="control-label">Nhập tên danh mục mới</label>
-                                                        <input class="form-control" type="text" required>
-                                                    </div>
-                                                    <div class="form-group col-md-12">
-                                                        <label class="control-label">Danh mục sản phẩm hiện đang
-                                                            có</label>
-                                                        <ul style="padding-left: 20px;">
-                                                            {{#each danhmuc}}
-                                                            <li>{{this.danhmuc_name}}</li>
-                                                            {{/each}}
-                                                        </ul>
-                                                    </div>
-
-                                                </div>
-                                                <BR>
-                                                <button class="btn btn-save" type="button">Lưu lại</button>
-                                                <a class="btn btn-cancel" data-dismiss="modal" href="#">Hủy bỏ</a>
-                                                <BR>
-                                            </div>
-                                            <div class="modal-footer">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--
-                MODAL
-                -->
-                                <div style="background-color: rgba(0, 0, 0, 0.4); z-index: 9999;" class="modal fade"
-                                    id="addtinhtrang" tabindex="-1" role="dialog"
-                                    aria-labelledby="exampleModalCenterTitle" data-backdrop="static"
-                                    data-keyboard="false">
-                                    <div class="modal-dialog modal-dialog-centered" role="document">
-                                        <div class="modal-content">
-
-                                            <div class="modal-body">
-                                                <div class="row">
-                                                    <div class="form-group  col-md-12">
-                                                        <span class="thong-tin-thanh-toan">
-                                                            <h5>Thêm mới tình trạng</h5>
-                                                        </span>
-                                                    </div>
-                                                    <div class="form-group col-md-12">
-                                                        <label class="control-label">Nhập tình trạng mới</label>
-                                                        <input class="form-control" type="text" required>
-                                                    </div>
-                                                </div>
-                                                <BR>
-                                                <button class="btn btn-save" type="button">Lưu lại</button>
-                                                <a class="btn btn-cancel" data-dismiss="modal" href="#">Hủy bỏ</a>
-                                                <BR>
-                                            </div>
-                                            <div class="modal-footer">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--
-                MODAL
-                -->
-
-
-
                                 <script src="js/jquery-3.2.1.min.js"></script>
                                 <script src="js/popper.min.js"></script>
                                 <script src="js/bootstrap.min.js"></script>

@@ -112,9 +112,7 @@
         }
     </style>
     <link rel="stylesheet" type="text/css" href="css/main.css">
-    <!-- Font-icon css-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
-    <!-- or -->
     <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
@@ -134,7 +132,6 @@
 
 <body id="page-top">
     <div id="wrapper">
-        <!-- Sidebar -->
         <ul class="navbar-nav sidebar sidebar-light accordion" id="accordionSidebar">
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
                 <div class="sidebar-brand-icon">
@@ -427,9 +424,6 @@
                         </li>
                     </ul>
                 </nav>
-                <!-- Topbar -->
-
-                <!-- Container Fluid-->
                 <div class="container-fluid" id="container-wrapper">
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800">Thêm sản phẩm</h1>
@@ -475,26 +469,11 @@
                                                 <input class="form-control" type="text" id="product_name"
                                                     name="product_name" required value="<%=product.name%>">
                                             </div>
-                                            <!-- description: product.product_description,
-                                            thumbnail: product.thumbnail,
-                                            category_id: product.category_id,
-                                            quantity: product.quantity, -->
-
                                             <div class="form-group  col-md-3">
                                                 <label class="control-label">Số lượng</label>
                                                 <input class="form-control" type="number" id="quantity" name="quantity"
                                                     required value="<%=product.price%>">
                                             </div>
-                                            <!-- <div class="form-group col-md-3 ">
-                                                <label for="exampleSelect1" class="control-label">Tình trạng</label>
-                                                <select class="form-control" id="status_id" name="status_id" required
-                                                    disabled>
-                                                    <option disabled selected>-- Chọn tình trạng --</option>
-                                                    {{#each status}}
-                                                    <option value="{{this.status_id}}">{{this.status_name}}</option>
-                                                    {{/each}}
-                                                </select>
-                                            </div> -->
                                             <div class="form-group col-md-3">
                                                 <label for="exampleSelect1" class="control-label">Danh mục</label>
                                                 <select id="category_id" class="form-control" name="category_id"
@@ -565,10 +544,6 @@
                                     <a class="btn btn-cancel" href="/">Hủy bỏ</a>
                                 </div>
                                 </form>
-
-                                <!--
-                  MODAL CHỨC VỤ 
-                -->
                                 <div style="background-color: rgba(0, 0, 0, 0.4); z-index: 9999;" class="modal fade "
                                     id="exampleModalCenter" tabindex="-1" role="dialog"
                                     aria-labelledby="exampleModalCenterTitle" data-backdrop="static"
@@ -589,7 +564,9 @@
                                                     </div>
                                                 </div>
                                                 <BR>
-                                                <button class="btn btn-save" type="button">Lưu lại</button>
+                                                <button type="submit" class="btn"
+                                                    style="width: 300px; color: white;background-color: #001c40;">Cập
+                                                    nhật</button>
                                                 <a class="btn btn-cancel" data-dismiss="modal" href="#">Hủy bỏ</a>
                                                 <BR>
                                             </div>
@@ -598,15 +575,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!--
-                MODAL
-                -->
-
-
-
-                                <!--
-                  MODAL DANH MỤC
-                -->
                                 <div style="background-color: rgba(0, 0, 0, 0.4); z-index: 9999;" class="modal fade"
                                     id="adddanhmuc" tabindex="-1" role="dialog"
                                     aria-labelledby="exampleModalCenterTitle" data-backdrop="static"
@@ -637,7 +605,9 @@
 
                                                 </div>
                                                 <BR>
-                                                <button class="btn btn-save" type="button">Lưu lại</button>
+                                                <button type="submit" class="btn"
+                                                    style="width: 300px; color: white;background-color: #001c40;">Cập
+                                                    nhật </button>
                                                 <a class="btn btn-cancel" data-dismiss="modal" href="#">Hủy bỏ</a>
                                                 <BR>
                                             </div>
@@ -646,9 +616,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!--
-                MODAL
-                -->
                                 <div style="background-color: rgba(0, 0, 0, 0.4); z-index: 9999;" class="modal fade"
                                     id="addtinhtrang" tabindex="-1" role="dialog"
                                     aria-labelledby="exampleModalCenterTitle" data-backdrop="static"
@@ -678,22 +645,13 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!--
-                MODAL
-                -->
-
-
-
                                 <script src="js/jquery-3.2.1.min.js"></script>
                                 <script src="js/popper.min.js"></script>
                                 <script src="js/bootstrap.min.js"></script>
                                 <script src="js/main.js"></script>
                                 <script src="js/plugins/pace.min.js"></script>
-
-
                             </div>
 
-                            <!-- Modal Logout -->
                             <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog"
                                 aria-labelledby="exampleModalLabelLogout" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
@@ -717,11 +675,9 @@
                             </div>
 
                         </div>
-                        <!---Container Fluid-->
                     </div>
                 </div>
             </div>
-            <!-- Scrollto to top -->
             <a class="scroll-to-top rounded" href="#page-top">
                 <i class="fas fa-angle-up"></i>
             </a>
@@ -729,146 +685,3 @@
             <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
             <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
             <script src="js/ruang-admin.min.js"></script>
-            <!-- 
-      // upload Ảnh -->
-            <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-            <script>
-
-
-                const number = document.querySelector(".number");
-                const valueNumber = Number(number.getAttribute("data-value"));
-                const circle = document.querySelector('.circle');
-                const progressBar = document.getElementById('progress-bar-loading');
-                const uploadedImagesDiv = document.querySelector('.fileimagedata');
-                const fileInput = document.getElementById('file-input');
-                let counter = 0;
-
-                const loading = (results) => {
-                    uploadedImagesDiv.style.display = 'none';
-                    counter = 0;
-                    const interval = setInterval(() => {
-                        if (counter !== valueNumber) {
-                            counter++;
-                            number.innerHTML = `${counter}%`;
-                        } else {
-                            if (counter === 100) {
-                                clearInterval(interval);
-                                circle.style.animation = 'none';
-                                progressBar.style.display = 'none';
-                                fileInput.value = '';
-                                uploadedImagesDiv.style.display = 'flex';
-                                counter = 0;
-
-                            }
-                        }
-                    }, 50);
-                };
-
-                function selectImage() {
-                    const fileInput = document.querySelector('.inp');
-                    fileInput.click();
-                    counter = 0; // Đặt lại counter về 0
-                    circle.style.animation = 'none'; // Đặt lại animation về trạng thái ban đầu
-                    progressBar.style.display = 'none'; // Ẩn thanh tiến trình
-                }
-                function checkIfFileSelected() {
-                    if (fileInput.files.length > 0) {
-                        uploadImages();
-                    } else {
-                        console.log('Chưa chọn file.');
-                    }
-                }
-                function uploadImages() {
-                    const files = fileInput.files;
-                    const apiKey = 'ced7232acd31a71dd12d79e489cd4f30';
-
-                    const uploadPromises = [];
-
-                    for (let i = 0; i < files.length; i++) {
-                        const formData = new FormData();
-                        formData.append('image', files[i]);
-                        formData.append('key', apiKey);
-
-                        const promise = new Promise((resolve, reject) => {
-                            axios.post('https://api.imgbb.com/1/upload', formData)
-                                .then(response => {
-                                    console.log(response.data);
-                                    resolve(response.data);
-                                    circle.style.animation = '';
-                                    progressBar.style.display = 'block';
-                                    uploadedImagesDiv.style.display = 'none';
-                                    console.log('Đã tải lên dsssssssssssssssảnh:', counter);
-                                })
-                                .catch(error => {
-                                    console.error('Lỗi:', error);
-                                    reject(error);
-                                });
-                        });
-
-                        uploadPromises.push(promise);
-                    }
-
-                    Promise.all(uploadPromises)
-                        .then(results => {
-                            loading();
-                            const dataOnly = results.map(item => JSON.stringify(item.data.url));
-                            console.log('Tất cả ảnh đã được tải lên:', dataOnly);
-                            const jsonInput = document.getElementById('product_image');
-                            jsonInput.value = dataOnly;
-                            results.forEach(imageData => {
-                                const imageDiv = document.createElement('div');
-                                imageDiv.classList.add('image-container');
-
-                                const imageUrl = imageData.data.url;
-                                const img = document.createElement('img');
-                                img.src = imageUrl;
-                                imageDiv.appendChild(img);
-
-                                const deleteBtn = document.createElement('button');
-                                deleteBtn.innerText = 'X';
-                                deleteBtn.classList.add('delete-btn');
-                                deleteBtn.addEventListener('click', function () {
-                                    imageDiv.remove();
-                                    console.log('Xóa ảnh với ID:', imageData.data.id);
-                                });
-                                imageDiv.appendChild(deleteBtn);
-
-                                uploadedImagesDiv.appendChild(imageDiv);
-
-                            });
-                        })
-                        .catch(error => {
-                            console.error('Có lỗi khi tải lên ảnh:', error);
-                        });
-
-
-
-
-                    // Promise.all(uploadPromises)
-                    //   .then(results => {
-                    //     console.log('Tất cả ảnh đã được tải lên:', results);
-                    //     // results.forEach(imageData => {
-                    //     //   console.log('ID của ảnh:', imageData.data.id);
-                    //     //   console.log('Tiêu đề của ảnh:', imageData.title);
-                    //     //   console.log('URL của ảnh:', imageData.url);
-                    //     //   console.log('URL hiển thị của ảnh:', imageData.display_url);
-                    //     //   console.log('URL xem ảnh:', imageData.url_viewer);
-                    //     // });
-                    //     const uploadedImagesDiv = document.querySelector('.fileimagedata');
-                    //     results.forEach(imageData => {
-                    //       const imageUrl = imageData.data.url;
-                    //       const img = document.createElement('img');
-                    //       img.src = imageUrl;
-                    //       console.log(imageUrl);
-                    //       uploadedImagesDiv.appendChild(img);
-                    //     });
-
-                    //   })
-                    //   .catch(error => {
-                    //     console.error('Có lỗi khi tải lên ảnh:', error);
-                    //   });
-                }
-            </script>
-</body>
-
-</html>
