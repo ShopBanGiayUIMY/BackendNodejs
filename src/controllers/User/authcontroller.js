@@ -283,6 +283,8 @@ const authController = {
             }
             const user = result[0];
             console.log(user);
+            console.log("user: " + user.verified + " đã đăng nhập");
+          
             // So sánh password nhập vào và password trong database
             const validPassword = await bcrypt.compare(
               req.body.password,

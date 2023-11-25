@@ -67,5 +67,17 @@ const FavoritesController = {
       console.log(e.message);
     }
   },
+  getcountFavorites: async (req, res) => {
+    try {
+      if (req.user.id) {
+        const result = await FavoritesService.getcountFavorites(
+          req.user.id,
+        );
+        res.status(200).json({ value: result,message: "Lấy số lượng thích thành công", success: "thành công" });
+      }
+    } catch (e) {
+      console.log(e.message);
+    }
+  }
 };
 export default FavoritesController;

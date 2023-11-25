@@ -7,4 +7,5 @@ router.get('',middwarecontroller.verifyUser,FavoritesController.getFavorites);
 router.post('/create',middwarecontroller.verifyUser,FavoritesController.addFavorites);
 router.delete('/delete/:productId',middwarecontroller.verifyUser,FavoritesController.deleteFavorites);
 router.get('/check-favorited/:productId',middwarecontroller.verifyUser,FavoritesController.getFavoriteByProductId);
+router.get('/count-favorites',middwarecontroller.verifyUser,FavoritesController.getcountFavorites);
 export default router;

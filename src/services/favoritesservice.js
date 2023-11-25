@@ -64,6 +64,20 @@ const  FavoritesService = {
         } catch (e) {
             throw e.message;
         }
+    },
+    getcountFavorites: async (userId) => {
+        try {
+            const result = await Favorite.count({
+                where: {
+                    user_id: userId
+                }
+            })
+            console.log(result);
+            return result;
+        } catch (e) {
+            throw e.message;
+        }
     }
+    
 }
 export default FavoritesService;
