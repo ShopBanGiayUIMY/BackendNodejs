@@ -1,10 +1,11 @@
 import connection from '../../config/Connection.js';
 import ProductService from '../../services/ProductService.js';
+import ProductDb from "../../Querydb/productdb.js";
 const ProductController = {
   index: async (req, res) => {
     const db = connection();
     db.connect();
-    db.query("SELECT * FROM products", async (err, rows, fields) => {
+    db.query(ProductDb.GetListProducts, async (err, rows, fields) => {
       if (err) {
         res.status(500).send({ error: err });
         return;
@@ -16,6 +17,7 @@ const ProductController = {
           price: row.product_price,
           description: row.product_description,
           thumbnail: row.thumbnail,
+          total_quantity_sold: row.total_quantity_sold,
         };
       });
       res.send(data);

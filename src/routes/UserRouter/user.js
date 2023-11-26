@@ -1,7 +1,8 @@
 import express from "express";
 import UserController from "../../controllers/User/Usercontroller.js";
 const router = express.Router();
-router.get('/:id', UserController.getInfoUser);
+import middwarecontroller from '../../middleware/middwarecontroller.js';
+router.get('/info-user/',middwarecontroller.verifyUser, UserController.getInfoUser);
 
 
 export default router;

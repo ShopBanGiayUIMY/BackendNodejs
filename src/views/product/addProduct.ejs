@@ -155,7 +155,7 @@
       <li class="nav-item active">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBootstrap"
           aria-expanded="true" aria-controls="collapseBootstrap">
-          <i class="fab fa-product-hunt"  style="font-size: 20px;"></i>
+          <i class="fab fa-product-hunt" style="font-size: 20px;"></i>
           <span>Product Manager</span>
         </a>
         <div id="collapseBootstrap" class="collapse" aria-labelledby="headingBootstrap" data-parent="#accordionSidebar">
@@ -169,19 +169,19 @@
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#customerManager"
           aria-expanded="true" aria-controls="customerManager">
-          <i class="fa fa-user" style="font-size: 20px;" ></i>
+          <i class="fa fa-user" style="font-size: 20px;"></i>
           <span>Customer Manager</span>
         </a>
         <div id="customerManager" class="collapse" aria-labelledby="headingBootstrap" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Customer Manager</h6>
-            <a class="collapse-item" href="/admin/products">Danh sách khách hàng</a>
+            <a class="collapse-item" href="/admin/users">Danh sách khách hàng</a>
           </div>
         </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#discountsclick"
-          aria-expanded="true" aria-controls="discountsclick">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#discountsclick" aria-expanded="true"
+          aria-controls="discountsclick">
           <img src="https://cdn-icons-png.flaticon.com/512/1874/1874938.png" style="width: 20px; height: 20px;">
           <span>Discounts</span>
         </a>
@@ -242,13 +242,7 @@
         <div class="container-fluid" id="container-wrapper">
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Thêm sản phẩm</h1>
-            <ol class="breadcrumb">
-              <li class="breadcrumb-item">
-                <a href="./dashboard">Dashboard</a>
-              </li>
-              <li class="breadcrumb-item">Products Manager</li>
-              <li class="breadcrumb-item active" aria-current="page">Create</li>
-            </ol>
+
           </div>
           <div class="row">
             <div class="row">
@@ -351,10 +345,10 @@
                         <label class="control-label">Mô tả sản phẩm</label>
                         <textarea class="form-control" name="product_description" id="product_description"></textarea>
                       </div>
-
                   </div>
-                  <button class="btn btn-save" type="submit" style="margin-top: -2px;">Lưu lại</button>
-                  <a class="btn btn-cancel" href="/">Hủy bỏ</a>
+                  <button type="submit" class="btn" style="width: 300px; color: white;background-color: #001c40;">Thêm
+                    mới </button>
+                  <!-- <a class="btn btn-cancel" href="/">Hủy bỏ</a> -->
                 </div>
                 </form>
 
@@ -506,19 +500,6 @@
             </div>
             <!---Container Fluid-->
           </div>
-
-          <!-- Footer -->
-          <footer class="sticky-footer bg-white">
-            <div class="container my-auto">
-              <div class="copyright text-center my-auto">
-                <span>copyright &copy;
-                  <script> document.write(new Date().getFullYear()); </script> - developed by
-                  <b><a href="https://github.com/huyfpl" target="_blank">Nguyễn Văn Huy</a></b>
-                </span>
-              </div>
-            </div>
-          </footer>
-
         </div>
       </div>
       <!-- Scrollto to top -->
