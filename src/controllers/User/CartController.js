@@ -3,7 +3,7 @@ import { CartService } from '../../services/cartService.js';
 
 export const CartsController = {
   index: async (req, res) => {
-    await CartService.getListCart(req.user.id)
+    await CartService.getCartOfUser(req.user.id)
     .then((carts) => {
       console.log(carts)
       res.status(200).json(carts);
@@ -49,18 +49,22 @@ export const CartsController = {
     console.log(req.params.id,"updateiddcart")
     console.log(req.user.id,"updateiuser")
     console.log(req.body.product_detail_id,"updatebody")
+    //TODO validate request body
     const cart = await Cart.findByPk(req.params.id);
     if (cart) {
       if (cart.user_id === req.user.id) {
         console.log("is cart of user")
-        const result = await CartService.addProductToCart(
+        const result = await CartService.operateItemFromCart(
           req.params.id,
           req.body.product_detail_id,
           req.body.quantity
         )
-        res.status(200).json(result)
+        if (result.status < 0) {
+          res.status(400).json(result)
+        } else {
+          res.status(200).json(result)
+        }
       } else {
-        console.log("403")
         res.status(403).json()
       }
     } else {
