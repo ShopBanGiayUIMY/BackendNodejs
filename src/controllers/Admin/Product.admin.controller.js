@@ -33,7 +33,7 @@ const ProductAdminController = {
 
       const imageArray = JSON.parse(`[${product_image}]`);
       const thumbnail = imageArray[0];
-      const image_url1 =  imageArray;
+      const image_url1 = imageArray;
       const image_url = image_url1;
       const result = await ProductService.createProduct(
         product_name,
@@ -62,9 +62,31 @@ const ProductAdminController = {
     });
   },
   // Thêm phần sửa sản phẩm
+  // Controller
   edit: async (req, res) => {
     const productId = req.params.id;
+    const {
+      product_name,
+      product_price,
+      product_description,
+      thumbnail,
+      category_id,
+      image_url,
+      quantity,
+    } = req.body; // Lấy thông tin từ request body
+
     try {
+      await ProductService.updateProduct(
+        productId,
+        product_name,
+        product_price,
+        product_description,
+        thumbnail,
+        category_id,
+        image_url,
+        quantity
+      );
+
       const product = await ProductService.getProductById(productId);
       const categories = await CategoryService.getAllCategories();
 
@@ -80,44 +102,12 @@ const ProductAdminController = {
           category_id: product.category_id,
           quantity: product.quantity,
         },
-        categories: categories,
+        categories: categories.map((category) => ({
+          id: category.id,
+          name: category.name,
+          selected: category.id === product.category_id ? "selected" : "", // Kiểm tra danh mục được chọn
+        })),
       });
-    } catch (error) {
-      console.error("Error fetching product for editing:", error);
-      res.status(500).send("Internal Server Error");
-    }
-  },
-
-  // Cập nhật sản phẩm sau khi sửa
-  update: async (req, res) => {
-    const productId = req.params.id;
-    const {
-      product_name,
-      product_price,
-      product_description,
-      product_image,
-      category_id,
-      quantity,
-    } = req.body;
-    const imageArray = JSON.parse(`[${product_image}]`);
-    const thumbnail = imageArray[0];
-    const image_url = imageArray;
-
-    try {
-      const result = await ProductService.updateProduct(
-        productId,
-        product_name,
-        product_price,
-        product_description,
-        thumbnail,
-        category_id,
-        image_url,
-        quantity
-      );
-
-      if (result) {
-        res.redirect("/admin/products");
-      }
     } catch (error) {
       console.error("Error updating product:", error);
       res.status(500).send("Internal Server Error");

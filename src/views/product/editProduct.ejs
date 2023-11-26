@@ -237,38 +237,16 @@
                     </ul>
                 </nav>
                 <div class="container-fluid" id="container-wrapper">
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                    <!-- <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800">Sửa sản phẩm </h1>
-                    </div>
-                    <div class="row">
+                    </div> -->
+                    <!-- <div class="row">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="tile">
                                     <h3 class="tile-title">Tạo mới sản phẩm</h3>
                                     <div class="tile-body">
-                                        <!-- <div class="row element-button">
-                                            <div class="col-sm-2">
-                                                <a class="btn btn-add btn-sm" data-toggle="modal"
-                                                    data-target="#exampleModalCenter"><i class="fas fa-folder-plus"></i>
-                                                    Thêm nhà cung cấp</a>
-                                            </div>
-                                            <div class="col-sm-2">
-                                                <a class="btn btn-add btn-sm" data-toggle="modal"
-                                                    data-target="#adddanhmuc"><i class="fas fa-folder-plus"></i> Thêm
-                                                    danh mục</a>
-                                            </div>
-                                            <div class="col-sm-2">
-                                                <a class="btn btn-add btn-sm" data-toggle="modal"
-                                                    data-target="#addtinhtrang"><i class="fas fa-folder-plus"></i> Thêm
-                                                    tình trạng</a>
-                                            </div>
-                                        </div> -->
-                                        <form class="row" action="/admin/products/create" method="post">
-                                            <!-- <div class="form-group col-md-3">
-                                                <label class="control-label">Mã sản phẩm </label>
-                                                <input class="form-control" type="number" placeholder="tự động"
-                                                    disabled>
-                                            </div> -->
+                                        <form class="row" action="/admin/products/edit/<%= product.id %>" method="post">
                                             <div class="form-group col-md-3">
                                                 <label class="control-label">Tên sản phẩm</label>
                                                 <input class="form-control" type="text" id="product_name"
@@ -326,15 +304,128 @@
                                     </div>
                                     <button type="submit" class="btn"
                                         style="width: 300px; color: white;background-color: #001c40;">Cập nhật </button>
-                                    <button type="submit" class="btn"
-                                        style="width: 300px; color: white;background-color: #001c40;">Thêm
-                                        mới </button>
+                                </div> -->
+                    <div class="container-fluid" id="container-wrapper">
+                        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                            <h1 class="h3 mb-0 text-gray-800">Sửa sản phẩm</h1>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="tile">
+                                    <!-- <h3 class="tile-title">Sửa sản phẩm</h3> -->
+                                    <div class="tile-body">
+                                        <form class="row" action="/admin/products/edit/<%= product.id %>" method="post">
+                                            <div class="form-group col-md-3">
+                                                <label class="control-label">Tên sản phẩm</label>
+                                                <input class="form-control" type="text" id="product_name"
+                                                    name="product_name" required value="<%= product.name %>">
+                                            </div>
+                                            <div class="form-group col-md-3">
+                                                <label class="control-label">Số lượng</label>
+                                                <input class="form-control" type="number" id="quantity" name="quantity"
+                                                    required value="<%= product.quantity %>">
+                                            </div>
+                                            <div class="form-group col-md-3">
+                                                <label class="control-label">Giá tiền</label>
+                                                <input class="form-control" type="number" id="product_price"
+                                                    name="product_price" required value="<%= product.price %>">
+                                            </div>
+                                            <div class="form-group col-md-3">
+                                                <label for="category_id" class="control-label">Danh mục</label>
+                                                <select id="category_id" class="form-control" name="category_id"
+                                                    required>
+                                                    <option value="" disabled selected>Chọn danh mục</option>
+                                                    <% categories.forEach(item=> { %>
+                                                        <option value="<%= item.id %>" <%=item.selected %> >
+                                                            <%= item.name %>
+                                                        </option>
+                                                        <% }); %>
+                                                </select>
+                                            </div>
+                                            <!-- <div class="form-group col-md-12">
+                                                <label class="control-label">Ảnh sản phẩm</label>
+                                                <input type="file" class="form-control" id="product_image"
+                                                    name="product_image" accept="image/*">
+                                            </div> -->
+                                            <!-- <div class="form-group col-md-12">
+                                                <label class="control-label">Ảnh sản phẩm</label>
+                                                <div class="imageUpload">
+                                                    <input type="file" class="inp" accept="image/*" multiple
+                                                        id="file-input" onchange="checkIfFileSelected()" />
+                                                    <input type="hidden" name="product_image" id="product_image"
+                                                        value="thumbnail" />
+                                                    <button onclick="selectImage()" class="selectImage" type="button">
+                                                        <i class="fas fa-cloud-upload-alt"></i> Chọn ảnh</button>
+                                                    <span class="fileimagedata"></span>
+
+                                                    <div id="progress-bar-loading">
+                                                        <span class="number" data-value="100"></span>
+                                                        <svg height="150" width="150" class="circle">
+                                                            <circle cx="75" cy="75" r="65" stroke-width="20"
+                                                                fill="none" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                            </div> -->
+                                            <div class="form-group col-md-12">
+                                                <label class="control-label">Ảnh sản phẩm</label>
+                                                <div class="imageUpload">
+                                                    <input type="file" class="inp" accept="image/*" multiple
+                                                        id="file-input" onchange="
+                                                        const fileInput = document.getElementById('file-input');
+                                                        const fileImageData = document.querySelector('.fileimagedata');
+                                                        
+                                                        if (fileInput.files && fileInput.files.length > 0) {
+                                                            const selectedFiles = Array.from(fileInput.files);
+                                                            fileImageData.innerHTML = '';
+                                                            
+                                                            selectedFiles.forEach(file => {
+                                                                const fileInfo = document.createElement('p');
+                                                                fileInfo.textContent = `Tên: ${file.name}, Kích thước: ${file.size} bytes`;
+                                                                fileImageData.appendChild(fileInfo);
+                                                            });
+                                                        } else {
+                                                            fileImageData.textContent = 'Không có tệp tin nào được chọn.';
+                                                        }
+                                                    " />
+                                                    <input type="hidden" name="product_image" id="product_image"
+                                                        value="thumbnail" />
+                                                    <button onclick="document.getElementById('file-input').click()"
+                                                        class="selectImage" type="button">
+                                                        <i class="fas fa-cloud-upload-alt"></i> Chọn ảnh
+                                                    </button>
+                                                    <span class="fileimagedata"></span>
+                                                    <div id="progress-bar-loading">
+                                                        <span class="number" data-value="100"></span>
+                                                        <svg height="150" width="150" class="circle">
+                                                            <circle cx="75" cy="75" r="65" stroke-width="20"
+                                                                fill="none" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group col-md-12">
+                                                <label class="control-label">Mô tả sản phẩm</label>
+                                                <textarea class="form-control" name="product_description"
+                                                    id="product_description"><%= product.description %></textarea>
+                                            </div>
+                                            <div class="form-group col-md-12">
+                                                <button type="submit" class="btn"
+                                                    style="width: 300px; color: white; background-color: #001c40;">Cập
+                                                    nhật</button>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
-                                <div style="background-color: rgba(0, 0, 0, 0.4); z-index: 9999;" class="modal fade"
-                                    id="adddanhmuc" tabindex="-1" role="dialog"
-                                    aria-labelledby="exampleModalCenterTitle" data-backdrop="static"
-                                    data-keyboard="false">
-                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background-color: rgba(0, 0, 0, 0.4); z-index: 9999;" class="modal fade" id="adddanhmuc"
+                        tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" data-backdrop="static"
+                        data-keyboard="false">
+                        <!-- <div class="modal-dialog modal-dialog-centered" role="document">
                                         <div class="modal-content">
 
                                             <div class="modal-body">
@@ -364,75 +455,48 @@
                                             <div class="modal-footer">
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div style="background-color: rgba(0, 0, 0, 0.4); z-index: 9999;" class="modal fade"
-                                    id="addtinhtrang" tabindex="-1" role="dialog"
-                                    aria-labelledby="exampleModalCenterTitle" data-backdrop="static"
-                                    data-keyboard="false">
-                                    <div class="modal-dialog modal-dialog-centered" role="document">
-                                        <div class="modal-content">
+                                    </div> -->
+                    </div>
 
-                                            <div class="modal-body">
-                                                <div class="row">
-                                                    <div class="form-group  col-md-12">
-                                                        <span class="thong-tin-thanh-toan">
-                                                            <h5>Thêm mới tình trạng</h5>
-                                                        </span>
-                                                    </div>
-                                                    <div class="form-group col-md-12">
-                                                        <label class="control-label">Nhập tình trạng mới</label>
-                                                        <input class="form-control" type="text" required>
-                                                    </div>
-                                                </div>
-                                                <BR>
-                                                <button class="btn btn-save" type="button">Lưu lại</button>
-                                                <a class="btn btn-cancel" data-dismiss="modal" href="#">Hủy bỏ</a>
-                                                <BR>
-                                            </div>
-                                            <div class="modal-footer">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <script src="js/jquery-3.2.1.min.js"></script>
-                                <script src="js/popper.min.js"></script>
-                                <script src="js/bootstrap.min.js"></script>
-                                <script src="js/main.js"></script>
-                                <script src="js/plugins/pace.min.js"></script>
+                    <script src="js/jquery-3.2.1.min.js"></script>
+                    <script src="js/popper.min.js"></script>
+                    <script src="js/bootstrap.min.js"></script>
+                    <script src="js/main.js"></script>
+                    <script src="js/plugins/pace.min.js"></script>
+                </div>
+
+                <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleModalLabelLogout" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabelLogout">Ohh No!</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
                             </div>
-
-                            <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog"
-                                aria-labelledby="exampleModalLabelLogout" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabelLogout">Ohh No!</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p>Are you sure you want to logout?</p>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-outline-primary"
-                                                data-dismiss="modal">Cancel</button>
-                                            <a href="admin/auth/login" class="btn btn-primary">Logout</a>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="modal-body">
+                                <p>Are you sure you want to logout?</p>
                             </div>
-
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-primary"
+                                    data-dismiss="modal">Cancel</button>
+                                <a href="admin/auth/login" class="btn btn-primary">Logout</a>
+                            </div>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
+    </div>
+    </div>
+    </div>
     </div>
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
+
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>

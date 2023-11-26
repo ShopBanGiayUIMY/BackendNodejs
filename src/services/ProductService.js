@@ -76,7 +76,7 @@ const ProductService = {
     quantity
   ) => {
     try {
-      const updatedProduct = await Product.update(
+      const [updatedProduct] = await Product.update(
         {
           product_name,
           product_price,
@@ -90,10 +90,11 @@ const ProductService = {
           },
         }
       );
+
       // Cập nhật thông tin chi tiết sản phẩm
-      const updatedProductDetail = await ProductDetail.update(
+      await ProductDetail.update(
         {
-          color: "red", // Giả sử màu là cố định hoặc bạn có thể cập nhật từ req.body tương tự như các trường khác
+          color: "red",
           size: "M",
           stock: 10,
           quantity,
@@ -104,8 +105,9 @@ const ProductService = {
           },
         }
       );
+
       const urls = JSON.stringify(image_url);
-      const updatedProductImage = await ProductImage.update(
+      await ProductImage.update(
         {
           image_url: urls,
         },
@@ -115,9 +117,10 @@ const ProductService = {
           },
         }
       );
+
       return updatedProduct;
-    } catch (e) {
-      throw e.message;
+    } catch (error) {
+      throw error;
     }
   },
 
