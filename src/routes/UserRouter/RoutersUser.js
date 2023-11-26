@@ -6,6 +6,7 @@ import productRouter from './Products.js';
 import cartRouter from './Cart.js';
 import Voucher from './Voucher.js';
 import Favorite from './Favorite.js';
+import OrderStatus from './OrderStatus.js'
 const router = express.Router();
 
 // Import các routes từ các tệp riêng lẻ
@@ -16,4 +17,5 @@ router.use('/products', productRouter);
 router.use('/carts', cartRouter);
 router.use('/vouchers', Voucher);
 router.use('/favorites', Favorite);
+router.use('/order-status', OrderStatus)
 export default router;
