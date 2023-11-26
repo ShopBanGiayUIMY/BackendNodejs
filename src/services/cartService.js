@@ -5,7 +5,7 @@ import ProductDetail from '../models/ProductDetail.js';
 import ProductService from './ProductService.js';
 
 export const CartService = {
-  getListCart: async (userId) => {
+  getCartOfUser: async (userId) => {
     try {
       const result = await Cart.findAll({
         where: { user_id: userId },
@@ -39,7 +39,10 @@ export const CartService = {
           }
         ]
       })
-      return result;
+      if (result.length > 0)
+        return result[0];
+      else 
+        return null;
     } catch (e) {
       throw e.message;
     }
@@ -94,7 +97,7 @@ export const CartService = {
       throw e.message;
     }
   },
-  addProductToCart: async (
+  operateItemFromCart: async (
     cartId,
     productDetailId,
     quantity
@@ -106,39 +109,74 @@ export const CartService = {
           product_detail_id: productDetailId
         }
       })
-      if (await ProductService.canAddToCart(productDetailId, quantity)) {
-        if (cartItem.length > 0) {
-          console.log(cartItem)
-          if (quantity === 0) {
-            await CartItem.destroy({where: {
-              product_detail_id: productDetailId,
-              cart_id: cartId
-            }})
-            return {message: "delete cart item success"}
-          }
-          await CartItem.update({
-            quantity: quantity
-          }, {
-            where: {
-              product_detail_id: productDetailId,
-              cart_id: cartId
-            }
-          })
-          return {message: "update quantity of cart item success"};
-        } else {
-          await CartItem.create({
-            cart_id: cartId,
+      if (cartItem.length > 0) {
+        //exist item in cart
+        if (quantity === 0) {
+          //remove item from cart
+          await CartItem.destroy({where: {
             product_detail_id: productDetailId,
-            quantity: quantity
-          })
-          return {message: "add to cart success"};
+            cart_id: cartId
+          }})
+          return {
+            message: "delete cart item success",
+            status: 0
+          }
+        } else {
+          //update item's quantity from cart
+          if (await ProductService.canAddToCart(productDetailId, quantity)) {
+            //can update item'quantity with quantity params
+            await CartItem.update({
+              quantity: quantity
+            }, {
+              where: {
+                product_detail_id: productDetailId,
+                cart_id: cartId
+              }
+            })
+            return {
+              message: "update quantity of cart item success",
+              status: 1
+            };
+          } else {
+            //can not update item'quantity with quantity params
+            return {
+              message: "stock of product is not available",
+              status: -1
+            };
+          }
         }
       } else {
-        console.log("error");
-        return {message: "stock of product is not available"};
+        //not exist item in cart
+        if (quantity === 0) {
+          //remove item not exist in cart
+          return {
+            message: "cannot remove item from cart",
+            status: -2,
+          }
+        } else {
+          //add item to cart
+          if (await ProductService.canAddToCart(productDetailId, quantity)) {
+            //can add item to cart
+            await CartItem.create({
+              cart_id: cartId,
+              product_detail_id: productDetailId,
+              quantity: quantity
+            })
+            return {
+              message: "add to cart success",
+              status: 1
+            };
+          } else {
+            //can not add item to cart
+            return {
+              message: "stock of product is not available",
+              status: -1
+            };
+          }
+        }
       }
     } catch (e) {
       throw e.message;
     }
-  }
+  },
 }
