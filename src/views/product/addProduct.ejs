@@ -250,7 +250,7 @@
                 <div class="tile">
                   <h3 class="tile-title">Tạo mới sản phẩm</h3>
                   <div class="tile-body">
-                    <div class="row element-button">
+                    <!-- <div class="row element-button">
                       <div class="col-sm-2">
                         <a class="btn btn-add btn-sm" data-toggle="modal" data-target="#exampleModalCenter"><i
                             class="fas fa-folder-plus"></i> Thêm nhà cung cấp</a>
@@ -263,23 +263,25 @@
                         <a class="btn btn-add btn-sm" data-toggle="modal" data-target="#addtinhtrang"><i
                             class="fas fa-folder-plus"></i> Thêm tình trạng</a>
                       </div>
-                    </div>
+                    </div> -->
                     <form class="row" action="/admin/products/create" method="post">
-                      <div class="form-group col-md-3">
+                      <!-- <div class="form-group col-md-3">
                         <label class="control-label">Mã sản phẩm </label>
                         <input class="form-control" type="number" placeholder="tự động" disabled>
-                      </div>
+                      </div> -->
                       <div class="form-group col-md-3">
                         <label class="control-label">Tên sản phẩm</label>
                         <input class="form-control" type="text" id="product_name" name="product_name" required>
                       </div>
-
-
                       <div class="form-group  col-md-3">
                         <label class="control-label">Số lượng</label>
                         <input class="form-control" type="number" id="quantity" name="quantity" required>
                       </div>
-                      <div class="form-group col-md-3 ">
+                      <div class="form-group  col-md-3">
+                        <label class="control-label">Giá tiền </label>
+                        <input class="form-control" type="number" id="price" name="product_price" required>
+                      </div>
+                      <!-- <div class="form-group col-md-3 ">
                         <label for="exampleSelect1" class="control-label">Tình trạng</label>
                         <select class="form-control" id="status_id" name="status_id" required disabled>
                           <option disabled selected>-- Chọn tình trạng --</option>
@@ -287,7 +289,7 @@
                           <option value="{{this.status_id}}">{{this.status_name}}</option>
                           {{/each}}
                         </select>
-                      </div>
+                      </div> -->
                       <div class="form-group col-md-3">
                         <label for="exampleSelect1" class="control-label">Danh mục</label>
                         <select id="category_id" class="form-control" name="category_id" required>
@@ -299,7 +301,7 @@
                             <% }); %>
                         </select>
                       </div>
-                      <div class="form-group col-md-3 ">
+                      <!-- <div class="form-group col-md-3 ">
                         <label for="exampleSelect1" class="control-label">Nhà cung cấp</label>
                         <select class="form-control" id="exampleSelect1">
                           <option>-- Chọn nhà cung cấp --</option>
@@ -308,15 +310,15 @@
                           <option>FPT</option>
                           <option>Võ Trường</option>
                         </select>
-                      </div>
-                      <div class="form-group col-md-3">
+                      </div> -->
+                      <!-- <div class="form-group col-md-3">
                         <label class="control-label">Giá bán</label>
                         <input class="form-control" type="text" id="product_price" name="product_price" required>
-                      </div>
-                      <div class="form-group col-md-3">
+                      </div> -->
+                      <!-- <div class="form-group col-md-3">
                         <label class="control-label">Giá vốn</label>
                         <input class="form-control" type="text" id="cost_price" name="cost_price" required>
-                      </div>
+                      </div> -->
                       <div class="form-group col-md-12">
                         <label class="control-label">Ảnh sản phẩm</label>
                         <div class="imageUpload">
@@ -333,14 +335,8 @@
                               <circle cx="75" cy="75" r="65" stroke-width="20" fill="none" />
                             </svg>
                           </div>
-
-
-
                         </div>
-
-
                       </div>
-
                       <div class="form-group col-md-12">
                         <label class="control-label">Mô tả sản phẩm</label>
                         <textarea class="form-control" name="product_description" id="product_description"></textarea>

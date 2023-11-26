@@ -148,8 +148,9 @@
                       <th>Tên</th>
                       <th>Danh mục</th>
                       <th>Hình ảnh</th>
-
                       <th>Giá tiền</th>
+                      <th>Mô tả</th>
+                      <th>Số lượng</th>
                       <th>Chức năng</th>
                     </tr>
                   </thead>
@@ -173,6 +174,12 @@
 
                         <td>
                           <%= product.price %>
+                        </td>
+                        <td>
+                          <%= product.description %>
+                        </td>
+                        <td>
+                          <%= product.quantity %>
                         </td>
                         <td class="text-center">
                           <button class="btn btn-primary  trash" data-bs-toggle="modal"
