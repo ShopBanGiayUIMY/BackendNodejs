@@ -1,5 +1,5 @@
 import Cart from '../../models/Cart.js';
-import { CartService } from '../../services/cartService.js';
+import { CartService } from '../../services/CartService.js';
 
 export const CartsController = {
   index: async (req, res) => {
