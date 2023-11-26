@@ -6,6 +6,8 @@ import ProductImage from './ProductImage.js';
 import Category from './Category.js';
 import User from './User.js';
 import Favorites from './Favorites.js';
+import OrderStatus from './OrderStatus.js';
+import Order from './Order.js';
 
 export default () => {
   console.log('associate model');
@@ -29,5 +31,8 @@ export default () => {
   User.hasMany(Favorites, { foreignKey: 'user_id' });
   Favorites.belongsTo(Product, { foreignKey: 'product_id' });
   Product.hasMany(Favorites, { foreignKey: 'product_id' });
+
+  Order.belongsTo(OrderStatus, {foreignKey: 'status_id'})
+  OrderStatus.hasMany(Order, {foreignKey: 'status_id'})
 }
 
