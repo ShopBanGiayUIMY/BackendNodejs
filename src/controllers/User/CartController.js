@@ -66,6 +66,7 @@ export const CartsController = {
 
   delete: async (req, res) => {
     try {
+      const result = await CartService.destroyCart()
       await Cart.findByIdAndDelete(req.params.id);
       res.status(200).json({ message: 'Cart deleted successfully' });
     } catch (error) {
