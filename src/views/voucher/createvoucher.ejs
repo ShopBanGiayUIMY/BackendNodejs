@@ -38,7 +38,7 @@
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBootstrap"
           aria-expanded="true" aria-controls="collapseBootstrap">
-          <i class="fab fa-product-hunt"  style="font-size: 20px;"></i>
+          <i class="fab fa-product-hunt" style="font-size: 20px;"></i>
           <span>Product Manager</span>
         </a>
         <div id="collapseBootstrap" class="collapse" aria-labelledby="headingBootstrap" data-parent="#accordionSidebar">
@@ -52,19 +52,19 @@
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#customerManager"
           aria-expanded="true" aria-controls="customerManager">
-          <i class="fa fa-user" style="font-size: 20px;" ></i>
+          <i class="fa fa-user" style="font-size: 20px;"></i>
           <span>Customer Manager</span>
         </a>
         <div id="customerManager" class="collapse" aria-labelledby="headingBootstrap" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Customer Manager</h6>
-            <a class="collapse-item" href="/admin/products">Danh sách khách hàng</a>
+            <a class="collapse-item" href="/admin/users">Danh sách khách hàng</a>
           </div>
         </div>
       </li>
       <li class="nav-item active">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#discountsclick"
-          aria-expanded="true" aria-controls="discountsclick">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#discountsclick" aria-expanded="true"
+          aria-controls="discountsclick">
           <img src="https://cdn-icons-png.flaticon.com/512/1874/1874938.png" style="width: 20px; height: 20px;">
           <span>Discounts</span>
         </a>
@@ -125,13 +125,7 @@
         <div class="container-fluid" id="container-wrapper">
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Alerts</h1>
-            <ol class="breadcrumb">
-              <li class="breadcrumb-item">
-                <a href="./dashboard">Dashboard</a>
-              </li>
-              <li class="breadcrumb-item">Products Manager</li>
-              <li class="breadcrumb-item active" aria-current="page">Create</li>
-            </ol>
+
           </div>
 
 
@@ -374,7 +368,7 @@
                                 <div class="next-input-wrapper search-area ">
 
                                   <div class="chosen-container">
-                                    <input type="hidden" name="item_product_id_list" id="item_product_id_list"  >
+                                    <input type="hidden" name="item_product_id_list" id="item_product_id_list">
                                     <select id="multipleChosen_product" multiple="true" class="chosen-select">
                                       <option value="" disabled selected>Chọn sản phẩm</option>
                                       <% products.forEach(item=> { %>
@@ -385,7 +379,7 @@
                                     </select>
                                   </div>
                                   <script>
-                             
+
                                     $(document).ready(function () {
                                       // Initialize Chosen
                                       $("#multipleChosen_product").chosen({
@@ -394,7 +388,7 @@
                                         search_contains: true
                                       });
                                       document.getElementById('item_product_id_list').value = '[]';
-                                    document.getElementById('item_user_id_list').value = '[]';
+                                      document.getElementById('item_user_id_list').value = '[]';
 
                                       // Add event listener for change event
 
@@ -715,11 +709,12 @@
                                 <input type="text" id="datepickerstart" required
                                   class="next-input next-input--invisible input-date" placeholder="Ngày bắt đầu">
                               </div>
-                              <div class="next-input-wrapper" >
+                              <div class="next-input-wrapper">
                                 <label for="discount_starts_at" class="next-label">Thời điểm</label>
                                 <div class='input-group date' id='datetimepicker'>
                                   <!-- Thêm ID cho phần input thời điểm -->
-                                  <input type='text' required class="next-input next-input--invisible input-date hasDatepicker"
+                                  <input type='text' required
+                                    class="next-input next-input--invisible input-date hasDatepicker"
                                     placeholder="Thời điểm bắt đầu">
                                 </div>
                               </div>
