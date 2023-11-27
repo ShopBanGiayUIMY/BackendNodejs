@@ -48,76 +48,69 @@ const VoucherService = {
       throw e.message;
     }
   },
-  getfullvoucher: async () => {
+  getListVoucherAdmin: async () => {
     try {
-      const result = await Discount.findAll();
+      const result = await Discount.findAll( );
       return result;
     } catch (e) {
       throw e.message;
     }
   },
+
   getListVoucher: async (value) => {
-    const user = await AuthUser.findOne({
-      where: {
-        user_id: value,
-      },
-      attributes: ["role"],
-    });
     try {
+      const [user, vouchers] = await Promise.all([
+        AuthUser.findOne({
+          where: {
+            user_id: value,
+          },
+          attributes: ["role"],
+        }),
+        Discount.findAll(),
+      ]);
       if (user.dataValues.role == 1) {
-        const result = await Discount.findAll();
-        return result;
-      } else if (user.dataValues.role == 2) {
-        const result = await Discount.findAll({
-          where: {
-            [Op.or]: [
-              {
-                [Op.and]: [
-                  sequelize.literal(
-                    `JSON_CONTAINS(Voucher.item_user_id_list, '[${value}]')`
-                  ),
-                  { voucher_purpose: user.dataValues.role },
-                  { usage_quantity: { [Op.gt]: 0 } },
-                ],
-              },
-              {
-                [Op.and]: [
-                  sequelize.literal(
-                    `JSON_LENGTH(Voucher.item_user_id_list) = 0`
-                  ),
-                  { voucher_purpose: user.dataValues.role },
-                  { usage_quantity: { [Op.gt]: 0 } },
-                ],
-              },
-            ],
-          },
+        return vouchers;
+        // 0 là bình thường, 1 là chào mừng
+      } else if (user.dataValues.role == 0) {
+        const result = vouchers.filter((voucher) => {
+          const userIdList = JSON.parse(voucher.item_user_id_list);
+          const use_history = JSON.parse(voucher.use_history);
+          const voucher_purpose = JSON.parse(voucher.voucher_purpose);
+          const usage_quantity = JSON.parse(voucher.usage_quantity);
+          const item_user_id_list = JSON.parse(voucher.item_user_id_list);
+          // console.log("userIdList", userIdList);
+          // console.log("use_history", use_history);
+          // console.log("voucher_purpose", voucher_purpose);
+          // console.log("usage_quantity", usage_quantity);
+          // console.log("item_user_id_list", item_user_id_list);
+          // console.log("value", value);
+          if (use_history == null) {
+            if (userIdList.includes(value)) {
+              if (voucher_purpose == 0) {
+                return voucher;
+              }
+              if (voucher_purpose == 1) {
+                return voucher;
+              }
+              if (
+                voucher_purpose == 2 &&
+                usage_quantity > item_user_id_list.length
+              ) {
+                return voucher;
+              }
+            }
+          } else {
+            if (userIdList.includes(value) || !use_history.includes(value)) {
+              if (voucher_purpose == 0 && usage_quantity > use_history.length) {
+                return voucher;
+              }
+              if (voucher_purpose == 2) {
+                return voucher;
+              }
+            }
+          }
         });
-        return result;
-      } else {
-        const result = await Discount.findAll({
-          where: {
-            [Op.or]: [
-              {
-                [Op.and]: [
-                  sequelize.literal(
-                    `JSON_CONTAINS(Voucher.item_user_id_list, '[${value}]')`
-                  ),
-                  { voucher_purpose: user.dataValues.role },
-                  { usage_quantity: { [Op.gt]: 0 } },
-                ],
-              },
-              {
-                [Op.and]: [
-                  sequelize.literal(
-                    `JSON_LENGTH(Voucher.item_user_id_list) = 0`
-                  ),
-                  { voucher_purpose: user.dataValues.role },
-                  { usage_quantity: { [Op.gt]: 0 } },
-                ],
-              },
-            ],
-          },
-        });
+
         return result;
       }
     } catch (e) {
