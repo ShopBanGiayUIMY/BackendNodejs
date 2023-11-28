@@ -1,13 +1,9 @@
 import Cart from '../../models/Cart.js';
-import User from '../../models/User.js';
-import CartItem from '../../models/CartItem.js';
-import Product from '../../models/Product.js';
-import ProductDetail from '../../models/ProductDetail.js';
-import { CartService } from '../../services/cartService.js';
+import { CartService } from '../../services/CartService.js';
 
 export const CartsController = {
   index: async (req, res) => {
-    await CartService.getListCart(req.user.id)
+    await CartService.getCartOfUser(req.user.id)
     .then((carts) => {
       console.log(carts)
       res.status(200).json(carts);
@@ -41,23 +37,8 @@ export const CartsController = {
 
 
   create: async (req, res) => {
-    //have not verify product_detail
-    const { product_detail_id, quantity } = req.body;
     try {
-      const cart = await Cart.create(
-        {
-          user_id: req.user.id,
-        }
-      );
-      if (product_detail_id && quantity) {
-        const cartItem = await CartItem.create(
-          {
-            cart_id: cart.cart_id,
-            product_detail_id: product_detail_id,
-            quantity: quantity,
-          }
-        )
-      }
+      const cart = await CartService.createCart(req.user.id)
       res.status(201).json(cart);
     } catch (e) {
       res.status(500).json("server error")
@@ -68,24 +49,21 @@ export const CartsController = {
     console.log(req.params.id,"updateiddcart")
     console.log(req.user.id,"updateiuser")
     console.log(req.body.product_detail_id,"updatebody")
+    //TODO validate request body
     const cart = await Cart.findByPk(req.params.id);
     if (cart) {
       if (cart.user_id === req.user.id) {
-        console.log(req.body)
-        const cartItem = await CartItem.update(
-          {
-            quantity: req.body.quantity
-          },
-          {
-            where: {
-              cart_id: cart.cart_id,
-              product_detail_id: req.body.product_detail_id
-            }
-          }
-        ).then(a => {
-          console.log(a)
-        })
-        res.status(200).json({ message: 'Cart updated successfully',success:true});
+        console.log("is cart of user")
+        const result = await CartService.operateItemFromCart(
+          req.params.id,
+          req.body.product_detail_id,
+          req.body.quantity
+        )
+        if (result.status < 0) {
+          res.status(400).json(result)
+        } else {
+          res.status(200).json(result)
+        }
       } else {
         res.status(403).json()
       }
@@ -96,6 +74,7 @@ export const CartsController = {
 
   delete: async (req, res) => {
     try {
+      const result = await CartService.destroyCart()
       await Cart.findByIdAndDelete(req.params.id);
       res.status(200).json({ message: 'Cart deleted successfully' });
     } catch (error) {

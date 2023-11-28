@@ -7,18 +7,18 @@ const router = express.Router();
 router.get('/',middwarecontroller.verifyUser, CartsController.index);
 
 // GET /carts/:id
-router.get('/:id', middwarecontroller.verifyUser, CartsController.show);
+// router.get('/:id', middwarecontroller.verifyUser, CartsController.show);
 
 // POST /carts
-router.post('/', middwarecontroller.verifyUser, CartsController.create);
+// router.post('/', middwarecontroller.verifyUser, CartsController.create);
 
 // PUT /carts/:id
 router.patch('/:id', middwarecontroller.verifyUser, CartsController.update);
 
 // DELETE /carts/:id
-router.delete('/:id', (req, res) => {
-  res.send('DELETE /carts/:id')
-  // Delete a specific cart by ID
-});
+// router.delete('/:id', (req, res) => {
+//   res.send('DELETE /carts/:id')
+//   // Delete a specific cart by ID
+// });
 
 export default router;
