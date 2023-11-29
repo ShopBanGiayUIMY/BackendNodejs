@@ -5,6 +5,7 @@ const VoucherController = {
     try {
       if (req.user.id) {
         const result = await VoucherService.getListVoucher(req.user.id);
+        
         const kq = result.map((item) => {
           let usage_remaining1;
           if (item.use_history == null){

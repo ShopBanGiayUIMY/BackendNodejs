@@ -40,7 +40,7 @@ export const CartService = {
         ]
       })
       if (result.length > 0)
-        return result[0];
+        return result;
       else {
         //add temp logic to create user's cart
         await CartService.createCart(userId);

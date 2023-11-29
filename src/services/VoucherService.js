@@ -97,6 +97,10 @@ WHERE (voucher_purpose = 0 OR voucher_purpose = 1)
             }
           );
         });
+      }else{
+        return {
+          status: false,
+        }
       }
     } catch (e) {
       throw e.message;
