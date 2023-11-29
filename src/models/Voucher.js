@@ -46,12 +46,16 @@ const Voucher = sequelize.define('Voucher', {
   },
   
   item_product_id_list: {
-    type: DataTypes.JSON,
+    type: DataTypes.TEXT,
     allowNull: true,
   },
   item_user_id_list: {
-    type: DataTypes.JSON,
+    type: DataTypes.TEXT,
     allowNull: true,
+  },
+  voucher_purpose:{
+    type: DataTypes.INTEGER,
+    allowNull: false,
   },
   use_history: {
     type: DataTypes.TEXT,
