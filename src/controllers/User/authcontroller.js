@@ -264,7 +264,7 @@ const authController = {
     try {
       // Kiểm tra username có tồn tại trong database hay không
       const { username, email } = req.body;
-      console.log(req.body);
+
       req.getConnection((err, conn) => {
         if (err) {
           return res
@@ -282,7 +282,6 @@ const authController = {
               return res.status(200).json({ message: "Tài khoản không tồn tại!" ,success: false });
             }
             const user = result[0];
-            console.log(user);
             console.log("user: " + user.verified + " đã đăng nhập");
           
             // So sánh password nhập vào và password trong database

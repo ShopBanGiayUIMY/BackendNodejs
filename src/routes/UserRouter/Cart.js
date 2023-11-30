@@ -14,11 +14,13 @@ router.get('/',middwarecontroller.verifyUser, CartsController.index);
 
 // PUT /carts/:id
 router.patch('/:id', middwarecontroller.verifyUser, CartsController.update);
+router.get('/total-cart', middwarecontroller.verifyUser, CartsController.getTotalCart);
 
 // DELETE /carts/:id
 // router.delete('/:id', (req, res) => {
 //   res.send('DELETE /carts/:id')
 //   // Delete a specific cart by ID
 // });
+
 
 export default router;
