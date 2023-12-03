@@ -92,18 +92,16 @@ export const CartsController = {
             res.status(500).send({ error: err });
             return;
           }
-          if (rows.length>0) {
+          if (rows.length > 0) {
             const data = rows.map((row) => {
               return {
                 total_cart_items: row.total_items,
               };
             });
             res.send(data);
-          }else{
-            res.status(404).send({message:"Not found",status: 0});
+          } else {
+            res.status(404).send({ message: "Not found", status: 0 });
           }
-          
-          
         }
       );
     } catch (error) {
