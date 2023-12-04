@@ -6,4 +6,5 @@ const router = exxpress.Router();
 
 router.get('/', middwarecontroller.verifyUser, OrderController.index)
 router.post('/', middwarecontroller.verifyUser, OrderController.create)
+router.patch('/:id/cancel', middwarecontroller.verifyUser, OrderController.update)
 export default router;
