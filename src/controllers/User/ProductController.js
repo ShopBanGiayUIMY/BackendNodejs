@@ -23,11 +23,54 @@ const ProductController = {
       res.send(data);
     });
   },
+
+// const dataJson = {
+//   "product_id": 63,
+//   "product_name": "434",
+//   "product_description": "",
+//   "product_price": "3434.00",
+//   "category_id": 2,
+//   "thumbnail": "https://i.ibb.co/WWbhHhF/ao.png",
+//   "ProductImages": [
+//     {
+//       "image_url": "[\"https://i.ibb.co/WWbhHhF/ao.png\",\"https://i.ibb.co/HNBzgqj/argentina.png\",\"https://i.ibb.co/3pLGNFT/campuchia.png\"]"
+//     }
+//   ],
+//   "ProductDetails": [
+//     {
+//       "detail_id": 61,
+//       "product_id": 63,
+//       "color": "red",
+//       "size": "L",
+//       "stock": 10
+//     }
+//   ],
+//   "Category": {
+//     "category_id": 2,
+//     "name": "Running Shoes",
+//     "image": null
+//   }
+// };
   show: async (req, res) => {
     ProductService.getProductById(req.params.id)
     .then(product => {
-      if (product)
-        res.status(200).json(product)
+      if (product){
+        const imagesString = product.ProductImages[0].image_url;
+        const parsedImages = JSON.parse(imagesString);
+        const resBody = {
+          id: product.product_id,
+          name: product.product_name,
+          price: product.product_price,
+          quantity: product.product_quantity,
+          description: product.product_description,
+          thumbnail: product.thumbnail,
+          images: parsedImages,
+          ProductDetails: product.ProductDetails,
+          Category: product.Category
+        };
+        res.status(200).json(resBody);
+      }
+       
       else {
         res.status(404).json({message: "not found"})
       }
