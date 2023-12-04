@@ -104,12 +104,16 @@ export const OrderService = {
         }
       } catch (e) {
         await transaction.rollback();
+        return {
+          status: 500,
+          message: `server error`
+        }
       }
     }
   },
   //needed authn
   cancelOrder: async () => {
-
+    
   },
   //admin operation
   operateOrder: async () => {

@@ -36,8 +36,8 @@ export const OrderController = {
       res.status(200).json(message)
     } else if (status === 400 || status === 401) {
       res.status(400).json({message, data})
-    } else {
-      res.status(500).json('error')
+    } else if (status === 500){
+      res.status(500).json(message)
     }
     // res.status(200).json({
     //   message: result.message,
