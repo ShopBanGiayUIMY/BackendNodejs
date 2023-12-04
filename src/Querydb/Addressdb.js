@@ -14,6 +14,7 @@ const QueryAddress = {
   WHERE user_id = ? AND address_id = ?;
   `,
   deleteAddress: `DELETE FROM shipping_addresses WHERE address_id=? AND user_id=?`,
+  getAddressDefault: `SELECT * FROM shipping_addresses WHERE user_id =? AND address_id=?`,
 };
 
 export default QueryAddress;

@@ -37,6 +37,41 @@ const AddressController = {
       }
     );
   },
+  getAddressDefault: async (req, res) => {
+    const db = connection();
+    const user_id = req.user.id;
+    const user = await User.findByPk(user_id, {
+      attributes: ["address"],
+    });
+    const userAddress = user.dataValues.address;
+    db.connect();
+    db.query(
+      QueryAddress.getAddressDefault,
+      [user_id,userAddress],
+      async (err, rows, fields) => {
+        if (err) {
+          res.status(500).send({ error: err });
+          return;
+        }
+        if (rows.length === 0) {
+          res.status(200).send({status:-1, error: "Không tìm thấy địa chỉ mặc định" });
+          return;
+        } else {
+          const data = rows.map((row) => ({
+            id: row.address_id,
+            recipient_name: row.recipient_name,
+            street_address: row.street_address,
+            city: row.city,
+            state: row.state,
+            postal_code: row.postal_code,
+            recipient_numberphone: row.recipient_numberphone,
+            default: true,
+          }));
+          res.status(200).json({ data, success: true });
+        }
+      }
+    );
+  },
   create: async (req, res) => {
     const {
       recipient_name,
@@ -219,5 +254,7 @@ const AddressController = {
       db.end(); // Close the database connection
     }
   },
+
+
 };
 export default AddressController;
