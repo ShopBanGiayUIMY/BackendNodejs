@@ -9,26 +9,12 @@ export const OrderController = {
 
   },
   create: async (req, res) => {
-    const userId = req.user.id;
-    const validatorRequest = (req ,res) => {
-      const {shippingAddressId, paymentMethodId, cartId, cartItems} = req.body;
-      console.log(shippingAddressId, paymentMethodId, cartId, cartItems)
-      if (!(shippingAddressId
-        || paymentMethodId
-        || cartId
-        || cartItems)) ;
-        // res.status(400).json({
-        //   message: 'invalid request body'
-        // })
-    }
-    validatorRequest(req, res);
     const dto = {
-      userId: userId,
+      userId: req.user.id,
       shippingAddressId: req.body.shippingAddressId,
       paymentMethodId: req.body.paymentMethodId,
       cartId: req.body.cartId
     }
-    // res.json('abc')
     const cartItems = req.body.cartItems;
     const result = await OrderService.createOrderFromCart(dto, cartItems)
     const {status, message, data} = result;
@@ -39,15 +25,17 @@ export const OrderController = {
     } else if (status === 500){
       res.status(500).json(message)
     }
-    // res.status(200).json({
-    //   message: result.message,
-    //   data: result.data
-    // })
   },
   update: async (req, res) => {
-
+    const dto = {
+      userId: req.user.id,
+      orderId: req.params.id
+    }
+    console.log(dto);
+    const result = await OrderService.cancelOrder(dto)
+    const {status, message} = result;
+    res.status(status).json(message)
   },
   destroy: async (req, res) => {
-
   }
 }
