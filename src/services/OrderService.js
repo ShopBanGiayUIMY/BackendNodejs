@@ -1,10 +1,11 @@
-import { Sequelize } from 'sequelize';
+import { Sequelize, or } from 'sequelize';
 import CartItem from '../models/CartItem.js';
 import Order from '../models/Order.js'
 import OrderDetail from '../models/OrderDetail.js';
 import Product from '../models/Product.js';
 import ProductDetail from '../models/ProductDetail.js';
 import sequelize from '../Connection/Sequelize.js';
+import OrderStatus from '../models/OrderStatus.js';
 
 export const OrderService = {
   //needed authn
@@ -14,7 +15,8 @@ export const OrderService = {
         userId: userId,
       },
       include: [
-        OrderDetail
+        OrderDetail,
+        OrderStatus,
       ]
     })
     return result
@@ -112,8 +114,34 @@ export const OrderService = {
     }
   },
   //needed authn
-  cancelOrder: async () => {
-    
+  cancelOrder: async ({userId, orderId}) => {
+    const order = await Order.findByPk(orderId);
+    const orderUserId = order.userId;
+    const orderStatusId = order.statusId;
+    if (orderUserId !== userId) {
+      return {
+        status: 403,
+        message: 'forbidden'
+      }
+    }
+    if (orderStatusId !== 1 && orderStatusId !== 2) {
+      return {
+        status: 500,
+        message: `cannot cancel an order in status isn't "PENDING" or "PROCESSING"`
+      }
+    }
+    const result = await Order.update(
+      {statusId: 5},
+      {
+        where: {
+          id: orderId,
+        }
+      }
+    ) 
+    return {
+      status: 200,
+      message: `canceled ${result} order`
+    }
   },
   //admin operation
   operateOrder: async () => {
