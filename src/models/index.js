@@ -8,6 +8,7 @@ import User from './User.js';
 import Favorites from './Favorites.js';
 import OrderStatus from './OrderStatus.js';
 import Order from './Order.js';
+import OrderDetail from './OrderDetail.js';
 
 export default () => {
   console.log('associate model');
@@ -34,5 +35,7 @@ export default () => {
 
   Order.belongsTo(OrderStatus, {foreignKey: 'status_id'})
   OrderStatus.hasMany(Order, {foreignKey: 'status_id'})
+
+  Order.hasMany(OrderDetail, {foreignKey: 'order_id'})
 }
 

@@ -29,6 +29,22 @@ const Order = sequelize.define('Order', {
     allowNull: false,
     field: "status_id"
   },
+  shippingAddressId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    field: "shipping_address_id"
+  },
+  deliveredAddress: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+    field: 'delivered_address',
+    defaultValue: null,
+  },
+  paymentMethodId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    field: 'payment_method_id'
+  }
 }, {
   tableName: 'orders',
   timestamps: false
