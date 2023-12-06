@@ -37,23 +37,99 @@ const AddressController = {
       }
     );
   },
-  create: async (req, res) => {
-    const { recipient_name, street_address, city, state, postal_code } =
-      req.body;
-    const user_id = req.user.id;
+  getAddressDefault: async (req, res) => {
     const db = connection();
+    const user_id = req.user.id;
+    const user = await User.findByPk(user_id, {
+      attributes: ["address"],
+    });
+    const userAddress = user.dataValues.address;
     db.connect();
     db.query(
-      QueryAddress.createAddress,
-      [user_id, recipient_name, street_address, city, state, postal_code],
+      QueryAddress.getAddressDefault,
+      [user_id,userAddress],
       async (err, rows, fields) => {
         if (err) {
           res.status(500).send({ error: err });
           return;
         }
-        res.status(200).json({ success: true });
+        if (rows.length === 0) {
+          res.status(200).send({status:-1, error: "Không tìm thấy địa chỉ mặc định" });
+          return;
+        } else {
+          const data = rows.map((row) => ({
+            id: row.address_id,
+            recipient_name: row.recipient_name,
+            street_address: row.street_address,
+            city: row.city,
+            state: row.state,
+            postal_code: row.postal_code,
+            recipient_numberphone: row.recipient_numberphone,
+            default: true,
+          }));
+          res.status(200).json({ data, success: true });
+        }
       }
     );
+  },
+  create: async (req, res) => {
+    const {
+      recipient_name,
+      street_address,
+      city,
+      state,
+      postal_code,
+      default_address,
+      recipient_numberphone,
+    } = req.body;
+
+    console.log(req.body);
+
+    const user_id = req.user.id;
+    const db = connection();
+    db.connect();
+
+    try {
+      db.query(
+        QueryAddress.createAddress,
+        [
+          user_id,
+          recipient_name,
+          street_address,
+          city,
+          state,
+          postal_code,
+          recipient_numberphone,
+        ],
+        async (err, rows, fields) => {
+          if (err) {
+            res.status(500).send({ error: err });
+            return;
+          }
+
+          const newAddressId = rows.insertId;
+          console.log("newAddressId", newAddressId);
+
+          if (default_address) {
+            await User.update(
+              { address: newAddressId },
+              { where: { user_id } }
+            );
+          } else {
+            await User.update({ address: null }, { where: { user_id } });
+          }
+
+          res
+            .status(200)
+            .json({ success: true, message: "Thêm địa chỉ thành công" });
+        }
+      );
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ error: "Error updating user address" });
+    } finally {
+      db.end(); // Close the database connection
+    }
   },
   update: async (req, res) => {
     const {
@@ -64,6 +140,7 @@ const AddressController = {
       state,
       postal_code,
       default_address,
+      recipient_numberphone,
     } = req.body;
     console.log(req.body);
 
@@ -109,6 +186,7 @@ const AddressController = {
           city,
           state,
           postal_code,
+          recipient_numberphone,
           address_id,
           user_id,
         ],
@@ -128,7 +206,7 @@ const AddressController = {
     }
   },
   deleteAddress: async (req, res) => {
-    const address_id  = req.params.id;
+    const address_id = req.params.id;
     const user_id = req.user.id;
     const db = connection();
     db.connect();
@@ -176,5 +254,7 @@ const AddressController = {
       db.end(); // Close the database connection
     }
   },
+
+
 };
 export default AddressController;
