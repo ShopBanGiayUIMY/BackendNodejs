@@ -13,7 +13,7 @@ const ProductImage = sequelize.define('ProductImage', {
     allowNull: false
   },
   image_url: {
-    type: DataTypes.STRING,
+    type: DataTypes.JSON,
     allowNull: false
   }
 }, {
@@ -22,10 +22,6 @@ const ProductImage = sequelize.define('ProductImage', {
   createdAt: false,
   updatedAt: false,
 });
-
-// ProductImage.associate = function(model) {
-//   ProductImage.belongsTo(model.product, { foreignKey: 'product_id' });
-// };
 
 
 export default ProductImage;

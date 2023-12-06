@@ -1,7 +1,9 @@
 import Queryuser from '../../Querydb/Userdb.js';
+const layout = "layouts/layout";
 const UserController = {
     getInfoUser:async (req, res) => {
-        const user_id = req.params.id
+        const user_id = req.user.id
+        console.log(user_id)
         try {
             req.getConnection((err, conn) => {
               if (err) {
@@ -21,7 +23,7 @@ const UserController = {
                   }
                     const user = result[0];
                     const { password, ...info } = user; // lấy hết các trường trong user._doc trừ password
-                    res.status(200).json({ users:{...info}});
+                    res.status(200).json({ ...info});
                 }
               );
             });
