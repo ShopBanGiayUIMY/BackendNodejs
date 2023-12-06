@@ -39,7 +39,6 @@
       max-width: 200px;
       height: 200px;
       display: block;
-
     }
 
 
@@ -65,8 +64,6 @@
       --gray: #273640;
       --light: #6d808c;
     }
-
-
 
     #progress-bar-loading {
       position: relative;
@@ -347,16 +344,11 @@
                   <!-- <a class="btn btn-cancel" href="/">Hủy bỏ</a> -->
                 </div>
                 </form>
-
-                <!--
-                  MODAL CHỨC VỤ 
-                -->
                 <div style="background-color: rgba(0, 0, 0, 0.4); z-index: 9999;" class="modal fade "
                   id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
                   data-backdrop="static" data-keyboard="false">
                   <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
-
                       <div class="modal-body">
                         <div class="row">
                           <div class="form-group  col-md-12">
@@ -379,15 +371,6 @@
                     </div>
                   </div>
                 </div>
-                <!--
-                MODAL
-                -->
-
-
-
-                <!--
-                  MODAL DANH MỤC
-                -->
                 <div style="background-color: rgba(0, 0, 0, 0.4); z-index: 9999;" class="modal fade" id="adddanhmuc"
                   tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" data-backdrop="static"
                   data-keyboard="false">
@@ -425,7 +408,7 @@
                     </div>
                   </div>
                 </div>
-                <!--
+                <!--     
                 MODAL
                 -->
                 <div style="background-color: rgba(0, 0, 0, 0.4); z-index: 9999;" class="modal fade" id="addtinhtrang"
@@ -456,22 +439,12 @@
                     </div>
                   </div>
                 </div>
-                <!--
-                MODAL
-                -->
-
-
-
                 <script src="js/jquery-3.2.1.min.js"></script>
                 <script src="js/popper.min.js"></script>
                 <script src="js/bootstrap.min.js"></script>
                 <script src="js/main.js"></script>
                 <script src="js/plugins/pace.min.js"></script>
-
-
               </div>
-
-              <!-- Modal Logout -->
               <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog"
                 aria-labelledby="exampleModalLabelLogout" aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -492,23 +465,15 @@
                   </div>
                 </div>
               </div>
-
             </div>
-            <!---Container Fluid-->
           </div>
         </div>
       </div>
-      <!-- Scrollto to top -->
       <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
       </a>
-
-      <!-- 
-      // upload Ảnh -->
       <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
       <script>
-
-
         const number = document.querySelector(".number");
         const valueNumber = Number(number.getAttribute("data-value"));
         const circle = document.querySelector('.circle');
@@ -615,32 +580,6 @@
               console.error('Có lỗi khi tải lên ảnh:', error);
             });
 
-
-
-
-          // Promise.all(uploadPromises)
-          //   .then(results => {
-          //     console.log('Tất cả ảnh đã được tải lên:', results);
-          //     // results.forEach(imageData => {
-          //     //   console.log('ID của ảnh:', imageData.data.id);
-          //     //   console.log('Tiêu đề của ảnh:', imageData.title);
-          //     //   console.log('URL của ảnh:', imageData.url);
-          //     //   console.log('URL hiển thị của ảnh:', imageData.display_url);
-          //     //   console.log('URL xem ảnh:', imageData.url_viewer);
-          //     // });
-          //     const uploadedImagesDiv = document.querySelector('.fileimagedata');
-          //     results.forEach(imageData => {
-          //       const imageUrl = imageData.data.url;
-          //       const img = document.createElement('img');
-          //       img.src = imageUrl;
-          //       console.log(imageUrl);
-          //       uploadedImagesDiv.appendChild(img);
-          //     });
-
-          //   })
-          //   .catch(error => {
-          //     console.error('Có lỗi khi tải lên ảnh:', error);
-          //   });
         }
       </script>
 </body>
