@@ -7,7 +7,7 @@ export const CartsController = {
   index: async (req, res) => {
     await CartService.getCartOfUser(req.user.id)
       .then((carts) => {
-        console.log(carts);
+        // console.log(carts);
         res.status(200).json(carts);
       })
       .catch((err) => {
@@ -16,8 +16,8 @@ export const CartsController = {
   },
 
   show: async (req, res) => {
-    console.log(req.params.id);
-    console.log(req.user.id);
+    // console.log(req.params.id);
+    // console.log(req.user.id);
     await CartService.getCartById(req.params.id)
       .then((carts) => {
         if (carts) {
@@ -45,14 +45,14 @@ export const CartsController = {
   },
 
   update: async (req, res) => {
-    console.log(req.params.id, "updateiddcart");
-    console.log(req.user.id, "updateiuser");
-    console.log(req.body.product_detail_id, "updatebody");
+    // console.log(req.params.id, "updateiddcart");
+    // console.log(req.user.id, "updateiuser");
+    // console.log(req.body.product_detail_id, "updatebody");
     //TODO validate request body
     const cart = await Cart.findByPk(req.params.id);
     if (cart) {
       if (cart.user_id === req.user.id) {
-        console.log("is cart of user");
+        // console.log("is cart of user");
         const result = await CartService.operateItemFromCart(
           req.params.id,
           req.body.product_detail_id,

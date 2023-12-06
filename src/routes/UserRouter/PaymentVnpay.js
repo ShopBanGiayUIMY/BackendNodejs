@@ -2,10 +2,12 @@ import express from "express";
 import querystring from "qs";
 import crypto from "crypto";
 import moment from "moment";
+import Order from "../../models/Order.js";
+import { or, where } from "sequelize";
 
 const router = express.Router();
 
-router.post("/create_payment_url", function (req, res, next) {
+router.post("/create_payment_url",async function (req, res, next) {
   console.log(JSON.stringify(req.body));
   process.env.TZ = "Asia/Ho_Chi_Minh";
   let date = new Date();
@@ -48,7 +50,13 @@ router.post("/create_payment_url", function (req, res, next) {
   if (bankCode !== null && bankCode !== "") {
     vnp_Params["vnp_BankCode"] = bankCode;
   }
-
+  await Order.update({
+    transactionCode: orderId
+  }, {
+    where: {
+      id: req.body.orderId
+    }
+  })
   vnp_Params = sortObject(vnp_Params);
   let signData = querystring.stringify(vnp_Params, { encode: false });
   let hmac = crypto.createHmac("sha512", secretKey);
@@ -56,7 +64,7 @@ router.post("/create_payment_url", function (req, res, next) {
   vnp_Params["vnp_SecureHash"] = signed;
   vnpUrl += "?" + querystring.stringify(vnp_Params, { encode: false });
   //TODO: update database
-  res.json({ url: vnpUrl, orderId: orderId });
+  res.json({ url: vnpUrl});
 });
 
 router.get("/vnpay_return", function (req, res, next) {
@@ -85,15 +93,16 @@ router.get("/vnpay_return", function (req, res, next) {
   }
 });
 
-router.get("/vnpay_ipn", function (req, res, next) {
-	console.log('vnp call')
+router.get("/vnpay_ipn", async function (req, res, next) {
+	// console.log('vnp call')
   let vnp_Params = req.query;
 	console.log(vnp_Params)
   let secureHash = vnp_Params["vnp_SecureHash"];
 
   let orderId = vnp_Params["vnp_TxnRef"];
   let rspCode = vnp_Params["vnp_ResponseCode"];
-
+  let amount = vnp_Params['vnp_Amount']
+  
   delete vnp_Params["vnp_SecureHash"];
   delete vnp_Params["vnp_SecureHashType"];
 
@@ -107,9 +116,11 @@ router.get("/vnpay_ipn", function (req, res, next) {
   let paymentStatus = "0"; // Giả sử '0' là trạng thái khởi tạo giao dịch, chưa có IPN. Trạng thái này được lưu khi yêu cầu thanh toán chuyển hướng sang Cổng thanh toán VNPAY tại đầu khởi tạo đơn hàng.
   //let paymentStatus = '1'; // Giả sử '1' là trạng thái thành công bạn cập nhật sau IPN được gọi và trả kết quả về nó
   //let paymentStatus = '2'; // Giả sử '2' là trạng thái thất bại bạn cập nhật sau IPN được gọi và trả kết quả về nó
-
-  let checkOrderId = true; // Mã đơn hàng "giá trị của vnp_TxnRef" VNPAY phản hồi tồn tại trong CSDL của bạn
-  let checkAmount = true; // Kiểm tra số tiền "giá trị của vnp_Amout/100" trùng khớp với số tiền của đơn hàng trong CSDL của bạn
+  const order = await Order.findOne({where: {
+    transactionCode: orderId
+  }})
+  let checkOrderId = (false || order?.transactionCode === orderId); // Mã đơn hàng "giá trị của vnp_TxnRef" VNPAY phản hồi tồn tại trong CSDL của bạn
+  let checkAmount = false || (order?.totalAmount === (amount/100).toFixed(2)); // Kiểm tra số tiền "giá trị của vnp_Amout/100" trùng khớp với số tiền của đơn hàng trong CSDL của bạn
   if (secureHash === signed) {
     //kiểm tra checksum
     if (checkOrderId) {
@@ -120,6 +131,13 @@ router.get("/vnpay_ipn", function (req, res, next) {
             //thanh cong
             //paymentStatus = '1'
             // Ở đây cập nhật trạng thái giao dịch thanh toán thành công vào CSDL của bạn
+            await Order.update({
+              paymentStatus: 'PAID'
+            }, {
+              where: {
+                transactionCode: orderId
+              }
+            })
             console.log("success");
             res.status(200).json({ RspCode: "00", Message: "Success" });
           } else {
@@ -127,7 +145,7 @@ router.get("/vnpay_ipn", function (req, res, next) {
             //paymentStatus = '2'
             // Ở đây cập nhật trạng thái giao dịch thanh toán thất bại vào CSDL của bạn
             console.log("faild");
-            res.status(200).json({ RspCode: "00", Message: "Success" });
+            res.status(200).json({ RspCode: "-01", Message: "close payment" });
           }
         } else {
           console.log("02");
