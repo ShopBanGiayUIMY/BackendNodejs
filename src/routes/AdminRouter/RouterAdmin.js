@@ -5,12 +5,16 @@ import ProductAdmin from "./ProductAdmin.js";
 import Dashboard from "./Dashboard.js";
 import VoucherAdmin from "./VoucherAdmin.js";
 import User from "./UserAdmin.js";
+import Order from "./OrderAdmin.js";
+import Analytic from "./AnalyticAdmin.js";
 
 router.use("/", Dashboard);
 router.use("/admin/auth", authRouter);
 router.use("/admin/products", ProductAdmin);
 router.use("/admin/voucher", VoucherAdmin);
 router.use("/admin/users", User);
+router.use("/admin/orders", Order);
+router.use("/admin/analytic", Analytic);
 
 
 
