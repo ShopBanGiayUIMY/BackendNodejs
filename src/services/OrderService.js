@@ -116,6 +116,12 @@ export const OrderService = {
   //needed authn
   cancelOrder: async ({userId, orderId}) => {
     const order = await Order.findByPk(orderId);
+    if (!order) {
+      return {
+        status: 404,
+        message: 'not found'
+      }
+    }
     const orderUserId = order.userId;
     const orderStatusId = order.statusId;
     if (orderUserId !== userId) {

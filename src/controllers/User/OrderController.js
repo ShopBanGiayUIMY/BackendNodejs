@@ -34,7 +34,7 @@ export const OrderController = {
     console.log(dto);
     const result = await OrderService.cancelOrder(dto)
     const {status, message} = result;
-    res.status(status).json(message)
+    res.status(status).json({message: message})
   },
   destroy: async (req, res) => {
   }
