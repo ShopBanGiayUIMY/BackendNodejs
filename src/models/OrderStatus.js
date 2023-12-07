@@ -3,7 +3,6 @@ import sequelize from '../Connection/Sequelize.js';
 
 const OrderStatus = sequelize.define('OrderStatus', {
     id: {
-
         type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
