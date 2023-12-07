@@ -6,7 +6,9 @@ import Product from '../models/Product.js';
 import ProductDetail from '../models/ProductDetail.js';
 import sequelize from '../Connection/Sequelize.js';
 import OrderStatus from '../models/OrderStatus.js';
-
+import User from '../models/User.js';
+import PaymentMethodType from '../models/PaymentMethodType.js';
+import ShippingAddress from '../models/ShippingAddress.js';
 export const OrderService = {
   //needed authn
   getOrderOfUser: async (userId) => {
@@ -20,6 +22,18 @@ export const OrderService = {
       ]
     })
     return result
+  },
+  getAllOrder: async () => {
+    const orders = await Order.findAll({
+      include: [
+        User,
+        OrderStatus,
+        PaymentMethodType,
+        ShippingAddress
+      ]
+    });
+    // console.log(JSON.stringify(orders))
+    return orders
   },
   createOrderFromCart: async ({
     userId,
