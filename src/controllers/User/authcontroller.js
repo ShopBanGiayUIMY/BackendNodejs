@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import Queryuser from "../../Querydb/Userdb.js";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
+import Cart from "../../models/Cart.js";
 // generate token
 let refreshTokens = [];
 const authController = {
@@ -104,12 +105,16 @@ const authController = {
             conn.query(
               'UPDATE auth_users SET verified = "true", verificationToken = "đã xác nhận" WHERE auth_id = ?;',
               [auth.auth_id],
-              (err, result) => {
+              async (err, result) => {
                 if (err) {
                   return res
                     .status(500)
                     .json({ error: "Lỗi xác thực tài khoản" });
                 }
+                const temp = await Cart.create({
+                  user_id: auth.user_id
+                })
+                console.log(JSON.stringify(temp))
                 res
                   .status(200)
                   .json({ message: "Tài khoản đã được xác thực thành công" });
@@ -264,7 +269,7 @@ const authController = {
     try {
       // Kiểm tra username có tồn tại trong database hay không
       const { username, email } = req.body;
-      console.log(req.body);
+
       req.getConnection((err, conn) => {
         if (err) {
           return res
@@ -282,7 +287,6 @@ const authController = {
               return res.status(200).json({ message: "Tài khoản không tồn tại!" ,success: false });
             }
             const user = result[0];
-            console.log(user);
             console.log("user: " + user.verified + " đã đăng nhập");
           
             // So sánh password nhập vào và password trong database

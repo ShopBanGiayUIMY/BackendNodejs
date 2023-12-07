@@ -1,7 +1,7 @@
 import Discount from "../models/Voucher.js";
 import AuthUser from "../models/auth.model.js";
-import { Op } from "sequelize";
-import sequelize from "../Connection/Sequelize.js";
+
+import connection from "../config/Connection.js";
 const VoucherService = {
   createVoucher: async (voucher) => {
     try {
@@ -48,7 +48,7 @@ const VoucherService = {
       throw e.message;
     }
   },
-  getfullvoucher: async () => {
+  getListVoucherAdmin: async () => {
     try {
       const result = await Discount.findAll();
       return result;
@@ -56,69 +56,52 @@ const VoucherService = {
       throw e.message;
     }
   },
-  getListVoucher: async (value) => {
-    const user = await AuthUser.findOne({
-      where: {
-        user_id: value,
-      },
-      attributes: ["role"],
-    });
+
+  getListVoucher: async (user_id) => {
+    const db = connection();
+    db.connect();
     try {
-      if (user.dataValues.role == 1) {
-        const result = await Discount.findAll();
-        return result;
-      } else if (user.dataValues.role == 2) {
-        const result = await Discount.findAll({
-          where: {
-            [Op.or]: [
-              {
-                [Op.and]: [
-                  sequelize.literal(
-                    `JSON_CONTAINS(Voucher.item_user_id_list, '[${value}]')`
-                  ),
-                  { voucher_purpose: user.dataValues.role },
-                  { usage_quantity: { [Op.gt]: 0 } },
-                ],
-              },
-              {
-                [Op.and]: [
-                  sequelize.literal(
-                    `JSON_LENGTH(Voucher.item_user_id_list) = 0`
-                  ),
-                  { voucher_purpose: user.dataValues.role },
-                  { usage_quantity: { [Op.gt]: 0 } },
-                ],
-              },
-            ],
-          },
+      const user = await AuthUser.findOne({
+        where: {
+          user_id: user_id,
+        },
+        attributes: ["role"],
+      });
+      const voucher = await Discount.findAll();
+      console.log("user.dataValues.role", user.dataValues.role);
+
+      if (user.dataValues.role == 0) {
+        return new Promise((resolve, reject) => {
+          db.query(
+            `
+            SELECT *
+FROM vouchers
+WHERE (voucher_purpose = 0 OR voucher_purpose = 1)
+  AND (
+    JSON_SEARCH(item_user_id_list, 'one', ?) IS NOT NULL
+    AND (
+      use_history IS NULL
+      OR JSON_SEARCH(use_history, 'one', ?) IS NULL
+    )
+  );`,
+            [user_id,user_id],
+            (err, rows) => {
+              if (err) {
+                console.log(err);
+                reject(err);
+              } else if (rows.length > 0) {
+                resolve(rows);
+               
+              } else {
+                resolve([]);
+              }
+            }
+          );
         });
-        return result;
-      } else {
-        const result = await Discount.findAll({
-          where: {
-            [Op.or]: [
-              {
-                [Op.and]: [
-                  sequelize.literal(
-                    `JSON_CONTAINS(Voucher.item_user_id_list, '[${value}]')`
-                  ),
-                  { voucher_purpose: user.dataValues.role },
-                  { usage_quantity: { [Op.gt]: 0 } },
-                ],
-              },
-              {
-                [Op.and]: [
-                  sequelize.literal(
-                    `JSON_LENGTH(Voucher.item_user_id_list) = 0`
-                  ),
-                  { voucher_purpose: user.dataValues.role },
-                  { usage_quantity: { [Op.gt]: 0 } },
-                ],
-              },
-            ],
-          },
-        });
-        return result;
+      }else{
+        return {
+          status: false,
+        }
       }
     } catch (e) {
       throw e.message;

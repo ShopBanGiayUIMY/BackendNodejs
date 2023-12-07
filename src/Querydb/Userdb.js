@@ -9,7 +9,12 @@ const Queryuser = {
   GetOtp: `SELECT auth_users.auth_code, users.username FROM auth_users JOIN users ON auth_users.user_id = users.user_id WHERE auth_users.user_id = ?`,
   UpdatePassword: `UPDATE users SET password = ? WHERE user_id = ?`,
   //
-  GetInfoUser: `SELECT * FROM users WHERE user_id = ?`,
+  GetInfoUser: `SELECT users.*, carts.*, COUNT(cart_items.item_id) AS total_cart_items
+  FROM users
+  JOIN carts ON users.user_id = carts.user_id
+  LEFT JOIN cart_items ON carts.cart_id = cart_items.cart_id
+  WHERE users.user_id = ?
+  GROUP BY users.user_id, carts.cart_id;`,
 };
 
 export default Queryuser;

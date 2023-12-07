@@ -5,7 +5,7 @@ import UserService from "../../services/UserService.js";
 const VoucherAdminController = {
   index: async (req, res) => {
     try {
-      const result = await VoucherService.getfullvoucher();
+      const result = await VoucherService.getListVoucherAdmin();
       const data = result.map((row) => {
         return {
           id: row.voucher_id,
@@ -23,7 +23,7 @@ const VoucherAdminController = {
           usage_quantity: row.usage_quantity,
           start_time: formatDate(row.start_time),
           end_time: formatDate(row.end_time),
-          use_history : row.use_history,
+          use_history: row.use_history,
         };
       });
 
@@ -64,6 +64,7 @@ const VoucherAdminController = {
         layout: layout,
         vouchers: data,
       });
+      res.status(200).json({ vouchers: data });
     } catch (e) {
       console.log(e.message);
     }
@@ -85,6 +86,7 @@ const VoucherAdminController = {
           start_date,
           end_date,
         } = req.body;
+        console.log("req.body", req.body);
         let discount_amount = 0;
 
         if (discount_amount_phamtram !== "") {
@@ -104,17 +106,26 @@ const VoucherAdminController = {
           max_price,
           voucher_type,
           reward_type,
-          item_product_id_list: item_product_id_list != '[]' ? JSON.stringify(item_product_id_list_arr) : '[]',
-          item_user_id_list: item_user_id_list != '[]' ? JSON.stringify(item_user_id_list_arr) : '[]',
+          item_product_id_list:
+            item_product_id_list != ""
+              ? JSON.stringify(item_product_id_list_arr)
+              : null,
+          item_user_id_list:
+            item_user_id_list != ""
+              ? JSON.stringify(item_user_id_list_arr)
+              : null,
           usage_quantity,
           start_time: start_date,
           end_time: end_date,
+          voucher_purpose: 0,
+          use_history: null,
         };
         console.log("Creating Voucher:", voucher);
-        const result = await VoucherService.createVoucher(voucher);
+        console.log("item_product_id_list_arr", JSON.stringify(item_product_id_list_arr));
+         const result = await VoucherService.createVoucher(voucher);
 
         if (result) {
-         res.redirect("/admin/voucher");
+          res.redirect("/admin/voucher");
         } else {
           res.status(500).json({ message: "Error creating voucher" });
         }

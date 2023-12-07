@@ -1,8 +1,8 @@
-import Product from "../models/Product.js";
 import Category from "../models/Category.js";
+import Product from "../models/Product.js"
 import ProductDetail from "../models/ProductDetail.js";
-import ProductImage from "../models/ProductImage.js";
-const ProductService = {
+import ProductImage from "../models/ProductImage.js"
+export const ProductService = {
   getListProduct: async () => {
     try {
       const result = await Product.findAll({
@@ -20,7 +20,20 @@ const ProductService = {
   },
   getProductById: async (productId) => {
     try {
-      const result = await Product.findByPk(productId);
+      const result = await Product.findByPk(productId, {
+        include: [
+          {
+            model: ProductImage,
+            attributes: ["image_url"]
+          },
+          {
+            model: ProductDetail,
+          },
+          {
+            model: Category,
+          }
+        ]
+      });
       return result;
     } catch (e) {
       throw e.message;
@@ -64,7 +77,15 @@ const ProductService = {
       throw e.message;
     }
   },
+  canAddToCart: async (
+    productDetailId,
+    quantity
+  ) => {
+    const productDetail = await ProductDetail.findByPk(productDetailId)
+    return productDetail.stock >= quantity 
+  },
   // Cập nhật thông tin sản phẩm
+  //TODO: need to fix
   updateProduct: async (
     productId,
     product_name,
@@ -124,6 +145,7 @@ const ProductService = {
     }
   },
 
+  //TODO: need to fix
   deleteProduct: async (productId) => {
     try {
       // Xóa thông tin ảnh sản phẩm
@@ -148,6 +170,7 @@ const ProductService = {
       throw e.message;
     }
   },
+  //TODO: need to fix
   getProductDetail: async (productId) => {
     try {
       const productDetail = await ProductDetail.findOne({
