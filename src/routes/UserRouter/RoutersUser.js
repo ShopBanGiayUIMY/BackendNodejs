@@ -10,6 +10,7 @@ import OrderStatusRouter from './OrderStatus.js'
 import OrderRouter from './Order.js';
 import Address from './Address.js'
 import PaymentVnpay from './PaymentVnpay.js';
+import Search from './Search.js';
 const router = express.Router();
 
 // Import các routes từ các tệp riêng lẻ
@@ -24,4 +25,5 @@ router.use('/order-status', OrderStatusRouter)
 router.use('/orders', OrderRouter)
 router.use('/address', Address)
 router.use('/payment/vnpay', PaymentVnpay)
+router.use('/search', Search)
 export default router;
