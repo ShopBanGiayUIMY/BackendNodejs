@@ -31,7 +31,7 @@ export const OrderController = {
       userId: req.user.id,
       orderId: req.params.id
     }
-    console.log(dto);
+    // console.log(dto);
     const result = await OrderService.cancelOrder(dto)
     const {status, message} = result;
     res.status(status).json({message: message})

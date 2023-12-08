@@ -1,56 +1,109 @@
+import { or } from "sequelize";
+import { OrderService } from "../../services/OrderService.js";
+import OrderStatus from "../../models/OrderStatus.js";
+import Order from "../../models/Order.js";
+
 const layout = "layouts/layout";
 
 const OrderController = {
-  index: async(req, res) => {
+  index: async (req, res) => {
     try {
-    //   const result = await OrderService.getListOrderAdmin();
-    //   const data = result.map((row) => {
-    //     return {
-    //       id: row.order_id,
-    //       user_id: row.user_id,
-    //       user_name: row.user_name,
-    //       user_phone: row.user_phone,
-    //       user_address: row.user_address,
-    //       total_price: row.total_price,
-    //       status: formatStatus(row.status),
-    //       created_at: formatDate(row.created_at),
-    //       updated_at: formatDate(row.updated_at),
-    //     };
-    //   });
-    //   function formatDate(timestamp) {
-    //     const date = new Date(timestamp * 1000);
-    //     const day = date.getDate().toString().padStart(2, "0");
-    //     const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    //     const year = date.getFullYear();
-    //     return `${day}/${month}/${year}`;
-    //   }
-    //   function formatStatus(status) {
-    //     switch (status) {
-    //       case 1:
-    //         return "Đang chờ xử lý";
-    //       case 2:
-    //         return "Đang giao hàng";
-    //       case 3:
-    //         return "Đã giao hàng";
-    //       case 4:
-    //         return "Đã hủy";
-    //       default:
-    //         return "Không xác định";
-    //     }
-    //   }
-    //   res.render("order/order", {
-    //     data,
-    //     layout: layout,
-    //     title: "Quản lý đơn hàng",
-    //   });
-    res.render("order/order", {
+      const orders = await OrderService.getAllOrder();
+      console.log(JSON.stringify(orders));
+      const orderStatus = await OrderStatus.findAll();
+      const mapOrderToPayload = (order) => {
+        return {
+          id: order.id,
+          user: {
+            userId: order.userId,
+            username: order.User.username,
+            phone: order.User.phone,
+            fullName: order.User.full_name,
+            email: order.User.email,
+          },
+          orderDate: parseOrderDate(order.orderDate),
+          shippingAddress: {
+            id: order.ShippingAddress.id,
+            userId: order.ShippingAddress.userId,
+            fullContact: `
+            ${order.ShippingAddress.state},
+             ${order.ShippingAddress.city},
+              ${order.ShippingAddress.recipientPhoneNumber}`,
+          },
+          deliveredAddress: order.deliveredAddressId,
+          paymentStatus: order.paymentStatus,
+          paymentMethod: {
+            id: order.PaymentMethodType.id,
+            paymentMethodName: order.PaymentMethodType.paymentMethodName,
+          },
+          transactionCode: order.transactionCode,
+          orderStatus: {
+            id: order.OrderStatus.id,
+            code: order.OrderStatus.code,
+            status: order.OrderStatus.name,
+          },
+          totalAmount: order.totalAmount,
+        };
+      };
+      const parseOrderDate = (orderDate) => {
+        const date = new Date(orderDate);
+
+        const options = {
+          hour: "2-digit",
+          minute: "2-digit",
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        };
+        const formattedDate = date.toLocaleString("vi-VN", options);
+        return formattedDate;
+      };
+      const ordersPayload = [];
+      await orders.map((order) => {
+        ordersPayload.push(mapOrderToPayload(order));
+      });
+      console.log(ordersPayload);
+      res.render("order/order", {
         title: "Quản lý đơn hàng",
         layout: layout,
+        data: { orders: ordersPayload, orderStatus: orderStatus },
       });
     } catch (error) {
       console.log(error);
     }
   },
-
+  update: async (req, res) => {
+    let dto = req.body;
+    dto = {...dto, orderId: + req.params.id}
+    try {
+      const { orderId, statusId } = dto;
+      if (
+        !(orderId || statusId) ||
+        isNaN(orderId) ||
+        isNaN(statusId) ||
+        orderId <= 0 ||
+        statusId <= 0
+      ) {
+        console.log('400 1')
+        res.status(400).json({ message: "invalid payload" });
+        return;
+      }
+      await Order.update({
+        statusId: statusId
+      }, {
+        where: {
+          id: orderId
+        }
+      })
+      res.status(200).json({message: 'ok'})
+      return;
+    } catch (e) {
+      console.log(e)
+      console.log('400 2')
+      res.status(400).json({message: 'invalid payload'})
+      return;
+    }
+    
+  },
 };
 export default OrderController;

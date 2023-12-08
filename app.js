@@ -1,6 +1,5 @@
 import express from "express";
 import bodyParser from "body-parser";
-import ProductRouter from "./src/routes/UserRouter/Products.js";
 import logger from "./src/middleware/Logger.js";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
@@ -25,7 +24,6 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 app.set('views', path.join(__dirname, 'src', 'views'));
-console.log(path.join(__dirname, 'src', 'views'));
 app.set('view engine', 'ejs');
 app.use(expressLayout);
 app.use(session({
@@ -53,5 +51,4 @@ app.use(myConnection(mysql, {
 
 app.use('/api/v1', RoutersUser);
 app.use('/', RouterAdmin);
-
 app.listen(process.env.SERVER_PORT, process.env.HOST_NAME, () => console.log(`Server started on port ${process.env.SERVER_PORT}`));
