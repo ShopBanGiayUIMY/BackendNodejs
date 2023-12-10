@@ -103,7 +103,7 @@ const ProductAdminController = {
           quantity: product.quantity,
         },
         categories: categories.map((category) => ({
-          id: category.id,
+          id: category.category_id,
           name: category.name,
           selected: category.id === product.category_id ? "selected" : "", // Kiểm tra danh mục được chọn
         })),

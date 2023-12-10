@@ -341,6 +341,7 @@
                                                     <option value="" disabled selected>Chọn danh mục</option>
                                                     <% categories.forEach(item=> { %>
                                                         <option value="<%= item.id %>" <%=item.selected %> >
+
                                                             <%= item.name %>
                                                         </option>
                                                         <% }); %>
