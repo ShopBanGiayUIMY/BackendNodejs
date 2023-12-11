@@ -4,20 +4,35 @@ const layout = "layouts/layout";
 const ProductAdminController = {
   index: async (req, res) => {
     const row = await ProductService.getListProduct();
-
-    const data = row.map((row) => {
+    // console.log(JSON.stringify(row))
+    const data = await row.map((row) => {
+      const parseArrayProductDetail = (productDetails) => {
+        return productDetails.map(e => {
+          console.log(JSON.stringify(e))
+          return {
+            color: e.color,
+            size: e.size,
+            stock: e.stock,
+            detailId: e.detail_id,
+            productId: e.product_id,
+          }
+        })
+      }
       return {
         id: row.product_id,
         name: row.product_name,
         price: row.product_price,
         description: row.product_description,
         thumbnail: row.thumbnail,
+        ProductDetails: parseArrayProductDetail(row.ProductDetails),
         category: {
           name: row.Category.name,
           image: row.Category.image,
         },
       };
     });
+    
+    console.log(JSON.stringify(data))
     res.render("product/products", { data, layout: layout, title: "Products" });
   },
   create: async (req, res) => {

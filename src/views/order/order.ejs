@@ -350,15 +350,17 @@
                         </td>
                         <td>
                           <select name="orderStatus" id="orderStatusSelect" value="<%= order.orderStatus.id %>"
-                            onchange="updateOrderStatus(this, <%= order.id %>, <%= order.orderStatus.id %>)">
+                            onchange="updateOrderStatus(this, <%= order.id %>, <%= order.orderStatus.id %>, '<%= data.serverUrl %>')">
                             <% data.orderStatus.forEach(status=> { %>
                               <option value="<%= status.id %>" <% if (status.id===order.orderStatus.id) { %>selected<% }
                                   %>
                                   <% if (order.orderStatus.code==='CANCELED' || order.orderStatus.code==='DELIVERED' ) {
                                     %>disabled<% } %>
                                       <% if (status.code==='CANCELED' || status.code==='PENDING' ) { %>disabled<% } %>
-                                          >
-                                          <%= status.name %>
+                                          <% if (order.paymentMethod.paymentMethodName==='VNPAY' &&
+                                            order.paymentStatus==='UNPAID' ) { %>disabled<% } %>
+                                              >
+                                              <%= status.name %>
                               </option>
                               <!-- Add more options as needed -->
                               <% }) %>
@@ -368,7 +370,7 @@
                           <%= order.paymentMethod.paymentMethodName %>
                         </td>
                         <td>
-                          <%= order.totalAmount %> VND
+                          <%= order.totalAmount %> VNĐ
                         </td>
                         <td>
                           <%= order.shippingAddress.fullContact %>
@@ -389,7 +391,7 @@
               <div class="copyright text-center my-auto">
                 <span>copyright &copy;
                   <script> document.write(new Date().getFullYear()); </script> - developed by
-                  <b><a href="https://github.com/huyfpl" target="_blank">Shop giầy Nike</a></b>
+                  <b><a href="https://github.com/huyfpl" target="_blank">MD-02 Fall 2023</a></b>
                 </span>
               </div>
             </div>
@@ -411,18 +413,12 @@
       <script>
         console.log('abc')
         try {
-          function updateOrderStatus(selectElement, orderId, originalStatusId) {
+          function updateOrderStatus(selectElement, orderId, originalStatusId, serverUrl) {
             let newStatusId = selectElement.value;
-            console.log(originalStatusId)
-            // console.log(<%= data %>)
-            console.log(orderId)
-            // const dataString = JSON.stringify(<%- JSON.stringify(data) %>);
-            // console.log(dataString);
             const loadingOverlay = document.getElementById('loadingOverlay');
             loadingOverlay.style.display = 'flex';
             try {
-              const url = 'http://192.168.0.107:3000/admin/orders/'+orderId
-              console.log(url)
+              const url = `http://${serverUrl}:3000/admin/orders/${orderId}`
               const response = fetch(url, {
                 method: 'PATCH',
                 headers: {
@@ -432,29 +428,24 @@
                   statusId: newStatusId,
                 }),
               }).then(res => {
-                console.log(res.status)
-                console.log(res)
                 loadingOverlay.style.display = 'none';
-                // console.log(data);
                 originalStatusId = newStatusId;
               }).catch(e => {
-                console.log(e);
-                console.log('catch')
                 loadingOverlay.style.display = 'none';
                 selectElement.value = originalStatusId
               });
-    
+
               // Handle the response as needed
             } catch (e) {
-              console.log(e);
-              console.log('catch2')
+              console.error(e)
               selectElement.value = originalStatusId
               loadingOverlay.style.display = 'none';
+          alert('Error updating order status');
             }
           }
         } catch (e) {
-          console.log('abcasdasd')
-          console.log(e)
+          console.error(e)
+          alert('Error updating order status');
         }
       </script>
 </body>
