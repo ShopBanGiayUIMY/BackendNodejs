@@ -7,6 +7,7 @@ export const ProductService = {
     try {
       const result = await Product.findAll({
         include: [
+          ProductDetail,
           {
             model: Category,
             attributes: ["name", "image"],
