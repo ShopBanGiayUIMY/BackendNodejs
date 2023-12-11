@@ -1,5 +1,6 @@
 const logger = (req, res, next) => {
-  // console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  if (req.url.includes('/api/v1'))
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
   next();
 };
 
