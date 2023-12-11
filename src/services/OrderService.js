@@ -1,39 +1,43 @@
-import { Sequelize, or } from 'sequelize';
-import CartItem from '../models/CartItem.js';
-import Order from '../models/Order.js'
-import OrderDetail from '../models/OrderDetail.js';
-import Product from '../models/Product.js';
-import ProductDetail from '../models/ProductDetail.js';
-import sequelize from '../Connection/Sequelize.js';
-import OrderStatus from '../models/OrderStatus.js';
-import User from '../models/User.js';
-import PaymentMethodType from '../models/PaymentMethodType.js';
-import ShippingAddress from '../models/ShippingAddress.js';
+import { Sequelize, or } from "sequelize";
+import CartItem from "../models/CartItem.js";
+import Order from "../models/Order.js";
+import OrderDetail from "../models/OrderDetail.js";
+import Product from "../models/Product.js";
+import ProductDetail from "../models/ProductDetail.js";
+import sequelize from "../Connection/Sequelize.js";
+import OrderStatus from "../models/OrderStatus.js";
+import User from "../models/User.js";
+import PaymentMethodType from "../models/PaymentMethodType.js";
+import ShippingAddress from "../models/ShippingAddress.js";
 export const OrderService = {
   //needed authn
-  getOrderOfUser: async (userId) => {
+  getOrderOfUser: async ({ userId, statusId }) => {
+    if (statusId) {
+      console.log('with params')
+      const result = await Order.findAll({
+        where: {
+          userId: userId,
+          statusId: statusId
+        },
+        include: [OrderDetail, OrderStatus],
+      });
+      return result;
+    }
+    console.log('without params')
     const result = await Order.findAll({
       where: {
         userId: userId,
       },
-      include: [
-        OrderDetail,
-        OrderStatus,
-      ]
-    })
-    return result
+      include: [OrderDetail, OrderStatus],
+    });
+    return result;
   },
   getAllOrder: async () => {
     const orders = await Order.findAll({
-      include: [
-        User,
-        OrderStatus,
-        PaymentMethodType,
-        ShippingAddress
-      ]
+      include: [User, OrderStatus, PaymentMethodType, ShippingAddress],
     });
     // console.log(JSON.stringify(orders))
-    return orders
+    return orders;
   },
   createOrderFromCart: async ({
     userId,
@@ -41,37 +45,37 @@ export const OrderService = {
     paymentMethodId,
     cartsId,
     cartItems,
-    freightCost
+    freightCost,
   }) => {
     //TODO: should be validate data
     const cartItemInOrder = await CartItem.findAll({
       where: Sequelize.and(
         {
-          cart_id: cartsId
+          cart_id: cartsId,
         },
-        Sequelize.or(
-          {
-            item_id: cartItems
-          }
-        )
+        Sequelize.or({
+          item_id: cartItems,
+        })
       ),
       include: {
         model: ProductDetail,
         attributes: ["product_id", "stock"],
         include: {
           model: Product,
-          attributes: ["product_price"]
-        }
-      }
-    })
-    const cartItemIdInOrder = await cartItemInOrder.map(e => e.item_id)
+          attributes: ["product_price"],
+        },
+      },
+    });
+    const cartItemIdInOrder = await cartItemInOrder.map((e) => e.item_id);
     if (cartItemInOrder.length !== cartItems.length) {
-      const cartItem = await cartItems.filter(async e => ! {cartItemId: await cartItemIdInOrder.includes(e)})
+      const cartItem = await cartItems.filter(
+        async (e) => !{ cartItemId: await cartItemIdInOrder.includes(e) }
+      );
       return {
         status: 400,
         message: `cart items does not belong to User ${userId}`,
-        data: cartItem
-      }
+        data: cartItem,
+      };
     }
     const error = { data: [] };
     let totalAmount = freightCost;
@@ -86,19 +90,22 @@ export const OrderService = {
     }
     if (error.data.length > 0) {
       error.status = 401;
-      error.message = 'cannot create order with item quantity not available'
+      error.message = "cannot create order with item quantity not available";
       return error;
     } else {
       const transaction = await sequelize.transaction();
       try {
-        const order = await Order.create({
-          userId: userId,
-          shippingAddressId: shippingAddressId,
-          paymentMethodId: paymentMethodId,
-          statusId: 1,
-          totalAmount: totalAmount,
-          orderDate: new Date
-        }, {transaction: transaction})
+        const order = await Order.create(
+          {
+            userId: userId,
+            shippingAddressId: shippingAddressId,
+            paymentMethodId: paymentMethodId,
+            statusId: 1,
+            totalAmount: totalAmount,
+            orderDate: new Date(),
+          },
+          { transaction: transaction }
+        );
         for (const e of cartItemInOrder) {
           await OrderDetail.create(
             {
@@ -110,67 +117,64 @@ export const OrderService = {
             { transaction: transaction }
           );
           await CartItem.destroy({
-            where:{
-              item_id: e.item_id
-            }
-          })
+            where: {
+              item_id: e.item_id,
+            },
+          });
         }
         await transaction.commit();
         return {
           status: 200,
-          message: "ok"
-        }
+          message: "ok",
+        };
       } catch (e) {
         await transaction.rollback();
         return {
           status: 500,
-          message: `server error`
-        }
+          message: `server error`,
+        };
       }
     }
   },
   //needed authn
-  cancelOrder: async ({userId, orderId}) => {
+  cancelOrder: async ({ userId, orderId }) => {
     const order = await Order.findByPk(orderId);
     if (!order) {
       return {
         status: 404,
-        message: 'not found'
-      }
+        message: "not found",
+      };
     }
     const orderUserId = order.userId;
     const orderStatusId = order.statusId;
     if (orderUserId !== userId) {
       return {
         status: 403,
-        message: 'forbidden'
-      }
+        message: "forbidden",
+      };
     }
     if (orderStatusId !== 1 && orderStatusId !== 2) {
       return {
         status: 500,
-        message: `cannot cancel an order in status isn't "PENDING" or "PROCESSING"`
-      }
+        message: `cannot cancel an order in status isn't "PENDING" or "PROCESSING"`,
+      };
     }
     const result = await Order.update(
-      {statusId: 5},
+      { statusId: 5 },
       {
         where: {
           id: orderId,
-        }
+        },
       }
-    ) 
+    );
     return {
       status: 200,
-      message: `canceled ${result} order`
-    }
+      message: `canceled ${result} order`,
+    };
   },
   //admin operation
-  operateOrder: async () => {
-
-  },
+  operateOrder: async () => {},
   //user can update order if status is pending
-  isOrderCanBeUpdated: async () => {
-
-  }
-}
+  isOrderCanBeUpdated: async () => {},
+  getOrderProcessingOfUser: async (userId) => {},
+};
