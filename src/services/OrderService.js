@@ -39,17 +39,19 @@ export const OrderService = {
     userId,
     shippingAddressId,
     paymentMethodId,
-    cartId
-  }, items) => {
+    cartsId,
+    cartItems,
+    freightCost
+  }) => {
     //TODO: should be validate data
     const cartItemInOrder = await CartItem.findAll({
       where: Sequelize.and(
         {
-          cart_id: cartId
+          cart_id: cartsId
         },
         Sequelize.or(
           {
-            item_id: items
+            item_id: cartItems
           }
         )
       ),
@@ -63,8 +65,8 @@ export const OrderService = {
       }
     })
     const cartItemIdInOrder = await cartItemInOrder.map(e => e.item_id)
-    if (cartItemInOrder.length !== items.length) {
-      const cartItem = await items.filter(async e => ! {cartItemId: await cartItemIdInOrder.includes(e)})
+    if (cartItemInOrder.length !== cartItems.length) {
+      const cartItem = await cartItems.filter(async e => ! {cartItemId: await cartItemIdInOrder.includes(e)})
       return {
         status: 400,
         message: `cart items does not belong to User ${userId}`,
@@ -72,7 +74,7 @@ export const OrderService = {
       }
     }
     const error = { data: [] };
-    let totalAmount = 0;
+    let totalAmount = freightCost;
     for (const e of cartItemInOrder) {
       e.canOrder = true;
       if (e.quantity > e.ProductDetail.stock) {

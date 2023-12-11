@@ -10,13 +10,16 @@ export const OrderController = {
   },
   create: async (req, res) => {
     const dto = {
-      userId: req.user.id,
-      shippingAddressId: req.body.shippingAddressId,
-      paymentMethodId: req.body.paymentMethodId,
-      cartId: req.body.cartId
+      userId: req.user?.id,
+      shippingAddressId: req.body?.shippingAddressId,
+      paymentMethodId: req.body?.paymentMethodId,
+      cartsId: req.body?.cartId,
+      freightCost: req.body?.freightCost,
+      vouchersId: req.body?.vouchersId,
+      cartItems: req.body?.cartItems
     }
-    const cartItems = req.body.cartItems;
-    const result = await OrderService.createOrderFromCart(dto, cartItems)
+    console.log(dto)
+    const result = await OrderService.createOrderFromCart(dto)
     const {status, message, data} = result;
     if (status === 200) {
       res.status(200).json(message)
