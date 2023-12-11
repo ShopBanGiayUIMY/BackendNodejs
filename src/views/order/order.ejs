@@ -421,7 +421,7 @@
             const loadingOverlay = document.getElementById('loadingOverlay');
             loadingOverlay.style.display = 'flex';
             try {
-              const url = 'http://192.168.0.107:3000/admin/orders/'+orderId
+              const url = 'http://192.168.0.107:3000/admin/orders/' + orderId
               console.log(url)
               const response = fetch(url, {
                 method: 'PATCH',
@@ -443,7 +443,7 @@
                 loadingOverlay.style.display = 'none';
                 selectElement.value = originalStatusId
               });
-    
+
               // Handle the response as needed
             } catch (e) {
               console.log(e);
