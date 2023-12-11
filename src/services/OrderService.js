@@ -155,7 +155,7 @@ export const OrderService = {
     }
     if (orderStatusId !== 1 && orderStatusId !== 2) {
       return {
-        status: 500,
+        status: 400,
         message: `cannot cancel an order in status isn't "PENDING" or "PROCESSING"`,
       };
     }
@@ -171,6 +171,45 @@ export const OrderService = {
       status: 200,
       message: `canceled ${result} order`,
     };
+  },
+  verifyDeliveredOrder: async ({userId, orderId}) => {
+    const order = await Order.findByPk(orderId);
+    if (!order) {
+      return {
+        status: 404,
+        message: "not found",
+      };
+    }
+    const orderUserId = order.userId;
+    const orderStatusId = order.statusId;
+    if (orderUserId !== userId) {
+      return {
+        status: 403,
+        message: "forbidden",
+      };
+    }
+    if (orderStatusId !== 3) {
+      return {
+        status: 400,
+        message: `cannot verify delivered an order in status isn't "SHIPPING"`,
+      };
+    } else {
+      const result = await Order.update(
+        { 
+          statusId: 4,
+          paymentStatus: 'PAID'
+        },
+        {
+          where: {
+            id: orderId,
+          },
+        }
+      );
+      return {
+        status: 200,
+        message: `verify delivered ${result} order`,
+      };
+    }
   },
   //admin operation
   operateOrder: async () => {},

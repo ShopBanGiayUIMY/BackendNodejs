@@ -63,7 +63,7 @@ export const OrderController = {
       res.status(500).json(message);
     }
   },
-  update: async (req, res) => {
+  cancel: async (req, res) => {
     const dto = {
       userId: req.user.id,
       orderId: req.params.id,
@@ -74,4 +74,13 @@ export const OrderController = {
     res.status(status).json({ message: message });
   },
   destroy: async (req, res) => {},
+  verifyDelivered: async (req, res) => {
+    const dto = {
+      userId: req.user.id,
+      orderId: req.params.id,
+    }
+    const result = await OrderService.verifyDeliveredOrder(dto);
+    const { status, message } = result;
+    res.status(status).json({message: message})
+  }
 };
