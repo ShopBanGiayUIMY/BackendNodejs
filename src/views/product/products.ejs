@@ -179,11 +179,8 @@
                       <th>Hình ảnh</th>
                       <th>Giá tiền</th>
                       <th>Mô tả</th>
-                      <th>Màu sắc</th> <!-- Add Color -->
-                      <th>Kích thước</th> <!-- Add Size -->
-                      <th>Số lượng tồn</th> <!-- Add Stock -->
+                      <th>Chi tiết</th> <!-- Thêm cột chi tiết -->
                       <th>Chức năng</th>
-
                     </tr>
                   </thead>
                   <tbody>
@@ -203,10 +200,10 @@
                         <td class="text-center">
                           <img class="product-img" src="<%= product.thumbnail %>" alt="!lỗi hiển thị ảnh" />
                         </td>
-
                         <td>
-                          <%= product.price %>
+                          <%= (product.price).toLocaleString('vi-VN', { style: 'currency' , currency: 'VND' }) %>
                         </td>
+
                         <td>
                           <div class="short-description">
                             <%= product.description.slice(0, 50) %>
@@ -217,17 +214,16 @@
                                 <a href="#" class="show-more">Xem thêm</a>
                           </div>
                         </td>
-
+                        <!-- Thêm cột cho thông tin chi tiết -->
                         <td>
-                          <%= product.color %>
+                          <% product.ProductDetails.forEach(detail=> { %>
+                            <div>
+                              Màu sắc: <%= detail.color %><br />
+                                Kích thước: <%= detail.size %><br />
+                                  Số lượng tồn: <%= detail.stock %>
+                            </div>
+                            <% }); %>
                         </td>
-                        <td>
-                          <%= product.size %>
-                        </td>
-                        <td>
-                          <%= product.stock %>
-                        </td>
-
                         <td class="text-center">
                           <button class="btn btn-primary  trash" data-bs-toggle="modal"
                             data-bs-target="#comfirmDeleteModal" onclick="onDeleteProduct('<%= product.id %>')">
@@ -241,6 +237,7 @@
                       <%})%>
                   </tbody>
                 </table>
+
               </div>
             </div>
 
@@ -305,6 +302,16 @@
         win.print();
       }
     }
+    // Function to format number to Vietnamese currency (VND)
+    function formatCurrency(amount) {
+      return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+    }
+
+    // Sử dụng function này để hiển thị giá tiền
+    let price = 1000000; // Đây là giá tiền của sản phẩm (cần thay đổi bằng giá tiền thực tế)
+    let formattedPrice = formatCurrency(price);
+
+    console.log(formattedPrice); // In ra số tiền có định dạng VND
 
     onDeleteProduct = (value) => {
       swal({

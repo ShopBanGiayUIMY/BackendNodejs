@@ -2,39 +2,55 @@ import ProductService from "../../services/ProductService.js";
 import CategoryService from "../../services/CategoryService.js";
 import ProductDetail from "../../models/ProductDetail.js";
 const layout = "layouts/layout";
+
+const formatCurrency = (amount) => {
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  }).format(amount);
+};
+
 const ProductAdminController = {
   index: async (req, res) => {
-    const row = await ProductService.getListProduct();
-    // console.log(JSON.stringify(row))
-    const data = await row.map((row) => {
-      const parseArrayProductDetail = (productDetails) => {
-        return productDetails.map((e) => {
-          console.log(JSON.stringify(e));
-          return {
-            color: e.color,
-            size: e.size,
-            stock: e.stock,
-            detailId: e.detail_id,
-            productId: e.product_id,
-          };
-        });
-      };
-      return {
-        id: row.product_id,
-        name: row.product_name,
-        price: row.product_price,
-        description: row.product_description,
-        thumbnail: row.thumbnail,
-        ProductDetails: parseArrayProductDetail(row.ProductDetails),
-        category: {
-          name: row.Category.name,
-          image: row.Category.image,
-        },
-      };
-    });
+    try {
+      const row = await ProductService.getListProduct();
 
-    console.log(JSON.stringify(data));
-    res.render("product/products", { data, layout: layout, title: "Products" });
+      const data = row.map((row) => {
+        const parseArrayProductDetail = (productDetails) => {
+          return productDetails.map((e) => {
+            return {
+              color: e.color,
+              size: e.size,
+              stock: e.stock,
+              detailId: e.detail_id,
+              productId: e.product_id,
+            };
+          });
+        };
+
+        return {
+          id: row.product_id,
+          name: row.product_name,
+          price: formatCurrency(row.product_price), // Định dạng giá thành VNĐ
+          description: row.product_description,
+          thumbnail: row.thumbnail,
+          ProductDetails: parseArrayProductDetail(row.ProductDetails),
+          category: {
+            name: row.Category.name,
+            image: row.Category.image,
+          },
+        };
+      });
+
+      res.render("product/products", {
+        data,
+        layout: layout,
+        title: "Products",
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Something went wrong");
+    }
   },
   create: async (req, res) => {
     if (req.method === "POST") {

@@ -347,7 +347,6 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="tile">
-                                    <!-- <h3 class="tile-title">Sửa sản phẩm</h3> -->
                                     <div class="tile-body">
                                         <form class="row" action="/admin/products/edit/<%= product.id %>" method="post">
                                             <div class="form-group col-md-3">
@@ -355,11 +354,7 @@
                                                 <input class="form-control" type="text" id="product_name"
                                                     name="product_name" required value="<%= product.name %>">
                                             </div>
-                                            <div class="form-group col-md-3">
-                                                <label class="control-label">Số lượng</label>
-                                                <input class="form-control" type="number" id="quantity" name="quantity"
-                                                    required value="<%= product.quantity %>">
-                                            </div>
+
                                             <div class="form-group col-md-3">
                                                 <label class="control-label">Giá tiền</label>
                                                 <input class="form-control" type="number" id="product_price"
@@ -371,8 +366,8 @@
                                                     required>
                                                     <option value="" disabled selected>Chọn danh mục</option>
                                                     <% categories.forEach(item=> { %>
-                                                        <option value="<%= item.id %>" <%=item.selected %> >
-
+                                                        <option value="<%= item.id %>" <%=product.category_id==item.id
+                                                            ? 'selected' : '' %> >
                                                             <%= item.name %>
                                                         </option>
                                                         <% }); %>
@@ -381,41 +376,30 @@
 
                                             <div class="form-group col-md-12">
                                                 <label class="control-label">Ảnh sản phẩm</label>
-                                                <div class="imageUpload">
-                                                    <input type="file" class="inp" accept="image/*" multiple
-                                                        id="file-input" onchange="
-                                                        const fileInput = document.getElementById('file-input');
-                                                        const fileImageData = document.querySelector('.fileimagedata');
-                                                        
-                                                        if (fileInput.files && fileInput.files.length > 0) {
-                                                            const selectedFiles = Array.from(fileInput.files);
-                                                            fileImageData.innerHTML = '';
-                                                            
-                                                            selectedFiles.forEach(file => {
-                                                                const fileInfo = document.createElement('p');
-                                                                fileInfo.textContent = `Tên: ${file.name}, Kích thước: ${file.size} bytes`;
-                                                                fileImageData.appendChild(fileInfo);
-                                                            });
-                                                        } else {
-                                                            fileImageData.textContent = 'Không có tệp tin nào được chọn.';
-                                                        }
-                                                    " />
-                                                    <input type="hidden" name="product_image" id="product_image"
-                                                        value="thumbnail" />
-                                                    <button onclick="document.getElementById('file-input').click()"
-                                                        class="selectImage" type="button">
-                                                        <i class="fas fa-cloud-upload-alt"></i> Chọn ảnh
-                                                    </button>
-                                                    <span class="fileimagedata"></span>
-                                                    <div id="progress-bar-loading">
-                                                        <span class="number" data-value="100"></span>
-                                                        <svg height="150" width="150" class="circle">
-                                                            <circle cx="75" cy="75" r="65" stroke-width="20"
-                                                                fill="none" />
-                                                        </svg>
-                                                    </div>
-                                                </div>
+                                                <img src="<%= product.thumbnail %>" class="product-img"
+                                                    alt="!lỗi hiển thị ảnh" />
+                                                <input type="file" id="new_product_image" name="new_product_image"
+                                                    accept="image/*">
+                                                <button type="button" id="delete_image_button">Xóa ảnh</button>
                                             </div>
+
+
+
+                                            <div class="form-group col-md-12">
+                                                <label class="control-label">Thông tin chi tiết sản phẩm</label>
+                                                <% if(product.ProductDetails && product.ProductDetails.length> 0) { %>
+                                                    <% product.ProductDetails.forEach(detail=> { %>
+                                                        <div>
+                                                            Màu sắc: <%= detail.color %><br />
+                                                                Kích thước: <%= detail.size %><br />
+                                                                    Số lượng tồn: <%= detail.stock %>
+                                                        </div>
+                                                        <% }); %>
+                                                            <% } else { %>
+                                                                <p>Không có thông tin chi tiết sản phẩm.</p>
+                                                                <% } %>
+                                            </div>
+
 
                                             <div class="form-group col-md-12">
                                                 <label class="control-label">Mô tả sản phẩm</label>
@@ -433,6 +417,7 @@
                             </div>
                         </div>
                     </div>
+
 
                     <div style="background-color: rgba(0, 0, 0, 0.4); z-index: 9999;" class="modal fade" id="adddanhmuc"
                         tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" data-backdrop="static"
