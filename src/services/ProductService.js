@@ -3,10 +3,27 @@ import Product from "../models/Product.js";
 import ProductDetail from "../models/ProductDetail.js";
 import ProductImage from "../models/ProductImage.js";
 export const ProductService = {
+  // getListProduct: async () => {
+  //   try {
+  //     const result = await Product.findAll({
+  //       include: [
+  //         {
+  //           // model: [Category, ProductDetail, ProductImage],
+  //           model: Category,
+  //           attributes: ["name", "image"],
+  //         },
+  //       ],
+  //     });
+  //     return result;
+  //   } catch (e) {
+  //     throw e.message;
+  //   }
+  // },
   getListProduct: async () => {
     try {
       const result = await Product.findAll({
         include: [
+          ProductDetail,
           {
             model: Category,
             attributes: ["name", "image"],
@@ -18,6 +35,7 @@ export const ProductService = {
       throw e.message;
     }
   },
+
   getProductById: async (productId) => {
     try {
       const result = await Product.findByPk(productId, {

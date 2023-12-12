@@ -179,8 +179,11 @@
                       <th>Hình ảnh</th>
                       <th>Giá tiền</th>
                       <th>Mô tả</th>
-                      <th>Số lượng</th>
+                      <th>Màu sắc</th> <!-- Add Color -->
+                      <th>Kích thước</th> <!-- Add Size -->
+                      <th>Số lượng tồn</th> <!-- Add Stock -->
                       <th>Chức năng</th>
+
                     </tr>
                   </thead>
                   <tbody>
@@ -205,11 +208,26 @@
                           <%= product.price %>
                         </td>
                         <td>
-                          <%= product.description %>
+                          <div class="short-description">
+                            <%= product.description.slice(0, 50) %>
+                              <%= product.description.length> 50 ? '...' : '' %>
+                                <span class="more-content" style="display: none;">
+                                  <%= product.description.slice(50) %>
+                                </span>
+                                <a href="#" class="show-more">Xem thêm</a>
+                          </div>
+                        </td>
+
+                        <td>
+                          <%= product.color %>
                         </td>
                         <td>
-                          <%= product.quantity %>
+                          <%= product.size %>
                         </td>
+                        <td>
+                          <%= product.stock %>
+                        </td>
+
                         <td class="text-center">
                           <button class="btn btn-primary  trash" data-bs-toggle="modal"
                             data-bs-target="#comfirmDeleteModal" onclick="onDeleteProduct('<%= product.id %>')">
@@ -227,6 +245,20 @@
             </div>
 
           </div>
+          <script>
+            document.addEventListener('DOMContentLoaded', function () {
+              const showMoreButtons = document.querySelectorAll('.show-more');
+
+              showMoreButtons.forEach(button => {
+                button.addEventListener('click', function (e) {
+                  e.preventDefault();
+                  const moreContent = this.previousElementSibling;
+                  moreContent.style.display = 'inline'; // Hiển thị nội dung chi tiết
+                  this.style.display = 'none'; // Ẩn nút Xem thêm
+                });
+              });
+            });
+          </script>
 
           <!-- Modal Logout -->
           <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabelLogout"

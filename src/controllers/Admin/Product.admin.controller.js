@@ -1,23 +1,39 @@
 import ProductService from "../../services/ProductService.js";
 import CategoryService from "../../services/CategoryService.js";
+import ProductDetail from "../../models/ProductDetail.js";
 const layout = "layouts/layout";
 const ProductAdminController = {
   index: async (req, res) => {
     const row = await ProductService.getListProduct();
-
-    const data = row.map((row) => {
+    // console.log(JSON.stringify(row))
+    const data = await row.map((row) => {
+      const parseArrayProductDetail = (productDetails) => {
+        return productDetails.map((e) => {
+          console.log(JSON.stringify(e));
+          return {
+            color: e.color,
+            size: e.size,
+            stock: e.stock,
+            detailId: e.detail_id,
+            productId: e.product_id,
+          };
+        });
+      };
       return {
         id: row.product_id,
         name: row.product_name,
         price: row.product_price,
         description: row.product_description,
         thumbnail: row.thumbnail,
+        ProductDetails: parseArrayProductDetail(row.ProductDetails),
         category: {
           name: row.Category.name,
           image: row.Category.image,
         },
       };
     });
+
+    console.log(JSON.stringify(data));
     res.render("product/products", { data, layout: layout, title: "Products" });
   },
   create: async (req, res) => {
@@ -131,12 +147,14 @@ const ProductAdminController = {
   },
   detail: async (req, res) => {
     const productId = req.params.id;
+
     try {
       const product = await ProductService.getProductDetail(productId);
       const categories = await CategoryService.getAllCategories(); // Lấy thông tin danh mục
       res.render("product/detailsProduct", {
         layout: layout,
         title: "Product Detail",
+
         product: {
           id: productId,
           name: product.name, // Đảm bảo rằng product trả về các thuộc tính cần thiết từ service
@@ -158,6 +176,26 @@ const ProductAdminController = {
       res.status(500).send("Internal Server Error");
     }
   },
+
+  // detail: async (req, res) => {
+  //   const row = await ProductService.getListProduct();
+
+  //   const data = row.map((row) => {
+  //     return {
+  //       id: row.product_id,
+  //       name: row.product_name,
+  //       price: row.product_price,
+  //       description: row.product_description,
+  //       thumbnail: row.thumbnail,
+  //       category: {
+  //         name: row.Category.name,
+  //         image: row.Category.image,
+  //       },
+  //     };
+  //   });
+  //   res.render("product/products", { data, layout: layout, title: "Products" });
+  // },
+
   // color, size
   // detail: async (req, res) => {
   //   const productId = req.params.id;
