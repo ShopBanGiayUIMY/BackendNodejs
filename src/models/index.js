@@ -43,5 +43,7 @@ export default () => {
   Order.belongsTo(ShippingAddress, {foreignKey: 'shipping_address_id'})
 
   Order.hasMany(OrderDetail, {foreignKey: 'order_id'})
+
+  OrderDetail.belongsTo(ProductDetail, {foreignKey: 'product_detail_id'})
 }
 
