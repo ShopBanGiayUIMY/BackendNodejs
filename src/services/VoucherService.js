@@ -143,7 +143,7 @@ WHERE (voucher_purpose = 0 OR voucher_purpose = 1)
           message: "user have not voucher",
         });
       } else if (voucher.use_history) {
-        if (voucherUseHistory >= voucher.usage_quantity) {
+        if (voucherUseHistory.length >= voucher.usage_quantity) {
           error.push({
             voucherId: voucher.voucher_id,
             userId: userId,
