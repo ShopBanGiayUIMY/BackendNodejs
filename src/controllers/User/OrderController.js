@@ -11,6 +11,7 @@ export const OrderController = {
           "PENDING",
           "PROCESSING",
           "SHIPPING",
+          "SHIPPED",
           "DELIVERED",
           "CANCELED",
         ].includes(orderStatusQueryParam)
@@ -28,14 +29,18 @@ export const OrderController = {
         res
           .status(200)
           .json(await OrderService.getOrderOfUser({ userId, statusId: 3 }));
-      } else if (orderStatusQueryParam === "DELIVERED") {
+      } else if (orderStatusQueryParam === "SHIPPED") {
         res
           .status(200)
           .json(await OrderService.getOrderOfUser({ userId, statusId: 4 }));
-      } else {
+      } else if (orderStatusQueryParam === "DELIVERED") {
         res
           .status(200)
           .json(await OrderService.getOrderOfUser({ userId, statusId: 5 }));
+      } else {
+        res
+          .status(200)
+          .json(await OrderService.getOrderOfUser({ userId, statusId: 6 }));
       }
     } else {
       res.status(200).json(await OrderService.getOrderOfUser({ userId }));
@@ -49,14 +54,14 @@ export const OrderController = {
       paymentMethodId: req.body?.paymentMethodId,
       cartsId: req.body?.cartId,
       freightCost: req.body?.freightCost,
-      vouchersId: req.body?.vouchersId,
+      voucherIds: req.body?.voucherIds,
       cartItems: req.body?.cartItems,
     };
-    console.log(dto);
+    console.log('dto from controller to service: ', dto);
     const result = await OrderService.createOrderFromCart(dto);
     const { status, message, data } = result;
     if (status === 200) {
-      res.status(200).json(message);
+      res.status(200).json({message: message, orderId: data});
     } else if (status === 400 || status === 401) {
       res.status(400).json({ message, data });
     } else if (status === 500) {
