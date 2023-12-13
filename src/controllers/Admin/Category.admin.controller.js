@@ -24,7 +24,11 @@ const CategoryController = {
     const { name, image } = req.body;
     try {
       const newCategory = await Category.create({ name, image });
-      res.status(201).json(newCategory);
+      res.status(201).render("category/addCategories", {
+        newCategory,
+        layout: "layouts/layout",
+        title: "Add Category",
+      });
     } catch (error) {
       console.error(error);
       res.status(500).send("Something went wrong");

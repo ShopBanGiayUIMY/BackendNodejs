@@ -184,51 +184,36 @@
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800">Danh sách thể loại</h1>
                     </div>
+                    <div class="col-sm-2">
 
-
-
-                    <!-- <div class="row">
-                        <div class="main-content px-4" style="overflow: scroll">
-                            <div class="table-container">
-                                <div class="row element-button">
-                                    <div class="col-sm-2">
-
-                                        <a class="btn btn-add btn-sm" href="/admin/products/create" title="Thêm"><i
-                                                class="fas fa-plus"></i>
-                                            Tạo mới sản phẩm</a>
+                        <a class="btn btn-add btn-sm" href="/admin/categories/create" title="Thêm"><i
+                                class="fas fa-plus"></i>
+                            Tạo mới thể loại</a>
+                    </div>
+                    <div class="row">
+                        <% categories.forEach((category, index)=> { %>
+                            <% if (index % 3===0) { %>
+                    </div>
+                    <div class="row">
+                        <% } %>
+                            <div class="col-lg-4 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            <%= category.name %>
+                                        </h5>
+                                        <img src="<%= category.image %>" class="img-fluid"
+                                            style="width: 100%; height: auto;">
+                                        <!-- Thêm các thông tin khác của category nếu cần -->
                                     </div>
                                 </div>
-                                <hr />
-                                <table id="productTable" class="table table-bordered table-hover" style="width: 100%">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Tên</th>
-                                            <th>Danh mục</th>
-                                            <th>Hình ảnh</th>
-                                            <th>Giá tiền</th>
-                                            <th>Mô tả</th>
-                                            <th>Chi tiết</th> 
-                    <th>Chức năng</th>
-                    </tr>
-                    </thead>
-                   
-                        </table>
-
+                            </div>
+                            <% }); %>
+                    </div>
                 </div>
-            </div>
-
-        </div> -->
 
 
 
-
-
-
-
-
-
-                </div>
             </div>
         </div>
     </div>

@@ -89,9 +89,6 @@
                         <a class="collapse-item" href="/admin/users">Danh sách khách hàng</a>
                     </div>
                 </div>
-
-
-
             </li>
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#discountsclick"
@@ -181,107 +178,39 @@
                                 </a>
                             </div>
                         </li>
-
-
                     </ul>
                 </nav>
                 <div class="container-fluid" id="container-wrapper">
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Danh sách người dùng </h1>
-
+                        <h1 class="h3 mb-0 text-gray-800">Danh sách thể loại</h1>
                     </div>
                     <div class="row">
-                        <div class="main-content px-4" style="overflow: scroll">
-                            <div class="table-container">
-                                <div class="row element-button">
-                                    <div class="col-sm-2">
-
-                                        <a class="btn btn-add btn-sm" href="/admin/users/create" title="Thêm"><i
-                                                class="fas fa-plus"></i>
-                                            Tạo mới người dùng</a>
+                        <% categories.forEach((category, index)=> { %>
+                            <% if (index % 3===0) { %>
+                    </div>
+                    <div class="row">
+                        <% } %>
+                            <div class="col-lg-4 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            <%= category.name %>
+                                        </h5>
+                                        <img src="<%= category.image %>" class="img-fluid"
+                                            style="width: 100%; height: auto;">
+                                        <!-- Thêm các thông tin khác của category nếu cần -->
                                     </div>
                                 </div>
-                                <hr />
-                                <table id="productTable" class="table table-bordered table-hover" style="width: 100%">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>UserName</th>
-                                            <th>Email</th>
-                                            <th>Phone</th>
-                                            <th>Fullname</th>
-                                            <th>Address</th>
-                                            <th>Chức năng</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <% data.map((user)=>{ %>
-                                            <tr>
-                                                <td style="width: 200px;">
-                                                    <a href="users/detail/<%= user.id %>" class="text-black">
-                                                        <%= user.id %>
-                                                    </a>
-                                                </td>
-                                                <td style="max-width: 150px;">
-                                                    <%= user.username %>
-                                                </td>
-                                                <td>
-                                                    <%= user.email %>
-                                                </td>
-                                                <td>
-                                                    <%= user.phone %>
-                                                </td>
-                                                <td>
-                                                    <%= user.full_name %>
-                                                </td>
-                                                <td>
-                                                    <%= user.address %>
-                                                </td>
-                                                <td class="text-center">
-                                                    <button class="btn btn-primary  trash" data-bs-toggle="modal"
-                                                        data-bs-target="#comfirmDeleteModal"
-                                                        onclick="onDeleteProduct('<%= user.id %>')">
-                                                        <i class="fas fa-trash-alt"></i>
-                                                    </button>
-                                                    <a class="btn btn-success edit" href="users/edit/<%= user.id %>">
-                                                        <i class="fas fa-edit"></i>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                            <%})%>
-                                    </tbody>
-                                </table>
                             </div>
-                        </div>
+                            <% }); %>
                     </div>
-                    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog"
-                        aria-labelledby="exampleModalLabelLogout" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabelLogout">Ohh No!</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>Are you sure you want to logout?</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-outline-primary"
-                                        data-dismiss="modal">Cancel</button>
-                                    <a href="admin/auth/login" class="btn btn-primary">Logout</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
-                <!---Container Fluid-->
+
+
+
             </div>
         </div>
     </div>
-    <!-- Scrollto to top -->
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
@@ -296,7 +225,6 @@
                 win.print();
             }
         }
-
         onDeleteProduct = (value) => {
             swal({
                 title: "Cảnh báo",
@@ -304,7 +232,7 @@
                 buttons: ["Hủy", "OK"]
             }).then((result) => {
                 if (result) {
-                    fetch(`users/delete/${value}`, {
+                    fetch(`products/delete/${value}`, {
                         method: 'DELETE',
                         headers: {
                             'Content-Type': 'application/json',
@@ -315,7 +243,7 @@
                             if (!response.ok) {
                                 throw new Error('Xoá không thành công');
                             }
-                            window.location.href = "/admin/users";
+                            window.location.href = "/admin/products";
                         })
                         .then(data => {
                             // Handle success if needed
