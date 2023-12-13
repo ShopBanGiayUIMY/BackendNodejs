@@ -107,12 +107,12 @@ WHERE (voucher_purpose = 0 OR voucher_purpose = 1)
       throw e.message;
     }
   },
-  voucherValidating: async ({ userId, vouchers}) => {
+  voucherValidating: async ({ userId, vouchers }) => {
     let error = [];
     const currentTime = new Date();
     console.log(
       "current time: ",
-      currentTime.toLocaleString("en-US", { timeZone: 'Asia/Ho_Chi_Minh' })
+      currentTime.toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })
     );
     for (const voucher of vouchers) {
       const userIds = await JSON.parse(voucher.item_user_id_list);
@@ -121,8 +121,8 @@ WHERE (voucher_purpose = 0 OR voucher_purpose = 1)
       const endDateTime = new Date(voucher.end_time * 1000);
       console.log(
         voucher.voucher_id,
-        startDateTime.toLocaleString("en-US", { timeZone: 'Asia/Ho_Chi_Minh' }),
-        endDateTime.toLocaleString("en-US", { timeZone: 'Asia/Ho_Chi_Minh' })
+        startDateTime.toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" }),
+        endDateTime.toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })
       );
       if (currentTime < startDateTime) {
         error.push({
@@ -159,7 +159,7 @@ WHERE (voucher_purpose = 0 OR voucher_purpose = 1)
       }
     }
     if (error.length > 0) {
-      console.log(error)
+      console.log(error);
       return { status: false, error: error };
     }
     return { status: true };
@@ -167,22 +167,25 @@ WHERE (voucher_purpose = 0 OR voucher_purpose = 1)
   useVouchers: async (userId, vouchers) => {
     let discountAmount = 0;
     for (const voucher of vouchers) {
-      let {discount_amount, use_history} = voucher;
-      discountAmount += discount_amount
+      let { discount_amount, use_history } = voucher;
+      discountAmount += discount_amount;
       if (!use_history) {
-        use_history = []
+        use_history = [];
       }
-      use_history.push(userId)
-      console.log(use_history)
-      await Voucher.update({
-        use_history: JSON.stringify(use_history)
-      }, {
-        where: {
-          voucher_id: voucher.voucher_id
+      use_history.push(userId);
+      console.log(use_history);
+      await Voucher.update(
+        {
+          use_history: JSON.stringify(use_history),
+        },
+        {
+          where: {
+            voucher_id: voucher.voucher_id,
+          },
         }
-      })
+      );
     }
     return discountAmount;
-  }
+  },
 };
 export default VoucherService;
