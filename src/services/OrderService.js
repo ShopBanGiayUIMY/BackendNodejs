@@ -9,26 +9,53 @@ import OrderStatus from "../models/OrderStatus.js";
 import User from "../models/User.js";
 import PaymentMethodType from "../models/PaymentMethodType.js";
 import ShippingAddress from "../models/ShippingAddress.js";
+import Voucher from "../models/Voucher.js";
+import VoucherService from "./VoucherService.js";
 export const OrderService = {
   //needed authn
   getOrderOfUser: async ({ userId, statusId }) => {
     if (statusId) {
-      console.log('with params')
+      console.log("with params");
       const result = await Order.findAll({
         where: {
           userId: userId,
-          statusId: statusId
         },
-        include: [OrderDetail, OrderStatus],
+        include: [
+          {
+            model: OrderDetail,
+            include: {
+              model: ProductDetail,
+              attributes: ['size', 'color'],
+              include: {
+                model: Product,
+                attributes: ['product_name', 'product_price', 'thumbnail']
+              }
+            },
+          }, 
+          OrderStatus
+        ],
       });
       return result;
     }
-    console.log('without params')
+    console.log("without params");
     const result = await Order.findAll({
       where: {
         userId: userId,
       },
-      include: [OrderDetail, OrderStatus],
+      include: [
+        {
+          model: OrderDetail,
+          include: {
+            model: ProductDetail,
+            attributes: ['size', 'color'],
+            include: {
+              model: Product,
+              attributes: ['product_name', 'product_price', 'thumbnail']
+            }
+          },
+        }, 
+        OrderStatus
+      ],
     });
     return result;
   },
@@ -45,9 +72,11 @@ export const OrderService = {
     paymentMethodId,
     cartsId,
     cartItems,
+    voucherIds,
     freightCost,
   }) => {
     //TODO: should be validate data
+
     const cartItemInOrder = await CartItem.findAll({
       where: Sequelize.and(
         {
@@ -79,6 +108,30 @@ export const OrderService = {
     }
     const error = { data: [] };
     let totalAmount = freightCost;
+    if (voucherIds) {
+      const vouchers = await Voucher.findAll({
+        where: {
+          voucher_id: {
+            [Sequelize.Op.in]: voucherIds,
+          },
+        },
+      });
+      const vaildateProcess = await VoucherService.voucherValidating({
+        userId: userId,
+        vouchers: vouchers,
+      })
+      console.log(JSON.stringify(vouchers))
+      console.log(vaildateProcess)
+      if (!vaildateProcess.status) {
+        error.status = 400
+        error.data = vaildateProcess.error
+        error.message = "invalid voucher id list"
+        return error
+      } else {
+        const discountAmount = await VoucherService.useVouchers(userId, vouchers)
+        totalAmount -= discountAmount;
+      }
+    }
     for (const e of cartItemInOrder) {
       e.canOrder = true;
       if (e.quantity > e.ProductDetail.stock) {
@@ -126,6 +179,7 @@ export const OrderService = {
         return {
           status: 200,
           message: "ok",
+          data: order.id,
         };
       } catch (e) {
         await transaction.rollback();
@@ -136,7 +190,7 @@ export const OrderService = {
       }
     }
   },
-  //needed authn
+  //needed authn -> authn in middleware layer
   cancelOrder: async ({ userId, orderId }) => {
     const order = await Order.findByPk(orderId);
     if (!order) {
@@ -160,7 +214,7 @@ export const OrderService = {
       };
     }
     const result = await Order.update(
-      { statusId: 5 },
+      { statusId: 6 },
       {
         where: {
           id: orderId,
@@ -172,7 +226,7 @@ export const OrderService = {
       message: `canceled ${result} order`,
     };
   },
-  verifyDeliveredOrder: async ({userId, orderId}) => {
+  verifyDeliveredOrder: async ({ userId, orderId }) => {
     const order = await Order.findByPk(orderId);
     if (!order) {
       return {
@@ -188,16 +242,16 @@ export const OrderService = {
         message: "forbidden",
       };
     }
-    if (orderStatusId !== 3) {
+    if (orderStatusId !== 4) {
       return {
         status: 400,
-        message: `cannot verify delivered an order in status isn't "SHIPPING"`,
+        message: `cannot verify delivered an order in status isn't "SHIPPED"`,
       };
     } else {
       const result = await Order.update(
-        { 
-          statusId: 4,
-          paymentStatus: 'PAID'
+        {
+          statusId: 5,
+          paymentStatus: "PAID",
         },
         {
           where: {
