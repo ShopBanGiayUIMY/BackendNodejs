@@ -150,7 +150,7 @@
             <div class="sidebar-heading">
                 Features
             </div>
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBootstrap"
                     aria-expanded="true" aria-controls="collapseBootstrap">
                     <i class="fab fa-product-hunt" style="font-size: 20px;"></i>
@@ -162,6 +162,23 @@
                         <h6 class="collapse-header">Products Manager</h6>
                         <a class="collapse-item active" href="/admin/products">Danh sách sản phẩm</a>
                         <a class="collapse-item" href="/admin/products/create">Thêm Sản phẩm</a>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#categoryclick"
+                    aria-expanded="true" aria-controls="categoryclick">
+                    <!-- Different icon for "Category" -->
+                    <img src="https://icons.veryicon.com/png/o/miscellaneous/fangshan-design_icon/category-18.png"
+                        style="width: 20px; height: 20px;">
+                    <span>Category</span>
+                </a>
+                <div id="categoryclick" class="collapse" aria-labelledby="headingBootstrap"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">The loai</h6>
+                        <a class="collapse-item active" href="/admin/categories">The loai</a>
+                        <!-- <a class="collapse-item" href="/admin/voucher/create">Thêm Voucher</a> -->
                     </div>
                 </div>
             </li>
@@ -267,6 +284,8 @@
                         </li>
                     </ul>
                 </nav>
+
+
                 <table id="productTable" class="table table-bordered table-hover" style="width: 100%">
                     <thead class="table-light">
                         <tr>
@@ -276,39 +295,47 @@
                             <th>Hình ảnh</th>
                             <th>Giá tiền</th>
                             <th>Mô tả</th>
-                            <th>Số lượng</th>
-                            <th>Chức năng</th>
+                            <th>Màu sắc</th>
+                            <th>Kích cỡ</th>
+                            <th>Hàng tồn kho</th>
+
                         </tr>
                     </thead>
                     <tbody>
-                        <% data.forEach((product)=> { %>
-                            <tr>
-                                <td>
-                                    <%= product.id %>
-                                </td>
-                                <td style="max-width: 150px;">
-                                    <%= product.name %>
-                                </td>
-                                <td>
-                                    <%= product.category.name %>
-                                </td>
-                                <td class="text-center">
-                                    <img class="product-img" src="<%= product.thumbnail %>" alt="!lỗi hiển thị ảnh" />
-                                </td>
-                                <td>
-                                    <%= product.price %>
-                                </td>
-                                <td>
-                                    <%= product.description %>
-                                </td>
-                                <td>
-                                    <%= product.quantity %>
-                                </td>
-                                <!-- Thêm các cột khác nếu cần -->
-                            </tr>
-                            <% }) %>
+
+                        <tr>
+                            <td>
+                                <%= product.id %>
+                            </td>
+                            <td style="max-width: 150px;">
+                                <%= product.name %>
+                            </td>
+                            <td>
+                                <%= product.category_id %>
+                            </td>
+                            <td class="text-center">
+                                <img class="product-img" src="<%= product.thumbnail %>" />
+                            </td>
+                            <td>
+                                <%= product.price %>
+                            </td>
+                            <td>
+                                <%= product.description %>
+                            </td>
+                            <td>
+                                <%= product.color %>
+                            </td>
+                            <td>
+                                <%= product.size %>
+                            </td>
+                            <td>
+                                <%= product.stock %>
+                            </td>
+                        </tr>
+
                     </tbody>
                 </table>
+
 
 
                 <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog"

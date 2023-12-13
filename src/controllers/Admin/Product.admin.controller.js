@@ -1,6 +1,8 @@
 import ProductService from "../../services/ProductService.js";
 import CategoryService from "../../services/CategoryService.js";
 import ProductDetail from "../../models/ProductDetail.js";
+import Category from "../../models/Category.js";
+import Product from "../../models/Product.js";
 const layout = "layouts/layout";
 
 const formatCurrency = (amount) => {
@@ -61,40 +63,63 @@ const ProductAdminController = {
         product_image,
         category_id,
         quantity,
+        color,
+        size,
+        stock,
       } = req.body;
 
-      const imageArray = JSON.parse(`[${product_image}]`);
+      // Xác định thông tin ảnh sản phẩm
+      let imageArray = [];
+      if (product_image) {
+        try {
+          imageArray = JSON.parse(`[${product_image}]`);
+        } catch (error) {
+          console.error("Error parsing product_image:", error);
+        }
+      }
       const thumbnail = imageArray[0];
-      const image_url1 = imageArray;
-      const image_url = image_url1;
-      const result = await ProductService.createProduct(
-        product_name,
-        product_price,
-        product_description,
-        thumbnail,
-        category_id,
-        image_url,
-        quantity
-      );
-      if (result) {
+      const image_url = imageArray;
+
+      try {
+        // Tạo sản phẩm cơ bản
+        const createdProduct = await Product.create({
+          product_name,
+          product_price,
+          product_description,
+          category_id,
+          thumbnail,
+        });
+
+        // Tạo thông tin chi tiết sản phẩm
+        await ProductDetail.create({
+          product_id: createdProduct.product_id,
+          color,
+          size,
+          stock,
+        });
+
         res.redirect("/admin/products");
+      } catch (error) {
+        console.error("Error creating product:", error);
+        res.status(500).send("Internal Server Error");
       }
     }
-    const result = await CategoryService.getAllCategories();
-    const data = result.map((row) => {
-      return {
-        id: row.category_id,
-        name: row.name,
-      };
-    });
-    res.render("product/addProduct", {
-      layout: layout,
-      title: "Create Product",
-      category: data,
-    });
+
+    try {
+      // Lấy danh sách danh mục
+      const categories = await Category.findAll();
+
+      res.render("product/addProduct", {
+        layout: layout,
+        title: "Create Product",
+        category: categories,
+      });
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      res.status(500).send("Internal Server Error");
+    }
   },
-  // Thêm phần sửa sản phẩm
-  // Controller
+
   edit: async (req, res) => {
     const productId = req.params.id;
     const {
@@ -119,7 +144,11 @@ const ProductAdminController = {
         quantity
       );
 
-      const product = await ProductService.getProductById(productId);
+      const product = await Product.findByPk(productId);
+      const productDetails = await ProductDetail.findAll({
+        where: { product_id: productId },
+        attributes: ["detail_id", "color", "size", "stock"],
+      });
       const categories = await CategoryService.getAllCategories();
 
       res.render("product/editProduct", {
@@ -133,11 +162,18 @@ const ProductAdminController = {
           thumbnail: product.thumbnail,
           category_id: product.category_id,
           quantity: product.quantity,
+          productDetails: productDetails.map((detail) => ({
+            detailId: detail.detail_id,
+            productId: detail.product_id,
+            color: detail.color,
+            size: detail.size,
+            stock: detail.stock,
+          })),
         },
         categories: categories.map((category) => ({
           id: category.category_id,
           name: category.name,
-          selected: category.id === product.category_id ? "selected" : "", // Kiểm tra danh mục được chọn
+          selected: category.id === product.category_id ? "selected" : "",
         })),
       });
     } catch (error) {
@@ -165,26 +201,40 @@ const ProductAdminController = {
     const productId = req.params.id;
 
     try {
-      const product = await ProductService.getProductDetail(productId);
-      const categories = await CategoryService.getAllCategories(); // Lấy thông tin danh mục
+      const product = await Product.findOne({
+        where: { product_id: productId },
+        include: [
+          {
+            model: ProductDetail,
+            where: { product_id: productId },
+            attributes: ["detail_id", "color", "size", "stock"],
+          },
+          {
+            model: Category,
+            attributes: ["name", "image"],
+          },
+        ],
+      });
+
+      const categories = await CategoryService.getAllCategories();
+
       res.render("product/detailsProduct", {
         layout: layout,
         title: "Product Detail",
-
         product: {
-          id: productId,
-          name: product.name, // Đảm bảo rằng product trả về các thuộc tính cần thiết từ service
-          price: product.price,
-          description: product.description,
+          id: product.product_id,
+          name: product.product_name,
+          price: product.product_price,
+          description: product.product_description,
           thumbnail: product.thumbnail,
-          // Thêm các thuộc tính cần thiết khác từ service vào đây
-          // Ví dụ: color, size, stock, quantity, image_url,...
+          color: product.ProductDetails.map((detail) => detail.color),
+          size: product.ProductDetails.map((detail) => detail.size),
+          stock: product.ProductDetails.map((detail) => detail.stock),
           category: {
-            // Đưa thông tin danh mục vào đây nếu đã có
-            // Ví dụ: name: product.Category.name,
-            //        image: product.Category.image,
+            name: product.Category.name,
+            image: product.Category.image,
           },
-          categories: categories, // Truyền danh sách các danh mục xuống view
+          categories: categories, // Truyền danh sách các danh mục xuống view nếu cần thiết
         },
       });
     } catch (error) {
@@ -192,59 +242,6 @@ const ProductAdminController = {
       res.status(500).send("Internal Server Error");
     }
   },
-
-  // detail: async (req, res) => {
-  //   const row = await ProductService.getListProduct();
-
-  //   const data = row.map((row) => {
-  //     return {
-  //       id: row.product_id,
-  //       name: row.product_name,
-  //       price: row.product_price,
-  //       description: row.product_description,
-  //       thumbnail: row.thumbnail,
-  //       category: {
-  //         name: row.Category.name,
-  //         image: row.Category.image,
-  //       },
-  //     };
-  //   });
-  //   res.render("product/products", { data, layout: layout, title: "Products" });
-  // },
-
-  // color, size
-  // detail: async (req, res) => {
-  //   const productId = req.params.id;
-
-  //   try {
-  //     const productDetail = await ProductDetail.findOne({
-  //       where: {
-  //         product_id: productId,
-  //       },
-  //     });
-
-  //     if (!productDetail) {
-  //       return res.status(404).send("Không tìm thấy thông tin chi tiết sản phẩm");
-  //     }
-
-  //     res.render("product/detailsProduct", {
-  //       layout: layout,
-  //       title: "Chi tiết sản phẩm",
-  //       product: {
-  //         id: productId,
-  //         color: productDetail.color,
-  //         size: productDetail.size,
-  //         stock: productDetail.stock,
-  //         // Thêm các thông tin khác của sản phẩm từ service hoặc các model khác vào đây
-  //         // Ví dụ: name, price, description, thumbnail,...
-  //         // Đảm bảo lấy thông tin từ service hoặc model tương ứng
-  //       },
-  //     });
-  //   } catch (error) {
-  //     console.error("Lỗi khi lấy thông tin chi tiết sản phẩm:", error);
-  //     res.status(500).send("Lỗi Server");
-  //   }
-  // },
 };
 
 export default ProductAdminController;

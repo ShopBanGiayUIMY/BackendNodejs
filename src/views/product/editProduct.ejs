@@ -150,7 +150,7 @@
             <div class="sidebar-heading">
                 Features
             </div>
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBootstrap"
                     aria-expanded="true" aria-controls="collapseBootstrap">
                     <i class="fab fa-product-hunt" style="font-size: 20px;"></i>
@@ -162,6 +162,23 @@
                         <h6 class="collapse-header">Products Manager</h6>
                         <a class="collapse-item active" href="/admin/products">Danh sách sản phẩm</a>
                         <a class="collapse-item" href="/admin/products/create">Thêm Sản phẩm</a>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#categoryclick"
+                    aria-expanded="true" aria-controls="categoryclick">
+                    <!-- Different icon for "Category" -->
+                    <img src="https://icons.veryicon.com/png/o/miscellaneous/fangshan-design_icon/category-18.png"
+                        style="width: 20px; height: 20px;">
+                    <span>Category</span>
+                </a>
+                <div id="categoryclick" class="collapse" aria-labelledby="headingBootstrap"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">The loai</h6>
+                        <a class="collapse-item active" href="/admin/categories">The loai</a>
+                        <!-- <a class="collapse-item" href="/admin/voucher/create">Thêm Voucher</a> -->
                     </div>
                 </div>
             </li>
@@ -376,30 +393,36 @@
 
                                             <div class="form-group col-md-12">
                                                 <label class="control-label">Ảnh sản phẩm</label>
-                                                <img src="<%= product.thumbnail %>" class="product-img"
-                                                    alt="!lỗi hiển thị ảnh" />
-                                                <input type="file" id="new_product_image" name="new_product_image"
-                                                    accept="image/*">
-                                                <button type="button" id="delete_image_button">Xóa ảnh</button>
+                                                <div class="d-flex align-items-center">
+                                                    <img src="<%= product.thumbnail %>" class="product-img"
+                                                        alt="!lỗi hiển thị ảnh"
+                                                        style="max-width: 200px; max-height: 200px;">
+                                                    <div class="ml-3">
+                                                        <input type="file" id="new_product_image"
+                                                            name="new_product_image" accept="image/*">
+                                                        <button type="button" id="delete_image_button"
+                                                            class="btn btn-sm btn-danger mt-2">Xóa ảnh</button>
+                                                    </div>
+                                                </div>
                                             </div>
-
-
 
                                             <div class="form-group col-md-12">
                                                 <label class="control-label">Thông tin chi tiết sản phẩm</label>
-                                                <% if(product.ProductDetails && product.ProductDetails.length> 0) { %>
-                                                    <% product.ProductDetails.forEach(detail=> { %>
-                                                        <div>
-                                                            Màu sắc: <%= detail.color %><br />
-                                                                Kích thước: <%= detail.size %><br />
-                                                                    Số lượng tồn: <%= detail.stock %>
+                                                <% if(product.productDetails && product.productDetails.length> 0) { %>
+                                                    <% product.productDetails.forEach(detail=> { %>
+                                                        <div class="detail-info">
+                                                            <input class="form-control" type="text"
+                                                                name="detail_color[]" value="<%= detail.color %>">
+                                                            <input class="form-control" type="text" name="detail_size[]"
+                                                                value="<%= detail.size %>">
+                                                            <input class="form-control" type="number"
+                                                                name="detail_stock[]" value="<%= detail.stock %>">
                                                         </div>
                                                         <% }); %>
                                                             <% } else { %>
                                                                 <p>Không có thông tin chi tiết sản phẩm.</p>
                                                                 <% } %>
                                             </div>
-
 
                                             <div class="form-group col-md-12">
                                                 <label class="control-label">Mô tả sản phẩm</label>
