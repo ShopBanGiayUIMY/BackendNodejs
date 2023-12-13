@@ -19,21 +19,21 @@ export const OrderService = {
       const result = await Order.findAll({
         where: {
           userId: userId,
-          statusId: statusId
+          statusId: statusId,
         },
         include: [
           {
             model: OrderDetail,
             include: {
               model: ProductDetail,
-              attributes: ['size', 'color'],
+              attributes: ["size", "color"],
               include: {
                 model: Product,
-                attributes: ['product_name', 'product_price', 'thumbnail']
-              }
+                attributes: ["product_name", "product_price", "thumbnail"],
+              },
             },
-          }, 
-          OrderStatus
+          },
+          OrderStatus,
         ],
       });
       return result;
@@ -48,14 +48,14 @@ export const OrderService = {
           model: OrderDetail,
           include: {
             model: ProductDetail,
-            attributes: ['size', 'color'],
+            attributes: ["size", "color"],
             include: {
               model: Product,
-              attributes: ['product_name', 'product_price', 'thumbnail']
-            }
+              attributes: ["product_name", "product_price", "thumbnail"],
+            },
           },
-        }, 
-        OrderStatus
+        },
+        OrderStatus,
       ],
     });
     return result;
@@ -120,16 +120,19 @@ export const OrderService = {
       const vaildateProcess = await VoucherService.voucherValidating({
         userId: userId,
         vouchers: vouchers,
-      })
-      console.log(JSON.stringify(vouchers))
-      console.log(vaildateProcess)
+      });
+      console.log(JSON.stringify(vouchers));
+      console.log(vaildateProcess);
       if (!vaildateProcess.status) {
-        error.status = 400
-        error.data = vaildateProcess.error
-        error.message = "invalid voucher id list"
-        return error
+        error.status = 400;
+        error.data = vaildateProcess.error;
+        error.message = "invalid voucher id list";
+        return error;
       } else {
-        const discountAmount = await VoucherService.useVouchers(userId, vouchers)
+        const discountAmount = await VoucherService.useVouchers(
+          userId,
+          vouchers
+        );
         totalAmount -= discountAmount;
       }
     }
@@ -264,6 +267,35 @@ export const OrderService = {
         status: 200,
         message: `verify delivered ${result} order`,
       };
+    }
+  },
+  totalOrderStatus: async (userId) => {
+    const query = `
+    SELECT
+    os.status_id AS status_id,
+    os.status_code AS status_code,
+    os.status_name AS status_name,
+    COALESCE(COUNT(o.order_id), 0) AS total_orders
+FROM
+    order_status AS os
+LEFT JOIN
+    orders AS o
+ON
+    os.status_id = o.status_id AND o.user_id = :userId
+GROUP BY
+    os.status_id, os.status_code, os.status_name
+`;
+
+    try {
+      const result = await sequelize.query(query, {
+        replacements: { userId: userId },
+        type: Sequelize.QueryTypes.SELECT,
+      });
+
+      return result;
+    } catch (error) {
+      console.error("Lỗi:", error);
+      throw error;
     }
   },
   //admin operation
