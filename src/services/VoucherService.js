@@ -169,11 +169,22 @@ WHERE (voucher_purpose = 0 OR voucher_purpose = 1)
     for (const voucher of vouchers) {
       let { discount_amount, use_history } = voucher;
       discountAmount += discount_amount;
-      if (!use_history) {
+      if (typeof use_history === "string") {
+        use_history = JSON.parse(use_history);
+      }
+      if (!Array.isArray(use_history)) {
         use_history = [];
       }
-      use_history.push(userId);
+
+      console.log("use_history", use_history);
+      console.log("userId", userId);
+
+      if (!use_history.includes(userId)) {
+        use_history.push(userId);
+      }
+
       console.log(use_history);
+
       await Voucher.update(
         {
           use_history: JSON.stringify(use_history),
