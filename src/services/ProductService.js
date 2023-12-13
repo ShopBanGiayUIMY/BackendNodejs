@@ -65,7 +65,9 @@ export const ProductService = {
     thumbnail,
     category_id,
     image_url,
-    quantity
+    color,
+    size,
+    stock
   ) => {
     try {
       // Tạo sản phẩm
@@ -79,10 +81,9 @@ export const ProductService = {
       const product_id = createdProduct.product_id;
       await ProductDetail.create({
         product_id,
-        color: "red",
-        size: "M",
-        stock: 10,
-        quantity,
+        color: color,
+        size: size,
+        stock: stock,
       });
       const urls = image_url;
       await ProductImage.create({

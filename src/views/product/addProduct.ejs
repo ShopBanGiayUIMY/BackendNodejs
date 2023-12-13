@@ -312,7 +312,7 @@
                         <select id="category_id" class="form-control" name="category_id" required>
                           <option value="" disabled selected>Chọn danh mục</option>
                           <% category.forEach(item=> { %>
-                            <option value="<%= item.id %>">
+                            <option value=" <%= item.category_id %>">
                               <%= item.name %>
                             </option>
                             <% }); %>

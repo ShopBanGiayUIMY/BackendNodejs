@@ -21,14 +21,17 @@ const CategoryController = {
   },
 
   createCategory: async (req, res) => {
-    const { name, image } = req.body;
     try {
-      const newCategory = await Category.create({ name, image });
-      res.status(201).render("category/addCategories", {
-        newCategory,
-        layout: "layouts/layout",
-        title: "Add Category",
-      });
+      if (req.method == "POST") {
+        const { name, image } = req.body;
+        // const newCategory = await Category.create({ name, image });
+      } else {
+        res.render("category/addCategories", {
+          // newCategory,
+          layout: "layouts/layout",
+          title: "Add Category",
+        });
+      }
     } catch (error) {
       console.error(error);
       res.status(500).send("Something went wrong");

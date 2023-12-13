@@ -82,23 +82,36 @@ const ProductAdminController = {
 
       try {
         // Tạo sản phẩm cơ bản
-        const createdProduct = await Product.create({
+        // const createdProduct = await Product.create({
+        //   product_name,
+        //   product_price,
+        //   product_description,
+        //   category_id,
+        //   thumbnail,
+        // });
+
+        // // Tạo thông tin chi tiết sản phẩm
+        // await ProductDetail.create({
+        //   product_id: createdProduct.product_id,
+        //   color,
+        //   size,
+        //   stock,
+        // });
+        const result = ProductService.createProduct(
           product_name,
           product_price,
           product_description,
-          category_id,
           thumbnail,
-        });
-
-        // Tạo thông tin chi tiết sản phẩm
-        await ProductDetail.create({
-          product_id: createdProduct.product_id,
+          category_id,
+          image_url,
           color,
           size,
-          stock,
-        });
+          stock
+        );
 
-        res.redirect("/admin/products");
+        if (result) {
+          res.redirect("/admin/products");
+        }
       } catch (error) {
         console.error("Error creating product:", error);
         res.status(500).send("Internal Server Error");
