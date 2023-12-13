@@ -84,24 +84,23 @@ WHERE (voucher_purpose = 0 OR voucher_purpose = 1)
       OR JSON_SEARCH(use_history, 'one', ?) IS NULL
     )
   );`,
-            [user_id,user_id],
+            [user_id, user_id],
             (err, rows) => {
               if (err) {
                 console.log(err);
                 reject(err);
               } else if (rows.length > 0) {
                 resolve(rows);
-               
               } else {
                 resolve([]);
               }
             }
           );
         });
-      }else{
+      } else {
         return {
           status: false,
-        }
+        };
       }
     } catch (e) {
       throw e.message;
