@@ -19,6 +19,7 @@ export const OrderService = {
       const result = await Order.findAll({
         where: {
           userId: userId,
+          statusId: statusId
         },
         include: [
           {
