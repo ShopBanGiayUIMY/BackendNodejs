@@ -15,6 +15,9 @@ const Queryuser = {
   LEFT JOIN cart_items ON carts.cart_id = cart_items.cart_id
   WHERE users.user_id = ?
   GROUP BY users.user_id, carts.cart_id;`,
+  UpdateInfoUser: `
+  UPDATE users SET full_name=? , phone=? , gender=? , date_of_birth=? WHERE user_id = ?
+  `,
 };
 
 export default Queryuser;
