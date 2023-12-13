@@ -215,5 +215,15 @@ export const ProductService = {
       throw e.message;
     }
   },
+  GetFullIdProduct: async () => {
+    try {
+      const result = await Product.findAll({
+        attributes: ["product_id"],
+      });
+      return result;
+    } catch (e) {
+      throw e.message;
+    }
+  },
 };
 export default ProductService;

@@ -311,20 +311,19 @@
                                 });
                               </script>
 
-                              <div data-bind-show="discountType != 'amount'" id="div_giatrigiamtoida"
+                              <!-- <div data-bind-show="discountType != 'amount'" id="div_giatrigiamtoida"
                                 class="next-input-wrapper  next-input-wrapper--50 hide">
                                 <label class="next-label" for="discount_value_limit_amount">
                                   <span id='Price_maximum_reduction'>Giá
                                     trị giảm tối đa</span>
-                                  <!-- <span id='Free_price_maximum_reduction_shipping'>Miễn
-                                phí tối đa</span> -->
+                                 
                                   <span class="text-muted">(tuỳ chọn)</span>
                                 </label>
                                 <div class="next-input--stylized">
                                   <input type="number" value="0" name="max_price" id="discount_value_limit_amount" />
                                   <span class="next-input__add-on next-input__add-on--after" id="phantram">₫</span>
                                 </div>
-                              </div>
+                              </div> -->
                             </div>
                           </div>
                         </div>
@@ -906,80 +905,7 @@
                   lại</button>
               </div>
             </form>
-            <div class="ui-layout__section ui-layout__section--secondary">
-              <div class="ui-layout__item sticky-card__container">
-                <section class="ui-card ui-card--type-aside summary-card">
-                  <header class="ui-card__header">
-                    <h2 class="ui-heading">Tổng quan khuyến mãi</h2>
-                  </header>
-                  <div class="ui-card__section">
-                    <p data-bind-show="!code" class="type--subdued">Chưa có tiêu đề.
-                    </p>
-                    <div class="ui-type-container" data-bind-show="code">
-                      <div class="summary-card__header">
-                        <h2 data-bind="code" style="line-height: 1.2" class="discount-code summary-card__code"></h2>
-                      </div>
-                      <ul class="ui-content-list ui-content-list--type-bullet">
-                        <li class="ui-content-list__item hide" data-bind="appliedSummary()"
-                          data-bind-show="showAppliedSummary()">&amp;nbsp;
-                        </li>
-
-                        <li class="ui-content-list__item hide" data-bind="valueLimitAmountSummary()"
-                          data-bind-show="showValueLimitAmount()">&amp;nbsp;
-                        </li>
-
-                        <li class="ui-content-list__item hide" data-bind="minimumSaleTotalPriceSummary()"
-                          data-bind-show="showMinimumSaleTotalPrice()">
-                          &amp;nbsp;</li>
-
-                        <li class="ui-content-list__item hide" data-bind="minimumQuantitySummary()"
-                          data-bind-show="showMinimumQuantity()">&amp;nbsp;
-                        </li>
-
-                        <li class="ui-content-list__item hide" data-bind="minimumSubtotalPriceSummary()"
-                          data-bind-show="showMinimumSubtotalPrice()">
-                          &amp;nbsp;</li>
-
-                        <li class="ui-content-list__item hide" data-bind="applicationMethodSummary()"
-                          data-bind-show="showApplicationMethodSummary()">
-                          &amp;nbsp;</li>
-
-                        <li class="ui-content-list__item hide" data-bind="shippingCountrySummary()"
-                          data-bind-show="discountType === 'free_shipping'">
-                          &amp;nbsp;</li>
-
-                        <li class="ui-content-list__item hide" data-bind="shippingRateSummary()"
-                          data-bind-show="showShippingRateSummary()">
-                          &amp;nbsp;</li>
-
-                        <li class="ui-content-list__item hide" data-bind="customerGroupSummary()"
-                          data-bind-show="showCustomerGroupSummary()">
-                          &amp;nbsp;</li>
-
-                        <li class="ui-content-list__item hide" data-bind="usageLimitSummary()"
-                          data-bind-show="showUsageLimitSummary()">&amp;nbsp;
-                        </li>
-
-                        <li class="ui-content-list__item hide" data-bind="dateSummary()"
-                          data-bind-show="showDateSummary()">&amp;nbsp;</li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div class="ui-card__section">
-                    <div class="ui-type-container">
-                      <div class="summary-card__header">
-                        <h3>Hiệu suất</h3>
-                      </div>
-                      <ul class="ui-content-list ui-content-list--type-bullet">
-                        <li class="ui-content-list__item">
-                          <span>Mã khuyến mãi chưa được kích hoạt</span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </section>
-              </div>
-            </div>
+            
           </div>
         </div>
         <script class="modal_source" style="display:none;" define="{searchProductModal: new Bizweb.Modal(this)}"
@@ -1122,7 +1048,7 @@
       if (discountTypePercentage.checked) {
         div_giatrikhuyenmai_vnd.style.display = 'none';
         div_giatrikhuyenmai_phantram.style.display = 'block';
-        div_giatrigiamtoida.style.display = 'block';
+  
       }
     });
     discountTypeAmount.addEventListener('change', () => {
@@ -1135,9 +1061,10 @@
     });
     discountTypeFreeship.addEventListener('change', () => {
       if (discountTypeFreeship.checked) {
-        div_giatrigiamtoida.style.display = 'block';
+ 
         div_giatrikhuyenmai_phantram.style.display = 'none';
         div_giatrikhuyenmai_vnd.style.display = 'none';
+        console.log('freeship');
       }
 
 
