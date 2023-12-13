@@ -1,9 +1,13 @@
 import Category from "../../models/Category.js";
 import CategoryService from "../../services/CategoryService.js";
+import Product from "../../models/Product.js";
 const CategoryController = {
   getAllCategories: async (req, res) => {
     try {
-      const categories = await Category.getAllCategories();
+      const categories = await Category.findAll({
+        include: Product,
+      });
+      console.log(JSON.stringify(categories));
 
       res.render("category/categories", {
         categories,

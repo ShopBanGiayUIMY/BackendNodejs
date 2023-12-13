@@ -102,6 +102,7 @@
       <li class="nav-item active">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#analyticclick" aria-expanded="true"
           aria-controls="analyticclick">
+          <!-- Change the icon source here -->
           <img src="https://iili.io/JI7mMbI.png" style="width: 20px; height: 20px;">
           <span>Thống kê doanh thu</span>
         </a>
@@ -113,6 +114,23 @@
           </div>
         </div>
       </li>
+
+      <li class="nav-item active">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#categoryclick" aria-expanded="true"
+          aria-controls="categoryclick">
+          <!-- Different icon for "Category" -->
+          <img src="https://iili.io/JI7mMbI.png" style="width: 20px; height: 20px;">
+          <span>Category</span>
+        </a>
+        <div id="categoryclick" class="collapse" aria-labelledby="headingBootstrap" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">The loai</h6>
+            <a class="collapse-item active" href="/admin/category">The loai</a>
+            <!-- <a class="collapse-item" href="/admin/voucher/create">Thêm Voucher</a> -->
+          </div>
+        </div>
+      </li>
+
       <hr class="sidebar-divider">
       <hr class="sidebar-divider">
       <div class="version" id="version-ruangadmin"></div>
@@ -170,6 +188,7 @@
                   </div>
                 </div>
                 <hr />
+
                 <table id="productTable" class="table table-bordered table-hover" style="width: 100%">
                   <thead class="table-light">
                     <tr>
@@ -179,12 +198,14 @@
                       <th>Hình ảnh</th>
                       <th>Giá tiền</th>
                       <th>Mô tả</th>
-                      <th>Chi tiết</th> <!-- Thêm cột chi tiết -->
+                      <th>Màu sắc</th> <!-- New column for Color -->
+                      <th>Kích thước</th> <!-- New column for Size -->
+                      <th>Số lượng tồn</th> <!-- New column for Stock -->
                       <th>Chức năng</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <% data.map((product)=>{ %>
+                    <% data.map((product)=> { %>
                       <tr>
                         <td style="width: 200px;">
                           <a href="products/detail/<%= product.id %>" class="text-black">
@@ -214,15 +235,21 @@
                                 <a href="#" class="show-more">Xem thêm</a>
                           </div>
                         </td>
-                        <!-- Thêm cột cho thông tin chi tiết -->
+                        <!-- Individual columns for Color, Size, and Stock -->
                         <td>
-                          <% product.ProductDetails.forEach(detail=> { %>
-                            <div>
-                              Màu sắc: <%= detail.color %><br />
-                                Kích thước: <%= detail.size %><br />
-                                  Số lượng tồn: <%= detail.stock %>
-                            </div>
-                            <% }); %>
+                          <% product.ProductDetails.forEach((detail)=> { %>
+                            <%= detail.color %><br />
+                              <% }); %>
+                        </td>
+                        <td>
+                          <% product.ProductDetails.forEach((detail)=> { %>
+                            <%= detail.size %><br />
+                              <% }); %>
+                        </td>
+                        <td>
+                          <% product.ProductDetails.forEach((detail)=> { %>
+                            <%= detail.stock %><br />
+                              <% }); %>
                         </td>
                         <td class="text-center">
                           <button class="btn btn-primary  trash" data-bs-toggle="modal"
@@ -234,9 +261,10 @@
                           </a>
                         </td>
                       </tr>
-                      <%})%>
+                      <% }) %>
                   </tbody>
                 </table>
+
 
               </div>
             </div>
