@@ -1,5 +1,6 @@
-import { Sequelize, or } from "sequelize";
+import { Sequelize, or, Op } from "sequelize";
 import CartItem from "../models/CartItem.js";
+import Category from "../models/Category.js";
 import Order from "../models/Order.js";
 import OrderDetail from "../models/OrderDetail.js";
 import Product from "../models/Product.js";
@@ -11,6 +12,7 @@ import PaymentMethodType from "../models/PaymentMethodType.js";
 import ShippingAddress from "../models/ShippingAddress.js";
 import Voucher from "../models/Voucher.js";
 import VoucherService from "./VoucherService.js";
+
 export const OrderService = {
   //needed authn
   getOrderOfUser: async ({ userId, statusId }) => {
@@ -158,6 +160,7 @@ export const OrderService = {
             shippingAddressId: shippingAddressId,
             paymentMethodId: paymentMethodId,
             statusId: 1,
+            freightCost: freightCost,
             totalAmount: totalAmount,
             orderDate: new Date(),
           },
@@ -303,4 +306,47 @@ GROUP BY
   //user can update order if status is pending
   isOrderCanBeUpdated: async () => {},
   getOrderProcessingOfUser: async (userId) => {},
+  analysicOrderInRangeOfDate: async ({ startDate, endDate }) => {
+    const orders = await Order.findAll({
+      where: {
+        orderDate: {
+          [Op.gte]: startDate,
+          [Op.lte]: endDate,
+        },
+        paymentStatus: "PAID",
+      },
+      attributes: ["id", "orderDate", "totalAmount"],
+      include: [
+        {
+          model: User,
+          attributes: ["username", "full_name"],
+        },
+        {
+          model: OrderDetail,
+          attributes: ["price", "quantity"],
+          include: {
+            model: ProductDetail,
+            attributes: ["size", "color"],
+            include: {
+              model: Product,
+              attributes: ["product_name", "thumbnail"],
+              include: {
+                model: Category,
+                attributes: ["name"],
+              },
+            },
+          },
+        },
+        {
+          model: OrderStatus,
+          attributes: ["code", "name"],
+        },
+        {
+          model: PaymentMethodType,
+          attributes: ['paymentMethodName']
+        }
+      ],
+    });
+    return orders;
+  },
 };

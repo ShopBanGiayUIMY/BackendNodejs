@@ -107,6 +107,25 @@
       transform: rotate(-90deg);
     }
 
+    .thumbnail {
+      width: 100px;
+      /* Adjust the width as needed */
+      height: 100px;
+      /* Adjust the height as needed */
+    }
+
+    /* Add a border to the thumbnail */
+    .thumbnail {
+      border: 1px solid #ccc;
+      /* Border color and thickness */
+    }
+
+    /* Add some padding to the thumbnail */
+    .thumbnail {
+      padding: 5px;
+      /* Adjust the padding as needed */
+    }
+
     @keyframes barFill {
       100% {
         stroke-dashoffset: 0;
@@ -357,219 +376,180 @@
             </style>
             <div class="containerss">
               <div class="row">
-                <div class="ui-card__section">
-                  <div class="ui-type-container">
-                    <div class="ui-form__section">
-                      <div class="ui-form__group">
-                        <!-- Ngày bắt đầu -->
-                        <div class="next-input-wrapper">
-                          <label for="discount_starts_at" class="next-label">Ngày bắt đầu</label>
-                          <input name="start_date" type="text" id="datepickerstart" required
-                            class="next-input next-input--invisible input-date" placeholder="Ngày bắt đầu">
-                        </div>
 
-                      </div>
-                      <div data-bind-show="hasEndsDate">
+                <form id="myForm" action="/admin/analytic" method="GET">
+                  <div class="ui-card__section">
+                    <div class="ui-type-container">
+                      <div class="ui-form__section">
                         <div class="ui-form__group">
-                          <!-- Ngày kết thúc -->
+                          <!-- Ngày bắt đầu -->
                           <div class="next-input-wrapper">
-                            <label for="discount_starts_at" class="next-label">Ngày kết thúc</label>
-                            <input name="end_date" type="text" id="datepickerend" required
-                              class="next-input next-input--invisible input-date" placeholder="Ngày kết thúc">
+                            <label for="discount_starts_at" class="next-label">Ngày bắt đầu</label>
+                            <input name="startDate" type="text" id="datepickerstart" required
+                              class="next-input next-input--invisible input-date" placeholder="Ngày bắt đầu"
+                              value="<%= data.timestamp.firstDate %>">
                           </div>
-
                         </div>
+                        <div data-bind-show="hasEndsDate">
+                          <div class="ui-form__group">
+                            <!-- Ngày kết thúc -->
+                            <div class="next-input-wrapper">
+                              <label for="discount_starts_at" class="next-label">Ngày kết thúc</label>
+                              <input name="endDate" type="text" id="datepickerend" required
+                                class="next-input next-input--invisible input-date" placeholder="Ngày kết thúc"
+                                value="<%= data.timestamp.endDate %>">
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Button for the form -->
+                        <button type="submit" id="submitButton" class="your-button-class"
+                          onclick="handleButtonClick()">Submit</button>
                       </div>
                     </div>
-                  </div>
-                </div>
-                <script>
-                  // Kích hoạt flatpickr cho Ngày bắt đầu
-                  flatpickr("#datepickerstart", {
-                    enableTime: false, // Không cho phép chọn thời gian
-                    dateFormat: "Y-m-d", // Định dạng ngày
-                  });
+                </form>
+
+              </div>
+              <script>
+                // Kích hoạt flatpickr cho Ngày bắt đầu
+                flatpickr("#datepickerstart", {
+                  enableTime: false, // Không cho phép chọn thời gian
+                  dateFormat: "Y-m-d", // Định dạng ngày
+                });
 
 
-                  // Kích hoạt flatpickr cho Ngày kết thúc
-                  flatpickr("#datepickerend", {
-                    enableTime: false, // Không cho phép chọn thời gian
-                    dateFormat: "Y-m-d", // Định dạng ngày
-                  });
+                // Kích hoạt flatpickr cho Ngày kết thúc
+                flatpickr("#datepickerend", {
+                  enableTime: false, // Không cho phép chọn thời gian
+                  dateFormat: "Y-m-d", // Định dạng ngày
+                });
 
+              </script>
+              <table id="example" class="table table-striped table-bordered" style="width:100%">
+                <thead>
+                  <tr>
+                    <th>Đơn hàng</th>
+                    <th>Khách hàng</th>
+                    <th>Sản phẩm</th>
+                    <th>Thanh toán</th>
+                    <th>Trạng thái</th>
+                    <th>Tổng tiền</th>
+                    <th>Ngày đặt</th>
+                  </tr>
+                </thead>
+                <tbody>
 
-
-
-                </script>
-                <table id="example" class="table table-striped table-bordered" style="width:100%">
-                  <thead>
+                  <% data.orders.forEach(order=> { %>
                     <tr>
-                      <th><input type="checkbox" onclick="checkAll(this)"></th>
-                      <th>Đơn hàng</th>
-                      <th>Ngày đặt</th>
-                      <th>Khách hàng</th>
-                      <th>Thanh toán</th>
-                      <th>Trạng thái</th>
-                      <th>Tổng tiền</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-
-
-                    <tr>
-                      <td><input type="checkbox" name=""></td>
                       <td>
-                        <a href="#" style="text-decoration: underline;">Donna Snider</a>
+                        <a href="#" style="text-decoration: underline;"> #<%= order.id %> </a>
                       </td>
-                      <td>Customer Support</td>
-                      <td>New York</td>
-                      <td>27</td>
-                      <td>2011/01/25</td>
-                      <td>$112,000</td>
+                      <td>
+                        <%= order.User.username %> - <%= order.User.full_name %>
+                      </td>
+
+
+                      <td>
+                        <% order.OrderDetails.forEach(orderDetail=> { %>
+                          <img src="<%= orderDetail.ProductDetail.Product.thumbnail %>" alt="product thumbnail"
+                            class="thumbnail">
+                          <b>
+                            <%= orderDetail.ProductDetail.Product.product_name%>
+                          </b>
+                          <br>
+                          cỡ
+                          <b>
+                            <%= orderDetail.ProductDetail.size %>
+                          </b>
+                          màu
+                          <b>
+                            <%= orderDetail.ProductDetail.color %>
+                          </b>
+                          số lượng
+                          <b>
+                            <%= orderDetail.quantity %>
+                          </b>
+                          giá bán
+                          <i>
+                            <%= (+orderDetail.price).toLocaleString('en-US') %>đ
+                          </i>
+                          thành tiền
+                          <b>
+                            <%= (orderDetail.price*orderDetail.quantity).toLocaleString('en-US') %>đ
+                          </b>
+                          <br>
+                          <% }); %>
+                      </td>
+                      <td>
+                        <%= order.PaymentMethodType.paymentMethodName %>
+                      </td>
+                      <td>
+                        <%= order.OrderStatus.name %>
+                      </td>
+                      <td>
+                        <b>
+                          <%= (+order.totalAmount).toLocaleString('en-US') %>đ
+                        </b>
+                      </td>
+                      <td>
+
+                        <%= order.orderDate.toLocaleString('en-US', { timeZone: 'Asia/Bangkok' }); %>
+                      </td>
                     </tr>
-                  </tbody>
+                    <% }); %>
 
-                </table>
-              </div>
+                </tbody>
+
+              </table>
             </div>
-            <!---Container Fluid-->
           </div>
-
-          <!-- Footer -->
-          <footer class="sticky-footer bg-white">
-            <div class="container my-auto">
-              <div class="copyright text-center my-auto">
-                <span>copyright &copy;
-                  <script> document.write(new Date().getFullYear()); </script> - developed by
-                  <b><a href="https://github.com/huyfpl" target="_blank">Shop giầy Nike</a></b>
-                </span>
-              </div>
-            </div>
-          </footer>
-
+          <!---Container Fluid-->
         </div>
+
+        <!-- Footer -->
+        <footer class="sticky-footer bg-white">
+          <div class="container my-auto">
+            <div class="copyright text-center my-auto">
+              <span>copyright &copy;
+                <script> document.write(new Date().getFullYear()); </script> - developed by
+                <b><a href="https://github.com/huyfpl" target="_blank">Shop giầy Nike</a></b>
+              </span>
+            </div>
+          </div>
+        </footer>
+
       </div>
-      <!-- Scrollto to top -->
-      <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-      </a>
-      <script src="vendor/jquery/jquery.min.js"></script>
-      <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-      <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-      <script src="js/ruang-admin.min.js"></script>
-      <!-- 
+    </div>
+    <!-- Scrollto to top -->
+    <a class="scroll-to-top rounded" href="#page-top">
+      <i class="fas fa-angle-up"></i>
+    </a>
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="js/ruang-admin.min.js"></script>
+    <!-- 
       // upload Ảnh -->
-      <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-      <script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      // Define your custom function to be executed when the button is clicked
+      function handleButtonClick() {
+        // Your custom logic here when the button is clicked
 
+        // For example, you might want to submit the form
+        // If your form has an ID, you can use document.getElementById('yourFormId').submit();
 
-        const number = document.querySelector(".number");
-        const valueNumber = Number(number.getAttribute("data-value"));
-        const circle = document.querySelector('.circle');
-        const progressBar = document.getElementById('progress-bar-loading');
-        const uploadedImagesDiv = document.querySelector('.fileimagedata');
-        const fileInput = document.getElementById('file-input');
-        let counter = 0;
+        // Or you can trigger other actions
+        const form = document.getElementById('myForm');
+        const startDate = form.querySelector('input[name="start_date"]').value;
+        const endDate = form.querySelector('input[name="end_date"]').value;
 
-        const loading = (results) => {
-          uploadedImagesDiv.style.display = 'none';
-          counter = 0;
-          const interval = setInterval(() => {
-            if (counter !== valueNumber) {
-              counter++;
-              number.innerHTML = `${counter}%`;
-            } else {
-              if (counter === 100) {
-                clearInterval(interval);
-                circle.style.animation = 'none';
-                progressBar.style.display = 'none';
-                fileInput.value = '';
-                uploadedImagesDiv.style.display = 'flex';
-                counter = 0;
-
-              }
-            }
-          }, 50);
-        };
-
-        function selectImage() {
-          const fileInput = document.querySelector('.inp');
-          fileInput.click();
-          counter = 0; // Đặt lại counter về 0
-          circle.style.animation = 'none'; // Đặt lại animation về trạng thái ban đầu
-          progressBar.style.display = 'none'; // Ẩn thanh tiến trình
-        }
-        function checkIfFileSelected() {
-          if (fileInput.files.length > 0) {
-            uploadImages();
-          } else {
-            console.log('Chưa chọn file.');
-          }
-        }
-        function uploadImages() {
-          const files = fileInput.files;
-          const apiKey = 'ced7232acd31a71dd12d79e489cd4f30';
-
-          const uploadPromises = [];
-
-          for (let i = 0; i < files.length; i++) {
-            const formData = new FormData();
-            formData.append('image', files[i]);
-            formData.append('key', apiKey);
-
-            const promise = new Promise((resolve, reject) => {
-              axios.post('https://api.imgbb.com/1/upload', formData)
-                .then(response => {
-                  console.log(response.data);
-                  resolve(response.data);
-                  circle.style.animation = '';
-                  progressBar.style.display = 'block';
-                  uploadedImagesDiv.style.display = 'none';
-                  console.log('Đã tải lên dsssssssssssssssảnh:', counter);
-                })
-                .catch(error => {
-                  console.error('Lỗi:', error);
-                  reject(error);
-                });
-            });
-
-            uploadPromises.push(promise);
-          }
-
-          Promise.all(uploadPromises)
-            .then(results => {
-              loading();
-              const dataOnly = results.map(item => JSON.stringify(item.data.url));
-              console.log('Tất cả ảnh đã được tải lên:', dataOnly);
-              const jsonInput = document.getElementById('product_image');
-              jsonInput.value = dataOnly;
-              results.forEach(imageData => {
-                const imageDiv = document.createElement('div');
-                imageDiv.classList.add('image-container');
-
-                const imageUrl = imageData.data.url;
-                const img = document.createElement('img');
-                img.src = imageUrl;
-                imageDiv.appendChild(img);
-
-                const deleteBtn = document.createElement('button');
-                deleteBtn.innerText = 'X';
-                deleteBtn.classList.add('delete-btn');
-                deleteBtn.addEventListener('click', function () {
-                  imageDiv.remove();
-                  console.log('Xóa ảnh với ID:', imageData.data.id);
-                });
-                imageDiv.appendChild(deleteBtn);
-
-                uploadedImagesDiv.appendChild(imageDiv);
-
-              });
-            })
-            .catch(error => {
-              console.error('Có lỗi khi tải lên ảnh:', error);
-            });
-        }
-      </script>
+        // Log the values to the console (you can perform other actions here)
+        console.log('Start Date:', startDate);
+        console.log('End Date:', endDate);
+        console.log('Button clicked!');
+      }
+    </script>
 </body>
 
 </html>
