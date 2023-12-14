@@ -45,6 +45,11 @@ const Order = sequelize.define('Order', {
     allowNull: false,
     field: 'payment_method_id'
   },
+  freightCost: {
+    type: DataTypes.DECIMAL,
+    allowNull: false,
+    field: 'freight_cost'
+  },
   paymentStatus: {
     type: DataTypes.ENUM('PAID, UNPAID'),
     allowNull: false,
