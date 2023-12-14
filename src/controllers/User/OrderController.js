@@ -57,11 +57,11 @@ export const OrderController = {
       voucherIds: req.body?.voucherIds,
       cartItems: req.body?.cartItems,
     };
-    console.log('dto from controller to service: ', dto);
+    console.log("dto from controller to service: ", dto);
     const result = await OrderService.createOrderFromCart(dto);
     const { status, message, data } = result;
     if (status === 200) {
-      res.status(200).json({message: message, orderId: data});
+      res.status(200).json({ message: message, orderId: data });
     } else if (status === 400 || status === 401) {
       res.status(400).json({ message, data });
     } else if (status === 500) {
@@ -83,9 +83,22 @@ export const OrderController = {
     const dto = {
       userId: req.user.id,
       orderId: req.params.id,
-    }
+    };
     const result = await OrderService.verifyDeliveredOrder(dto);
     const { status, message } = result;
-    res.status(status).json({message: message})
-  }
+    res.status(status).json({ message: message });
+  },
+  totalOrderStatus: async (req, res) => {
+    const userId = req.user.id;
+    const statusId = req.query?.statusId;
+
+    const result = await OrderService.totalOrderStatus(userId);
+    console.log("resufffflt", result);
+    res
+      .status(200)
+      .json({
+        message: "Lấy Thành công số lượng hoá đơn theo trạng thái",
+        data: result,
+      });
+  },
 };
