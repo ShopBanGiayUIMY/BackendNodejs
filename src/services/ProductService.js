@@ -3,6 +3,22 @@ import Product from "../models/Product.js";
 import ProductDetail from "../models/ProductDetail.js";
 import ProductImage from "../models/ProductImage.js";
 export const ProductService = {
+  // getListProduct: async () => {
+  //   try {
+  //     const result = await Product.findAll({
+  //       include: [
+  //         {
+  //           // model: [Category, ProductDetail, ProductImage],
+  //           model: Category,
+  //           attributes: ["name", "image"],
+  //         },
+  //       ],
+  //     });
+  //     return result;
+  //   } catch (e) {
+  //     throw e.message;
+  //   }
+  // },
   getListProduct: async () => {
     try {
       const result = await Product.findAll({
@@ -19,6 +35,7 @@ export const ProductService = {
       throw e.message;
     }
   },
+
   getProductById: async (productId) => {
     try {
       const result = await Product.findByPk(productId, {
@@ -48,7 +65,9 @@ export const ProductService = {
     thumbnail,
     category_id,
     image_url,
-    quantity
+    color,
+    size,
+    stock
   ) => {
     try {
       // Tạo sản phẩm
@@ -62,10 +81,9 @@ export const ProductService = {
       const product_id = createdProduct.product_id;
       await ProductDetail.create({
         product_id,
-        color: "red",
-        size: "M",
-        stock: 10,
-        quantity,
+        color: color,
+        size: size,
+        stock: stock,
       });
       const urls = image_url;
       await ProductImage.create({
@@ -95,7 +113,7 @@ export const ProductService = {
     quantity
   ) => {
     try {
-      const updatedProduct = await Product.update(
+      const [updatedProduct] = await Product.update(
         {
           product_name,
           product_price,
@@ -109,10 +127,11 @@ export const ProductService = {
           },
         }
       );
+
       // Cập nhật thông tin chi tiết sản phẩm
-      const updatedProductDetail = await ProductDetail.update(
+      await ProductDetail.update(
         {
-          color: "red", // Giả sử màu là cố định hoặc bạn có thể cập nhật từ req.body tương tự như các trường khác
+          color: "red",
           size: "M",
           stock: 10,
           quantity,
@@ -123,8 +142,9 @@ export const ProductService = {
           },
         }
       );
+
       const urls = JSON.stringify(image_url);
-      const updatedProductImage = await ProductImage.update(
+      await ProductImage.update(
         {
           image_url: urls,
         },
@@ -134,9 +154,10 @@ export const ProductService = {
           },
         }
       );
+
       return updatedProduct;
-    } catch (e) {
-      throw e.message;
+    } catch (error) {
+      throw error;
     }
   },
 

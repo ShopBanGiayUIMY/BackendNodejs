@@ -97,6 +97,16 @@ const UserService = {
       throw e.message;
     }
   },
+  getUserDetails: async (userId) => {
+    try {
+      const user = await User.findByPk(userId); // Lấy thông tin người dùng bằng id
+      return user; // Return thông tin chi tiết của người dùng
+    } catch (error) {
+      throw new Error(
+        "Lỗi khi lấy thông tin chi tiết người dùng: " + error.message
+      );
+    }
+  },
 };
 
 export default UserService;

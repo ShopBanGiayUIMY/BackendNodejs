@@ -95,6 +95,31 @@ const UserAdminController = {
       res.status(500).send("Lỗi máy chủ nội bộ");
     }
   },
+  detailUser: async (req, res) => {
+    const userId = req.params.id;
+    try {
+      const user = await UserService.getUserDetails(userId);
+      if (user) {
+        res.render("User/detailuser", {
+          layout: layout,
+          title: "Chi tiết người dùng",
+          user: {
+            id: user.user_id,
+            username: user.username,
+            email: user.email,
+            phone: user.phone,
+            full_name: user.full_name,
+            address: user.address,
+          },
+        });
+      } else {
+        res.status(404).send("Không tìm thấy người dùng");
+      }
+    } catch (error) {
+      console.error("Lỗi khi lấy thông tin người dùng:", error);
+      res.status(500).send("Lỗi máy chủ nội bộ");
+    }
+  },
 
   // Xóa người dùng
   delete: async (req, res) => {

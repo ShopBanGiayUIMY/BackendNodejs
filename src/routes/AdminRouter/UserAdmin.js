@@ -9,6 +9,8 @@ router.get("", UserAdminController.index);
 router.get("/create", UserAdminController.createUserForm);
 router.post("/create", UserAdminController.createUser);
 
+router.get("/detail/:id", UserAdminController.detailUser);
+
 // Hiển thị form sửa thông tin người dùng
 router.get("/edit/:id", UserAdminController.edit);
 
