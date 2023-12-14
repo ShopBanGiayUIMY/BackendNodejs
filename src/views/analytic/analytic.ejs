@@ -233,7 +233,6 @@
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#orderclick" aria-expanded="true"
           aria-controls="orderclick">
           <img src="https://icons.veryicon.com/png/o/miscellaneous/icondian/icon-order-1.png"
-           
             style="width: 20px; height: 20px;">
           <span>Quản lý đơn hàng</span>
         </a>
@@ -320,61 +319,61 @@
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
             <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
             <style>
-    .ui-card__section {
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        margin: 20px auto;
-        max-width: 600px;
-    }
+              .ui-card__section {
+                background-color: #fff;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                margin: 20px auto;
+                max-width: 600px;
+              }
 
-    .ui-type-container {
-        margin: 0 auto;
-    }
+              .ui-type-container {
+                margin: 0 auto;
+              }
 
-    .ui-form__section {
-        margin-bottom: 20px;
-    }
+              .ui-form__section {
+                margin-bottom: 20px;
+              }
 
-    .ui-form__group {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-    }
+              .ui-form__group {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 20px;
+              }
 
-    .next-input-wrapper {
-        flex: 1 0 calc(50% - 10px);
-        margin-bottom: 15px;
-    }
+              .next-input-wrapper {
+                flex: 1 0 calc(50% - 10px);
+                margin-bottom: 15px;
+              }
 
-    .next-label {
-        display: block;
-        font-size: 14px;
-        color: #333;
-        margin-bottom: 5px;
-    }
+              .next-label {
+                display: block;
+                font-size: 14px;
+                color: #333;
+                margin-bottom: 5px;
+              }
 
-    .next-input {
-        width: 100%;
-        padding: 10px;
-        font-size: 14px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
-    }
+              .next-input {
+                width: 100%;
+                padding: 10px;
+                font-size: 14px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                box-sizing: border-box;
+              }
 
-    
 
-    .next-label--switch {
-        display: flex;
-        align-items: center;
-    }
 
-    .next-checkbox {
-        margin-right: 5px;
-    }
-</style>
+              .next-label--switch {
+                display: flex;
+                align-items: center;
+              }
+
+              .next-checkbox {
+                margin-right: 5px;
+              }
+            </style>
             <div class="containerss">
               <div class="row">
 
@@ -497,25 +496,25 @@
                         <%= order.orderDate.toLocaleString('en-US', { timeZone: 'Asia/Bangkok' }); %>
                       </td>
                     </tr>
-                  </tbody>
-                 
-                </table>
-              </div>
+                </tbody>
+                <% }); %>
+              </table>
             </div>
-            <!---Container Fluid-->
           </div>
+          <!---Container Fluid-->
+        </div>
 
-          <!-- Footer -->
-          <footer class="sticky-footer bg-white">
-            <div class="container my-auto">
-              <div class="copyright text-center my-auto">
-                <span>copyright &copy;
-                  <script> document.write(new Date().getFullYear()); </script> - developed by
-                  <b><a href="https://github.com/huyfpl" target="_blank">Shop giầy Nike</a></b>
-                </span>
-              </div>
+        <!-- Footer -->
+        <footer class="sticky-footer bg-white">
+          <div class="container my-auto">
+            <div class="copyright text-center my-auto">
+              <span>copyright &copy;
+                <script> document.write(new Date().getFullYear()); </script> - developed by
+                <b><a href="https://github.com/huyfpl" target="_blank">Shop giầy Nike</a></b>
+              </span>
             </div>
-          </footer>
+          </div>
+        </footer>
 
       </div>
     </div>
