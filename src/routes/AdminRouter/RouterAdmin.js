@@ -8,6 +8,7 @@ import User from "./UserAdmin.js";
 import Order from "./OrderAdmin.js";
 import Analytic from "./AnalyticAdmin.js";
 import middwarecontroller from "../../middleware/middwarecontroller.js";
+import Category from "./Category.js";
 
 router.use("/", Dashboard);
 router.use("/admin/auth", authRouter);
@@ -16,6 +17,7 @@ router.use("/admin/voucher", VoucherAdmin);
 router.use("/admin/users", User);
 router.use("/admin/orders", middwarecontroller.verifyAdmin, Order);
 router.use("/admin/analytic", Analytic);
+router.use("/admin/categories", Category);
 
 // khi nào làm thì ae nhớ tách lẻ file ra như ở RouterUser nhé
 export default router;

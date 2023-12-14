@@ -184,7 +184,7 @@
       <div class="sidebar-heading">
         Features
       </div>
-      <li class="nav-item">
+      <li class="nav-item active">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBootstrap"
           aria-expanded="true" aria-controls="collapseBootstrap">
           <i class="fab fa-product-hunt" style="font-size: 20px;"></i>
@@ -193,8 +193,24 @@
         <div id="collapseBootstrap" class="collapse" aria-labelledby="headingBootstrap" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Products Manager</h6>
-            <a class="collapse-item" href="/admin/products">Danh sách sản phẩm</a>
+            <a class="collapse-item active" href="/admin/products">Danh sách sản phẩm</a>
             <a class="collapse-item" href="/admin/products/create">Thêm Sản phẩm</a>
+          </div>
+        </div>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#categoryclick" aria-expanded="true"
+          aria-controls="categoryclick">
+          <!-- Different icon for "Category" -->
+          <img src="https://icons.veryicon.com/png/o/miscellaneous/fangshan-design_icon/category-18.png"
+            style="width: 20px; height: 20px;">
+          <span>Category</span>
+        </a>
+        <div id="categoryclick" class="collapse" aria-labelledby="headingBootstrap" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">The loai</h6>
+            <a class="collapse-item active" href="/admin/categories">The loai</a>
+            <!-- <a class="collapse-item" href="/admin/voucher/create">Thêm Voucher</a> -->
           </div>
         </div>
       </li>
@@ -440,7 +456,7 @@
               console.error(e)
               selectElement.value = originalStatusId
               loadingOverlay.style.display = 'none';
-          alert('Error updating order status');
+              alert('Error updating order status');
             }
           }
         } catch (e) {
