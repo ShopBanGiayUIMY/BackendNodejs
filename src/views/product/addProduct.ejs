@@ -39,6 +39,7 @@
       max-width: 200px;
       height: 200px;
       display: block;
+
     }
 
 
@@ -64,6 +65,8 @@
       --gray: #273640;
       --light: #6d808c;
     }
+
+
 
     #progress-bar-loading {
       position: relative;
@@ -158,24 +161,8 @@
         <div id="collapseBootstrap" class="collapse" aria-labelledby="headingBootstrap" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Products Manager</h6>
-            <a class="collapse-item active" href="/admin/products">Danh sách sản phẩm</a>
-            <a class="collapse-item" href="/admin/products/create">Thêm Sản phẩm</a>
-          </div>
-        </div>
-      </li>
-      <li class="nav-item active">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#categoryclick" aria-expanded="true"
-          aria-controls="categoryclick">
-          <!-- Different icon for "Category" -->
-          <img src="https://icons.veryicon.com/png/o/miscellaneous/fangshan-design_icon/category-18.png"
-            style="width: 20px; height: 20px;">
-          <span>Category</span>
-        </a>
-        <div id="categoryclick" class="collapse" aria-labelledby="headingBootstrap" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">The loai</h6>
-            <a class="collapse-item active" href="/admin/categories">The loai</a>
-            <!-- <a class="collapse-item" href="/admin/voucher/create">Thêm Voucher</a> -->
+            <a class="collapse-item" href="/admin/products">Danh sách sản phẩm</a>
+            <a class="collapse-item active" href="buttons.html">Thêm Sản phẩm</a>
           </div>
         </div>
       </li>
@@ -203,35 +190,6 @@
             <h6 class="collapse-header">Vouchers Manager</h6>
             <a class="collapse-item" href="/admin/voucher/">Danh sách Voucher</a>
             <a class="collapse-item" href="/admin/voucher/create">Thêm Voucher</a>
-          </div>
-        </div>
-      </li>
-      <li class="nav-item ">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#orderclick" aria-expanded="true"
-          aria-controls="orderclick">
-          <img src="https://icons.veryicon.com/png/o/miscellaneous/icondian/icon-order-1.png"
-            style="width: 20px; height: 20px;">
-          <span>Quản lý đơn hàng</span>
-        </a>
-        <div id="orderclick" class="collapse" aria-labelledby="headingBootstrap" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Quản lý đơn hàng</h6>
-            <a class="collapse-item " href="/admin/orders/">Danh sách đơn hàng</a>
-            <!-- <a class="collapse-item" href="/admin/voucher/create">Thêm Voucher</a> -->
-          </div>
-        </div>
-      </li>
-      <li class="nav-item active">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#analyticclick" aria-expanded="true"
-          aria-controls="analyticclick">
-          <img src="https://iili.io/JI7mMbI.png" style="width: 20px; height: 20px;">
-          <span>Thống kê doanh thu</span>
-        </a>
-        <div id="analyticclick" class="collapse" aria-labelledby="headingBootstrap" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Doanh thu</h6>
-            <a class="collapse-item active" href="/admin/orders/">Doanh thu bán hàng</a>
-            <!-- <a class="collapse-item" href="/admin/voucher/create">Thêm Voucher</a> -->
           </div>
         </div>
       </li>
@@ -289,84 +247,151 @@
           <div class="row">
             <div class="row">
               <div class="col-md-12">
-
-
                 <div class="tile">
+                  <h3 class="tile-title">Tạo mới sản phẩm</h3>
                   <div class="tile-body">
-                    <form class="row" action="/admin/products/create" method="post" enctype="multipart/form-data">
+                    <div class="row element-button">
+                      <div class="col-sm-2">
+                        <a class="btn btn-add btn-sm" data-toggle="modal" data-target="#exampleModalCenter"><i
+                            class="fas fa-folder-plus"></i> Thêm nhà cung cấp</a>
+                      </div>
+                      <div class="col-sm-2">
+                        <a class="btn btn-add btn-sm" data-toggle="modal" data-target="#adddanhmuc"><i
+                            class="fas fa-folder-plus"></i> Thêm danh mục</a>
+                      </div>
+                      <div class="col-sm-2">
+                        <a class="btn btn-add btn-sm" data-toggle="modal" data-target="#addtinhtrang"><i
+                            class="fas fa-folder-plus"></i> Thêm tình trạng</a>
+                      </div>
+                    </div>
+                    <form class="row" action="/admin/products/create" method="post">
+                      <div class="form-group col-md-3">
+                        <label class="control-label">Mã sản phẩm </label>
+                        <input class="form-control" type="number" placeholder="tự động" disabled>
+                      </div>
                       <div class="form-group col-md-3">
                         <label class="control-label">Tên sản phẩm</label>
                         <input class="form-control" type="text" id="product_name" name="product_name" required>
                       </div>
-                      <div class="form-group col-md-3">
-                        <label class="control-label">Giá tiền</label>
-                        <div class="input-group">
-                          <input class="form-control" type="number" id="price" name="product_price" required>
-                          <div class="input-group-append">
-                            <span class="input-group-text">VNĐ</span>
-                          </div>
-                        </div>
+
+
+                      <div class="form-group  col-md-3">
+                        <label class="control-label">Số lượng</label>
+                        <input class="form-control" type="number" id="quantity" name="quantity" required>
+                      </div>
+                      <div class="form-group col-md-3 ">
+                        <label for="exampleSelect1" class="control-label">Tình trạng</label>
+                        <select class="form-control" id="status_id" name="status_id" required disabled>
+                          <option disabled selected>-- Chọn tình trạng --</option>
+                          {{#each status}}
+                          <option value="{{this.status_id}}">{{this.status_name}}</option>
+                          {{/each}}
+                        </select>
                       </div>
                       <div class="form-group col-md-3">
                         <label for="exampleSelect1" class="control-label">Danh mục</label>
                         <select id="category_id" class="form-control" name="category_id" required>
                           <option value="" disabled selected>Chọn danh mục</option>
                           <% category.forEach(item=> { %>
-                            <option value=" <%= item.category_id %>">
+                            <option value="<%= item.id %>">
                               <%= item.name %>
                             </option>
                             <% }); %>
                         </select>
                       </div>
+                      <div class="form-group col-md-3 ">
+                        <label for="exampleSelect1" class="control-label">Nhà cung cấp</label>
+                        <select class="form-control" id="exampleSelect1">
+                          <option>-- Chọn nhà cung cấp --</option>
+                          <option>Phong vũ</option>
+                          <option>Thế giới di động</option>
+                          <option>FPT</option>
+                          <option>Võ Trường</option>
+                        </select>
+                      </div>
+                      <div class="form-group col-md-3">
+                        <label class="control-label">Giá bán</label>
+                        <input class="form-control" type="text" id="product_price" name="product_price" required>
+                      </div>
+                      <div class="form-group col-md-3">
+                        <label class="control-label">Giá vốn</label>
+                        <input class="form-control" type="text" id="cost_price" name="cost_price" required>
+                      </div>
                       <div class="form-group col-md-12">
                         <label class="control-label">Ảnh sản phẩm</label>
                         <div class="imageUpload">
-                          <!-- Thêm name và id vào input để có thể gửi dữ liệu form -->
                           <input type="file" class="inp" accept="image/*" multiple id="file-input"
-                            onchange="checkIfFileSelected()" name="product_image">
+                            onchange="checkIfFileSelected()" />
                           <input type="hidden" name="product_image" id="product_image" value="" />
                           <button onclick="selectImage()" class="selectImage" type="button">
                             <i class="fas fa-cloud-upload-alt"></i> Chọn ảnh</button>
                           <span class="fileimagedata"></span>
+
                           <div id="progress-bar-loading">
                             <span class="number" data-value="100"></span>
                             <svg height="150" width="150" class="circle">
                               <circle cx="75" cy="75" r="65" stroke-width="20" fill="none" />
                             </svg>
                           </div>
+
+
+
                         </div>
+
+
                       </div>
+
                       <div class="form-group col-md-12">
                         <label class="control-label">Mô tả sản phẩm</label>
                         <textarea class="form-control" name="product_description" id="product_description"></textarea>
                       </div>
-                      <div class="form-group col-md-3">
-                        <label class="control-label">Màu sắc</label>
-                        <input class="form-control" type="text" id="color" name="color" required>
-                      </div>
-                      <div class="form-group col-md-3">
-                        <label class="control-label">Kích thước</label>
-                        <input class="form-control" type="text" id="size" name="size" required>
-                      </div>
-                      <div class="form-group col-md-3">
-                        <label class="control-label">Số lượng tồn</label>
-                        <input class="form-control" type="number" id="stock" name="stock" required>
-                      </div>
-
-                      <div class="form-group col-md-12">
-                        <button type="submit" class="btn"
-                          style="width: 300px; color: white;background-color: #001c40;">Thêm
-                          mới</button>
-                      </div>
-                    </form>
                   </div>
+                  <button type="submit" class="btn" style="width: 300px; color: white;background-color: #001c40;">Thêm
+                    mới </button>
+                  <!-- <a class="btn btn-cancel" href="/">Hủy bỏ</a> -->
                 </div>
-
-
-
-
                 </form>
 
+                <!--
+                  MODAL CHỨC VỤ 
+                -->
+                <div style="background-color: rgba(0, 0, 0, 0.4); z-index: 9999;" class="modal fade "
+                  id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+                  data-backdrop="static" data-keyboard="false">
+                  <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+
+                      <div class="modal-body">
+                        <div class="row">
+                          <div class="form-group  col-md-12">
+                            <span class="thong-tin-thanh-toan">
+                              <h5>Thêm mới nhà cung cấp</h5>
+                            </span>
+                          </div>
+                          <div class="form-group col-md-12">
+                            <label class="control-label">Nhập tên chức vụ mới</label>
+                            <input class="form-control" type="text" required>
+                          </div>
+                        </div>
+                        <BR>
+                        <button class="btn btn-save" type="button">Lưu lại</button>
+                        <a class="btn btn-cancel" data-dismiss="modal" href="#">Hủy bỏ</a>
+                        <BR>
+                      </div>
+                      <div class="modal-footer">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!--
+                MODAL
+                -->
+
+
+
+                <!--
+                  MODAL DANH MỤC
+                -->
                 <div style="background-color: rgba(0, 0, 0, 0.4); z-index: 9999;" class="modal fade" id="adddanhmuc"
                   tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" data-backdrop="static"
                   data-keyboard="false">
@@ -404,7 +429,7 @@
                     </div>
                   </div>
                 </div>
-                <!--     
+                <!--
                 MODAL
                 -->
                 <div style="background-color: rgba(0, 0, 0, 0.4); z-index: 9999;" class="modal fade" id="addtinhtrang"
@@ -435,12 +460,22 @@
                     </div>
                   </div>
                 </div>
+                <!--
+                MODAL
+                -->
+
+
+
                 <script src="js/jquery-3.2.1.min.js"></script>
                 <script src="js/popper.min.js"></script>
                 <script src="js/bootstrap.min.js"></script>
                 <script src="js/main.js"></script>
                 <script src="js/plugins/pace.min.js"></script>
+
+
               </div>
+
+              <!-- Modal Logout -->
               <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog"
                 aria-labelledby="exampleModalLabelLogout" aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -461,15 +496,23 @@
                   </div>
                 </div>
               </div>
+
             </div>
+            <!---Container Fluid-->
           </div>
         </div>
       </div>
+      <!-- Scrollto to top -->
       <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
       </a>
+
+      <!-- 
+      // upload Ảnh -->
       <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
       <script>
+
+
         const number = document.querySelector(".number");
         const valueNumber = Number(number.getAttribute("data-value"));
         const circle = document.querySelector('.circle');
@@ -576,6 +619,32 @@
               console.error('Có lỗi khi tải lên ảnh:', error);
             });
 
+
+
+
+          // Promise.all(uploadPromises)
+          //   .then(results => {
+          //     console.log('Tất cả ảnh đã được tải lên:', results);
+          //     // results.forEach(imageData => {
+          //     //   console.log('ID của ảnh:', imageData.data.id);
+          //     //   console.log('Tiêu đề của ảnh:', imageData.title);
+          //     //   console.log('URL của ảnh:', imageData.url);
+          //     //   console.log('URL hiển thị của ảnh:', imageData.display_url);
+          //     //   console.log('URL xem ảnh:', imageData.url_viewer);
+          //     // });
+          //     const uploadedImagesDiv = document.querySelector('.fileimagedata');
+          //     results.forEach(imageData => {
+          //       const imageUrl = imageData.data.url;
+          //       const img = document.createElement('img');
+          //       img.src = imageUrl;
+          //       console.log(imageUrl);
+          //       uploadedImagesDiv.appendChild(img);
+          //     });
+
+          //   })
+          //   .catch(error => {
+          //     console.error('Có lỗi khi tải lên ảnh:', error);
+          //   });
         }
       </script>
 </body>
