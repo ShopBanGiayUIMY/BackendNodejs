@@ -11,5 +11,6 @@ router.get('/:id',ProductController.show);
 // router.get('/category/:id/search/:name/sort/:sort',ProductController.categorySearchSort);
 // router.get('/sort/:sort',ProductController.sort);
  router.post('/solidproduct/',ProductController.GetSolidProductById);
+ router.get('/:id/rating',ProductController.GetRatingById);
 
 export default router;

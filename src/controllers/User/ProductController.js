@@ -105,6 +105,34 @@ const ProductController = {
     }
   
   },
+  GetRatingById: async (req, res) => {
+    const db = connection();
+    db.connect();
+    const id = req.params.id;
+    const query = ProductDb.GetRatingById;
+    if(!id){
+      res.status(400).send({message:"id is required"});
+      return;
+    }else{
+      db.query(query, id, async (err, rows) => {
+        if (err) {
+          console.log(err);
+          res.status(500).send({ error: "server error" });
+          return;
+        }
+        if (rows.length === 0) {
+          res
+            .status(404)
+            .send({ message: `Not found product with id = ${req.params.id}` });
+          return;
+        }
+        
+        res.status(200).json(rows[0]);
+      });
+    }
+  
+  },
+
 };
 
 export default ProductController;

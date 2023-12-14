@@ -34,7 +34,10 @@ GROUP BY
 ORDER BY
   total_quantity_sold DESC;
     `,
-  
+  GetRatingById: `SELECT product_id, AVG(rating) AS average_rating
+  FROM product_ratings
+  WHERE product_id = ?
+  GROUP BY product_id;`,
 };
 
 export default Queryproduct;
