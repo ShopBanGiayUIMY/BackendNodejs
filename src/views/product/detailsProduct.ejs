@@ -284,99 +284,92 @@
                         </li>
                     </ul>
                 </nav>
-                <div class="container-fluid" id="container-wrapper">
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Sửa người dùng </h1>
-                    </div>
-                    <div class="row">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="tile">
-                                    <h3 class="tile-title">Tạo mới người dùng</h3>
-                                    <div class="tile-body">
-                                        <div class="row element-button">
 
-                                        </div>
-                                        <form class="row" action="/admin/products/create" method="post">
-                                            <div class="form-group col-md-3">
-                                                <label class="control-label">Tên người dùng </label>
-                                                <input class="form-control" type="text" id="user_name" name="user_name"
-                                                    required value="<%=user.username%>">
-                                            </div>
 
-                                            <div class="form-group  col-md-3">
-                                                <label class="control-label">Email</label>
-                                                <input class="form-control" type="text" id="quantity" name="quantity"
-                                                    required value="<%=user.email%>">
-                                            </div>
-                                            <div class="form-group  col-md-3">
-                                                <label class="control-label">Số điện thoại </label>
-                                                <input class="form-control" type="number" id="quantity" name="quantity"
-                                                    required value="<%=user.phone%>">
-                                            </div>
-                                            <div class="form-group  col-md-3">
-                                                <label class="control-label">Tên đầy đủ</label>
-                                                <input class="form-control" type="text" id="quantity" name="quantity"
-                                                    required value="<%=user.full_name%>">
-                                            </div>
-                                            <div class="form-group  col-md-3">
-                                                <label class="control-label">Địa chỉ </label>
-                                                <input class="form-control" type="text" id="quantity" name="quantity"
-                                                    required value="<%=user.address%>">
-                                            </div>
-                                    </div>
+                <table id="productTable" class="table table-bordered table-hover" style="width: 100%">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên</th>
+                            <th>Danh mục</th>
+                            <th>Hình ảnh</th>
+                            <th>Giá tiền</th>
+                            <th>Mô tả</th>
+                            <th>Màu sắc</th>
+                            <th>Kích cỡ</th>
+                            <th>Hàng tồn kho</th>
 
-                                    <button type="submit" class="btn"
-                                        style="width: 300px; color: white;background-color: #001c40;">Cập nhật </button>
+                        </tr>
+                    </thead>
+                    <tbody>
 
-                                    <!-- <a class="btn btn-cancel" href="/"
-                                        style="width: 300px; color: white;background-color: #001c40;">Hủy bỏ</a> -->
-                                </div>
+                        <tr>
+                            <td>
+                                <%= product.id %>
+                            </td>
+                            <td style="max-width: 150px;">
+                                <%= product.name %>
+                            </td>
+                            <td>
+                                <%= product.category_id %>
+                            </td>
+                            <td class="text-center">
+                                <img class="product-img" src="<%= product.thumbnail %>" />
+                            </td>
+                            <td>
+                                <%= product.price %>
+                            </td>
+                            <td>
+                                <%= product.description %>
+                            </td>
+                            <td>
+                                <%= product.color %>
+                            </td>
+                            <td>
+                                <%= product.size %>
+                            </td>
+                            <td>
+                                <%= product.stock %>
+                            </td>
+                        </tr>
 
-                                <div style="background-color: rgba(0, 0, 0, 0.4); z-index: 9999;" class="modal fade"
-                                    id="addtinhtrang" tabindex="-1" role="dialog"
-                                    aria-labelledby="exampleModalCenterTitle" data-backdrop="static"
-                                    data-keyboard="false">
+                    </tbody>
+                </table>
 
-                                </div>
-                                <script src="js/jquery-3.2.1.min.js"></script>
-                                <script src="js/popper.min.js"></script>
-                                <script src="js/bootstrap.min.js"></script>
-                                <script src="js/main.js"></script>
-                                <script src="js/plugins/pace.min.js"></script>
+
+
+                <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleModalLabelLogout" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabelLogout">Ohh No!</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
                             </div>
-
-                            <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog"
-                                aria-labelledby="exampleModalLabelLogout" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabelLogout">Ohh No!</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p>Are you sure you want to logout?</p>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-outline-primary"
-                                                data-dismiss="modal">Cancel</button>
-                                            <a href="admin/auth/login" class="btn btn-primary">Logout</a>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="modal-body">
+                                <p>Are you sure you want to logout?</p>
                             </div>
-
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-primary"
+                                    data-dismiss="modal">Cancel</button>
+                                <a href="admin/auth/login" class="btn btn-primary">Logout</a>
+                            </div>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
+    </div>
+    </div>
+    </div>
     </div>
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
+
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>

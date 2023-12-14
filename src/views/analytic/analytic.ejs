@@ -153,7 +153,7 @@
       <div class="sidebar-heading">
         Features
       </div>
-      <li class="nav-item">
+      <li class="nav-item active">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBootstrap"
           aria-expanded="true" aria-controls="collapseBootstrap">
           <i class="fab fa-product-hunt" style="font-size: 20px;"></i>
@@ -162,8 +162,24 @@
         <div id="collapseBootstrap" class="collapse" aria-labelledby="headingBootstrap" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Products Manager</h6>
-            <a class="collapse-item" href="/admin/products">Danh sách sản phẩm</a>
+            <a class="collapse-item active" href="/admin/products">Danh sách sản phẩm</a>
             <a class="collapse-item" href="/admin/products/create">Thêm Sản phẩm</a>
+          </div>
+        </div>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#categoryclick" aria-expanded="true"
+          aria-controls="categoryclick">
+          <!-- Different icon for "Category" -->
+          <img src="https://icons.veryicon.com/png/o/miscellaneous/fangshan-design_icon/category-18.png"
+            style="width: 20px; height: 20px;">
+          <span>Category</span>
+        </a>
+        <div id="categoryclick" class="collapse" aria-labelledby="headingBootstrap" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">The loai</h6>
+            <a class="collapse-item active" href="/admin/categories">The loai</a>
+            <!-- <a class="collapse-item" href="/admin/voucher/create">Thêm Voucher</a> -->
           </div>
         </div>
       </li>
@@ -197,7 +213,8 @@
       <li class="nav-item ">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#orderclick" aria-expanded="true"
           aria-controls="orderclick">
-          <img src="https://icons.veryicon.com/png/o/miscellaneous/icondian/icon-order-1.png" style="width: 20px; height: 20px;">
+          <img src="https://icons.veryicon.com/png/o/miscellaneous/icondian/icon-order-1.png"
+            style="width: 20px; height: 20px;">
           <span>Quản lý đơn hàng</span>
         </a>
         <div id="orderclick" class="collapse" aria-labelledby="headingBootstrap" data-parent="#accordionSidebar">
@@ -283,105 +300,107 @@
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
             <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
             <style>
-    .ui-card__section {
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        margin: 20px auto;
-        max-width: 600px;
-    }
+              .ui-card__section {
+                background-color: #fff;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                margin: 20px auto;
+                max-width: 600px;
+              }
 
-    .ui-type-container {
-        margin: 0 auto;
-    }
+              .ui-type-container {
+                margin: 0 auto;
+              }
 
-    .ui-form__section {
-        margin-bottom: 20px;
-    }
+              .ui-form__section {
+                margin-bottom: 20px;
+              }
 
-    .ui-form__group {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-    }
+              .ui-form__group {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 20px;
+              }
 
-    .next-input-wrapper {
-        flex: 1 0 calc(50% - 10px);
-        margin-bottom: 15px;
-    }
+              .next-input-wrapper {
+                flex: 1 0 calc(50% - 10px);
+                margin-bottom: 15px;
+              }
 
-    .next-label {
-        display: block;
-        font-size: 14px;
-        color: #333;
-        margin-bottom: 5px;
-    }
+              .next-label {
+                display: block;
+                font-size: 14px;
+                color: #333;
+                margin-bottom: 5px;
+              }
 
-    .next-input {
-        width: 100%;
-        padding: 10px;
-        font-size: 14px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
-    }
+              .next-input {
+                width: 100%;
+                padding: 10px;
+                font-size: 14px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                box-sizing: border-box;
+              }
 
-    
 
-    .next-label--switch {
-        display: flex;
-        align-items: center;
-    }
 
-    .next-checkbox {
-        margin-right: 5px;
-    }
-</style>
+              .next-label--switch {
+                display: flex;
+                align-items: center;
+              }
+
+              .next-checkbox {
+                margin-right: 5px;
+              }
+            </style>
             <div class="containerss">
               <div class="row">
                 <div class="ui-card__section">
                   <div class="ui-type-container">
-                      <div class="ui-form__section">
-                          <div class="ui-form__group">
-                              <!-- Ngày bắt đầu -->
-                              <div class="next-input-wrapper">
-                                  <label for="discount_starts_at" class="next-label">Ngày bắt đầu</label>
-                                  <input name="start_date" type="text" id="datepickerstart" required class="next-input next-input--invisible input-date" placeholder="Ngày bắt đầu">
-                              </div>
-                              
-                          </div>
-                          <div data-bind-show="hasEndsDate">
-                              <div class="ui-form__group">
-                                  <!-- Ngày kết thúc -->
-                                  <div class="next-input-wrapper">
-                                      <label for="discount_starts_at" class="next-label">Ngày kết thúc</label>
-                                      <input name="end_date" type="text" id="datepickerend" required class="next-input next-input--invisible input-date" placeholder="Ngày kết thúc">
-                                  </div>
-                                 
-                              </div>
-                          </div>
+                    <div class="ui-form__section">
+                      <div class="ui-form__group">
+                        <!-- Ngày bắt đầu -->
+                        <div class="next-input-wrapper">
+                          <label for="discount_starts_at" class="next-label">Ngày bắt đầu</label>
+                          <input name="start_date" type="text" id="datepickerstart" required
+                            class="next-input next-input--invisible input-date" placeholder="Ngày bắt đầu">
+                        </div>
+
                       </div>
+                      <div data-bind-show="hasEndsDate">
+                        <div class="ui-form__group">
+                          <!-- Ngày kết thúc -->
+                          <div class="next-input-wrapper">
+                            <label for="discount_starts_at" class="next-label">Ngày kết thúc</label>
+                            <input name="end_date" type="text" id="datepickerend" required
+                              class="next-input next-input--invisible input-date" placeholder="Ngày kết thúc">
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
                   </div>
-              </div>
-              <script>
-                // Kích hoạt flatpickr cho Ngày bắt đầu
-                flatpickr("#datepickerstart", {
+                </div>
+                <script>
+                  // Kích hoạt flatpickr cho Ngày bắt đầu
+                  flatpickr("#datepickerstart", {
                     enableTime: false, // Không cho phép chọn thời gian
                     dateFormat: "Y-m-d", // Định dạng ngày
-                });
-            
-               
-                // Kích hoạt flatpickr cho Ngày kết thúc
-                flatpickr("#datepickerend", {
+                  });
+
+
+                  // Kích hoạt flatpickr cho Ngày kết thúc
+                  flatpickr("#datepickerend", {
                     enableTime: false, // Không cho phép chọn thời gian
                     dateFormat: "Y-m-d", // Định dạng ngày
-                });
-            
-               
-            
-            
-            </script>
+                  });
+
+
+
+
+                </script>
                 <table id="example" class="table table-striped table-bordered" style="width:100%">
                   <thead>
                     <tr>
@@ -395,13 +414,13 @@
                     </tr>
                   </thead>
                   <tbody>
-                    
-                   
+
+
                     <tr>
                       <td><input type="checkbox" name=""></td>
                       <td>
                         <a href="#" style="text-decoration: underline;">Donna Snider</a>
-                        </td>
+                      </td>
                       <td>Customer Support</td>
                       <td>New York</td>
                       <td>27</td>
@@ -409,7 +428,7 @@
                       <td>$112,000</td>
                     </tr>
                   </tbody>
-                 
+
                 </table>
               </div>
             </div>

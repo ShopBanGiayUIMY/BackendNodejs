@@ -1,39 +1,58 @@
 import ProductService from "../../services/ProductService.js";
 import CategoryService from "../../services/CategoryService.js";
+import ProductDetail from "../../models/ProductDetail.js";
+import Category from "../../models/Category.js";
+import Product from "../../models/Product.js";
 const layout = "layouts/layout";
+
+const formatCurrency = (amount) => {
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  }).format(amount);
+};
+
 const ProductAdminController = {
   index: async (req, res) => {
-    const row = await ProductService.getListProduct();
-    // console.log(JSON.stringify(row))
-    const data = await row.map((row) => {
-      const parseArrayProductDetail = (productDetails) => {
-        return productDetails.map(e => {
-          console.log(JSON.stringify(e))
-          return {
-            color: e.color,
-            size: e.size,
-            stock: e.stock,
-            detailId: e.detail_id,
-            productId: e.product_id,
-          }
-        })
-      }
-      return {
-        id: row.product_id,
-        name: row.product_name,
-        price: row.product_price,
-        description: row.product_description,
-        thumbnail: row.thumbnail,
-        ProductDetails: parseArrayProductDetail(row.ProductDetails),
-        category: {
-          name: row.Category.name,
-          image: row.Category.image,
-        },
-      };
-    });
-    
-    console.log(JSON.stringify(data))
-    res.render("product/products", { data, layout: layout, title: "Products" });
+    try {
+      const row = await ProductService.getListProduct();
+
+      const data = row.map((row) => {
+        const parseArrayProductDetail = (productDetails) => {
+          return productDetails.map((e) => {
+            return {
+              color: e.color,
+              size: e.size,
+              stock: e.stock,
+              detailId: e.detail_id,
+              productId: e.product_id,
+            };
+          });
+        };
+
+        return {
+          id: row.product_id,
+          name: row.product_name,
+          price: formatCurrency(row.product_price), // Định dạng giá thành VNĐ
+          description: row.product_description,
+          thumbnail: row.thumbnail,
+          ProductDetails: parseArrayProductDetail(row.ProductDetails),
+          category: {
+            name: row.Category.name,
+            image: row.Category.image,
+          },
+        };
+      });
+
+      res.render("product/products", {
+        data,
+        layout: layout,
+        title: "Products",
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Something went wrong");
+    }
   },
   create: async (req, res) => {
     if (req.method === "POST") {
@@ -44,13 +63,91 @@ const ProductAdminController = {
         product_image,
         category_id,
         quantity,
+        color,
+        size,
+        stock,
       } = req.body;
 
-      const imageArray = JSON.parse(`[${product_image}]`);
+      // Xác định thông tin ảnh sản phẩm
+      let imageArray = [];
+      if (product_image) {
+        try {
+          imageArray = JSON.parse(`[${product_image}]`);
+        } catch (error) {
+          console.error("Error parsing product_image:", error);
+        }
+      }
       const thumbnail = imageArray[0];
-      const image_url1 =  imageArray;
-      const image_url = image_url1;
-      const result = await ProductService.createProduct(
+      const image_url = imageArray;
+
+      try {
+        // Tạo sản phẩm cơ bản
+        // const createdProduct = await Product.create({
+        //   product_name,
+        //   product_price,
+        //   product_description,
+        //   category_id,
+        //   thumbnail,
+        // });
+
+        // // Tạo thông tin chi tiết sản phẩm
+        // await ProductDetail.create({
+        //   product_id: createdProduct.product_id,
+        //   color,
+        //   size,
+        //   stock,
+        // });
+        const result = ProductService.createProduct(
+          product_name,
+          product_price,
+          product_description,
+          thumbnail,
+          category_id,
+          image_url,
+          color,
+          size,
+          stock
+        );
+
+        if (result) {
+          res.redirect("/admin/products");
+        }
+      } catch (error) {
+        console.error("Error creating product:", error);
+        res.status(500).send("Internal Server Error");
+      }
+    }
+
+    try {
+      // Lấy danh sách danh mục
+      const categories = await Category.findAll();
+
+      res.render("product/addProduct", {
+        layout: layout,
+        title: "Create Product",
+        category: categories,
+      });
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      res.status(500).send("Internal Server Error");
+    }
+  },
+
+  edit: async (req, res) => {
+    const productId = req.params.id;
+    const {
+      product_name,
+      product_price,
+      product_description,
+      thumbnail,
+      category_id,
+      image_url,
+      quantity,
+    } = req.body; // Lấy thông tin từ request body
+
+    try {
+      await ProductService.updateProduct(
+        productId,
         product_name,
         product_price,
         product_description,
@@ -59,28 +156,12 @@ const ProductAdminController = {
         image_url,
         quantity
       );
-      if (result) {
-        res.redirect("/admin/products");
-      }
-    }
-    const result = await CategoryService.getAllCategories();
-    const data = result.map((row) => {
-      return {
-        id: row.category_id,
-        name: row.name,
-      };
-    });
-    res.render("product/addProduct", {
-      layout: layout,
-      title: "Create Product",
-      category: data,
-    });
-  },
-  // Thêm phần sửa sản phẩm
-  edit: async (req, res) => {
-    const productId = req.params.id;
-    try {
-      const product = await ProductService.getProductById(productId);
+
+      const product = await Product.findByPk(productId);
+      const productDetails = await ProductDetail.findAll({
+        where: { product_id: productId },
+        attributes: ["detail_id", "color", "size", "stock"],
+      });
       const categories = await CategoryService.getAllCategories();
 
       res.render("product/editProduct", {
@@ -94,45 +175,20 @@ const ProductAdminController = {
           thumbnail: product.thumbnail,
           category_id: product.category_id,
           quantity: product.quantity,
+          productDetails: productDetails.map((detail) => ({
+            detailId: detail.detail_id,
+            productId: detail.product_id,
+            color: detail.color,
+            size: detail.size,
+            stock: detail.stock,
+          })),
         },
-        categories: categories,
+        categories: categories.map((category) => ({
+          id: category.category_id,
+          name: category.name,
+          selected: category.id === product.category_id ? "selected" : "",
+        })),
       });
-    } catch (error) {
-      console.error("Error fetching product for editing:", error);
-      res.status(500).send("Internal Server Error");
-    }
-  },
-
-  // Cập nhật sản phẩm sau khi sửa
-  update: async (req, res) => {
-    const productId = req.params.id;
-    const {
-      product_name,
-      product_price,
-      product_description,
-      product_image,
-      category_id,
-      quantity,
-    } = req.body;
-    const imageArray = JSON.parse(`[${product_image}]`);
-    const thumbnail = imageArray[0];
-    const image_url = imageArray;
-
-    try {
-      const result = await ProductService.updateProduct(
-        productId,
-        product_name,
-        product_price,
-        product_description,
-        thumbnail,
-        category_id,
-        image_url,
-        quantity
-      );
-
-      if (result) {
-        res.redirect("/admin/products");
-      }
     } catch (error) {
       console.error("Error updating product:", error);
       res.status(500).send("Internal Server Error");
@@ -156,26 +212,42 @@ const ProductAdminController = {
   },
   detail: async (req, res) => {
     const productId = req.params.id;
+
     try {
-      const product = await ProductService.getProductDetail(productId);
-      const categories = await CategoryService.getAllCategories(); // Lấy thông tin danh mục
+      const product = await Product.findOne({
+        where: { product_id: productId },
+        include: [
+          {
+            model: ProductDetail,
+            where: { product_id: productId },
+            attributes: ["detail_id", "color", "size", "stock"],
+          },
+          {
+            model: Category,
+            attributes: ["name", "image"],
+          },
+        ],
+      });
+
+      const categories = await CategoryService.getAllCategories();
+
       res.render("product/detailsProduct", {
         layout: layout,
         title: "Product Detail",
         product: {
-          id: productId,
-          name: product.name, // Đảm bảo rằng product trả về các thuộc tính cần thiết từ service
-          price: product.price,
-          description: product.description,
+          id: product.product_id,
+          name: product.product_name,
+          price: product.product_price,
+          description: product.product_description,
           thumbnail: product.thumbnail,
-          // Thêm các thuộc tính cần thiết khác từ service vào đây
-          // Ví dụ: color, size, stock, quantity, image_url,...
+          color: product.ProductDetails.map((detail) => detail.color),
+          size: product.ProductDetails.map((detail) => detail.size),
+          stock: product.ProductDetails.map((detail) => detail.stock),
           category: {
-            // Đưa thông tin danh mục vào đây nếu đã có
-            // Ví dụ: name: product.Category.name,
-            //        image: product.Category.image,
+            name: product.Category.name,
+            image: product.Category.image,
           },
-          categories: categories, // Truyền danh sách các danh mục xuống view
+          categories: categories, // Truyền danh sách các danh mục xuống view nếu cần thiết
         },
       });
     } catch (error) {
@@ -183,39 +255,6 @@ const ProductAdminController = {
       res.status(500).send("Internal Server Error");
     }
   },
-  // color, size
-  // detail: async (req, res) => {
-  //   const productId = req.params.id;
-
-  //   try {
-  //     const productDetail = await ProductDetail.findOne({
-  //       where: {
-  //         product_id: productId,
-  //       },
-  //     });
-
-  //     if (!productDetail) {
-  //       return res.status(404).send("Không tìm thấy thông tin chi tiết sản phẩm");
-  //     }
-
-  //     res.render("product/detailsProduct", {
-  //       layout: layout,
-  //       title: "Chi tiết sản phẩm",
-  //       product: {
-  //         id: productId,
-  //         color: productDetail.color,
-  //         size: productDetail.size,
-  //         stock: productDetail.stock,
-  //         // Thêm các thông tin khác của sản phẩm từ service hoặc các model khác vào đây
-  //         // Ví dụ: name, price, description, thumbnail,...
-  //         // Đảm bảo lấy thông tin từ service hoặc model tương ứng
-  //       },
-  //     });
-  //   } catch (error) {
-  //     console.error("Lỗi khi lấy thông tin chi tiết sản phẩm:", error);
-  //     res.status(500).send("Lỗi Server");
-  //   }
-  // },
 };
 
 export default ProductAdminController;
