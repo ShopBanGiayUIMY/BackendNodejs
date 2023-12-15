@@ -79,6 +79,20 @@ export const OrderService = {
     // console.log(JSON.stringify(orders))
     return orders;
   },
+  getOrderById: async (orderId) => {
+    const orders = await Order.findByPk(orderId,
+      {
+      include: [User, OrderStatus, PaymentMethodType, ShippingAddress,{
+        model: OrderDetail,
+        include: {
+          model: ProductDetail,
+          include: Product
+        }
+      }],
+    });
+    // console.log(JSON.stringify(orders))
+    return orders;
+  },
   createOrderFromCart: async ({
     userId,
     shippingAddressId,
