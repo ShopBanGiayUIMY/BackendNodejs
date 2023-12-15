@@ -426,7 +426,18 @@
                             <% }); %>
                         </td>
                       </tr>
-
+                      <tr>
+                        <td>Phí vận chuyển</td>
+                        <td>
+                          +<%= order.freightCost %> VNĐ
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>VOUCHER</td>
+                        <td>
+                          <%= order.discount ? "- " + order.discount +"VNĐ" : "không có" %>
+                        </td>
+                      </tr>
                       <tr>
                         <td>Tổng tiền</td>
                         <td>

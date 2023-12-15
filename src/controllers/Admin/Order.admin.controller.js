@@ -123,12 +123,13 @@ const OrderController = {
           status: order.OrderStatus.name,
         },
         orderDetail: mapArrayOrderDetail(order.OrderDetails),
+        freightCost: (+order.freightCost).toLocaleString(),
+        discount: null,
         totalAmount: (+order.totalAmount).toLocaleString(),
       };
     };
     const mapArrayOrderDetail = (orderDetails) => {
       const result = []
-      console.log(orderDetails)
       for (const detail of orderDetails) {
         // console.log(JSON.stringify(detail))
         result.push({
@@ -168,7 +169,7 @@ const OrderController = {
       return `${formattedDate} ${formattedTime}`;
     };
     const orderDto = mapOrderToPayload(order)
-    console.log(JSON.stringify(orderDto))
+    // console.log(JSON.stringify(orderDto))
     res.render("order/orderDetail", {
       title: "Chi tiết đơn hàng",
       layout: layout,
