@@ -61,6 +61,18 @@ const VoucherService = {
   getListVoucher: async (user_id) => {
     const db = connection();
     db.connect();
+    const queryTemp = `
+    SELECT *
+    FROM vouchers
+    WHERE (voucher_purpose = 0 OR voucher_purpose = 1)
+      AND (
+        item_user_id_list ->> '$[0]' = '4'
+        AND (
+          use_history IS NULL
+          OR use_history ->> '$[0]' IS NULL
+        )
+      );
+    `;
     try {
       const user = await AuthUser.findOne({
         where: {
@@ -69,22 +81,24 @@ const VoucherService = {
         attributes: ["role"],
       });
       const voucher = await Discount.findAll();
+      console.log(voucher);
       console.log("user.dataValues.role", user.dataValues.role);
 
       if (user.dataValues.role == 0) {
         return new Promise((resolve, reject) => {
           db.query(
-            `
-            SELECT *
-FROM vouchers
-WHERE (voucher_purpose = 0 OR voucher_purpose = 1)
-  AND (
-    JSON_SEARCH(item_user_id_list, 'one', ?) IS NOT NULL
-    AND (
-      use_history IS NULL
-      OR JSON_SEARCH(use_history, 'one', ?) IS NULL
-    )
-  );`,
+            //             `
+            //             SELECT *
+            // FROM vouchers
+            // WHERE (voucher_purpose = 0 OR voucher_purpose = 1)
+            //   AND (
+            //     JSON_SEARCH(item_user_id_list, 'one', ?) IS NOT NULL
+            //     AND (
+            //       use_history IS NULL
+            //       OR JSON_SEARCH(use_history, 'one', ?) IS NULL
+            //     )
+            //   );`,
+            queryTemp,
             [user_id, user_id],
             (err, rows) => {
               if (err) {
@@ -169,11 +183,22 @@ WHERE (voucher_purpose = 0 OR voucher_purpose = 1)
     for (const voucher of vouchers) {
       let { discount_amount, use_history } = voucher;
       discountAmount += discount_amount;
-      if (!use_history) {
+      if (typeof use_history === "string") {
+        use_history = JSON.parse(use_history);
+      }
+      if (!Array.isArray(use_history)) {
         use_history = [];
       }
-      use_history.push(userId);
+
+      console.log("use_history", use_history);
+      console.log("userId", userId);
+
+      if (!use_history.includes(userId)) {
+        use_history.push(userId);
+      }
+
       console.log(use_history);
+
       await Voucher.update(
         {
           use_history: JSON.stringify(use_history),

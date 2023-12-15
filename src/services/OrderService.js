@@ -1,5 +1,6 @@
-import { Sequelize, or } from "sequelize";
+import { Sequelize, or, Op } from "sequelize";
 import CartItem from "../models/CartItem.js";
+import Category from "../models/Category.js";
 import Order from "../models/Order.js";
 import OrderDetail from "../models/OrderDetail.js";
 import Product from "../models/Product.js";
@@ -11,6 +12,7 @@ import PaymentMethodType from "../models/PaymentMethodType.js";
 import ShippingAddress from "../models/ShippingAddress.js";
 import Voucher from "../models/Voucher.js";
 import VoucherService from "./VoucherService.js";
+
 export const OrderService = {
   //needed authn
   getOrderOfUser: async ({ userId, statusId }) => {
@@ -19,21 +21,21 @@ export const OrderService = {
       const result = await Order.findAll({
         where: {
           userId: userId,
-          statusId: statusId
+          statusId: statusId,
         },
         include: [
           {
             model: OrderDetail,
             include: {
               model: ProductDetail,
-              attributes: ['size', 'color'],
+              attributes: ["size", "color"],
               include: {
                 model: Product,
-                attributes: ['product_name', 'product_price', 'thumbnail']
-              }
+                attributes: ["product_name", "product_price", "thumbnail"],
+              },
             },
-          }, 
-          OrderStatus
+          },
+          OrderStatus,
         ],
       });
       return result;
@@ -48,14 +50,14 @@ export const OrderService = {
           model: OrderDetail,
           include: {
             model: ProductDetail,
-            attributes: ['size', 'color'],
+            attributes: ["size", "color"],
             include: {
               model: Product,
-              attributes: ['product_name', 'product_price', 'thumbnail']
-            }
+              attributes: ["product_name", "product_price", "thumbnail"],
+            },
           },
-        }, 
-        OrderStatus
+        },
+        OrderStatus,
       ],
     });
     return result;
@@ -120,16 +122,19 @@ export const OrderService = {
       const vaildateProcess = await VoucherService.voucherValidating({
         userId: userId,
         vouchers: vouchers,
-      })
-      console.log(JSON.stringify(vouchers))
-      console.log(vaildateProcess)
+      });
+      console.log(JSON.stringify(vouchers));
+      console.log(vaildateProcess);
       if (!vaildateProcess.status) {
-        error.status = 400
-        error.data = vaildateProcess.error
-        error.message = "invalid voucher id list"
-        return error
+        error.status = 400;
+        error.data = vaildateProcess.error;
+        error.message = "invalid voucher id list";
+        return error;
       } else {
-        const discountAmount = await VoucherService.useVouchers(userId, vouchers)
+        const discountAmount = await VoucherService.useVouchers(
+          userId,
+          vouchers
+        );
         totalAmount -= discountAmount;
       }
     }
@@ -155,6 +160,7 @@ export const OrderService = {
             shippingAddressId: shippingAddressId,
             paymentMethodId: paymentMethodId,
             statusId: 1,
+            freightCost: freightCost,
             totalAmount: totalAmount,
             orderDate: new Date(),
           },
@@ -266,9 +272,81 @@ export const OrderService = {
       };
     }
   },
+  totalOrderStatus: async (userId) => {
+    const query = `
+    SELECT
+    os.status_id AS status_id,
+    os.status_code AS status_code,
+    os.status_name AS status_name,
+    COALESCE(COUNT(o.order_id), 0) AS total_orders
+FROM
+    order_status AS os
+LEFT JOIN
+    orders AS o
+ON
+    os.status_id = o.status_id AND o.user_id = :userId
+GROUP BY
+    os.status_id, os.status_code, os.status_name
+`;
+
+    try {
+      const result = await sequelize.query(query, {
+        replacements: { userId: userId },
+        type: Sequelize.QueryTypes.SELECT,
+      });
+
+      return result;
+    } catch (error) {
+      console.error("Lỗi:", error);
+      throw error;
+    }
+  },
   //admin operation
   operateOrder: async () => {},
   //user can update order if status is pending
   isOrderCanBeUpdated: async () => {},
   getOrderProcessingOfUser: async (userId) => {},
+  analysicOrderInRangeOfDate: async ({ startDate, endDate }) => {
+    const orders = await Order.findAll({
+      where: {
+        orderDate: {
+          [Op.gte]: startDate,
+          [Op.lte]: endDate,
+        },
+        paymentStatus: "PAID",
+      },
+      attributes: ["id", "orderDate", "totalAmount"],
+      include: [
+        {
+          model: User,
+          attributes: ["username", "full_name"],
+        },
+        {
+          model: OrderDetail,
+          attributes: ["price", "quantity"],
+          include: {
+            model: ProductDetail,
+            attributes: ["size", "color"],
+            include: {
+              model: Product,
+              attributes: ["product_name", "thumbnail"],
+              include: {
+                model: Category,
+                attributes: ["name"],
+              },
+            },
+          },
+        },
+        {
+          model: OrderStatus,
+          attributes: ["code", "name"],
+        },
+        {
+          model: PaymentMethodType,
+          attributes: ['paymentMethodName']
+        }
+      ],
+    });
+    return orders;
+  },
 };
