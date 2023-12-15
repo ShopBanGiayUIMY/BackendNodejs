@@ -335,7 +335,6 @@
 
                   <thead>
                     <tr>
-                      <th><input type="checkbox" onclick="checkAll(this)"></th>
                       <th>Đơn hàng</th>
                       <th>Ngày đặt</th>
                       <th>Khách hàng</th>
@@ -349,10 +348,9 @@
                   <tbody>
                     <% data.orders.forEach(order=> { %>
                       <tr>
-                        <td><input type="checkbox" name=""></td>
                         <td>
-                          <a href="#" style="text-decoration: underline;">
-                            <%= order.id %>
+                          <a href="<%= order.id %>" style="text-decoration: underline;">
+                            #<%= order.id %>
                           </a>
                         </td>
                         <td>
@@ -372,7 +370,7 @@
                                   %>
                                   <% if (order.orderStatus.code==='CANCELED' || order.orderStatus.code==='DELIVERED' ) {
                                     %>disabled<% } %>
-                                      <% if (status.code==='CANCELED' || status.code==='PENDING' ) { %>disabled<% } %>
+                                      <% if (status.code==='CANCELED' || status.code==='PENDING' || status.code==='DELIVERED' ) { %>disabled<% } %>
                                           <% if (order.paymentMethod.paymentMethodName==='VNPAY' &&
                                             order.paymentStatus==='UNPAID' ) { %>disabled<% } %>
                                               >
