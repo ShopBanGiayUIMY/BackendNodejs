@@ -83,6 +83,103 @@ const OrderController = {
       console.log(error);
     }
   },
+  show: async (req, res) => {
+    const serverUrl = process.env.HOST_NAME;
+    const id = req.params.id;
+    console.log(id);
+    const order = await OrderService.getOrderById(id);
+    const orderStatus = await OrderStatus.findAll()
+    console.log(JSON.stringify(order))
+    // const orderStatus = await OrderStatus.findAll();
+    const mapOrderToPayload = (order) => {
+      return {
+        id: order.id,
+        user: {
+          userId: order.userId,
+          username: order.User.username,
+          phone: order.User.phone,
+          fullName: order.User.full_name,
+          email: order.User.email,
+        },
+        orderDate: parseOrderDate(order.orderDate),
+        shippingAddress: {
+          id: order.ShippingAddress.id,
+          userId: order.ShippingAddress.userId,
+          fullContact: `
+            ${order.ShippingAddress.state},
+             ${order.ShippingAddress.city},
+              ${order.ShippingAddress.recipientPhoneNumber}`,
+        },
+        deliveredAddress: order.deliveredAddressId,
+        paymentStatus: order.paymentStatus,
+        paymentMethod: {
+          id: order.PaymentMethodType.id,
+          paymentMethodName: order.PaymentMethodType.paymentMethodName,
+        },
+        transactionCode: order.transactionCode,
+        orderStatus: {
+          id: order.OrderStatus.id,
+          code: order.OrderStatus.code,
+          status: order.OrderStatus.name,
+        },
+        orderDetail: mapArrayOrderDetail(order.OrderDetails),
+        totalAmount: (+order.totalAmount).toLocaleString(),
+      };
+    };
+    const mapArrayOrderDetail = (orderDetails) => {
+      const result = []
+      console.log(orderDetails)
+      for (const detail of orderDetails) {
+        // console.log(JSON.stringify(detail))
+        result.push({
+          detailId: detail.id,
+          productDetailId: detail.productDetailId,
+          productId: detail.ProductDetail.Product.product_id,
+          quantity: detail.quantity,
+          soldPrice: (+detail.price).toLocaleString(),
+          currentPrice: detail.ProductDetail.Product.price,
+          color: detail.ProductDetail.color,
+          size: detail.ProductDetail.size,
+          productName: detail.ProductDetail.Product.product_name,
+          thumbnail: detail.ProductDetail.Product.thumbnail,
+          amount: (detail.quantity * detail.price).toLocaleString()
+        })
+      }
+      return result;
+    }
+    const parseOrderDate = (orderDate) => {
+      const date = new Date(orderDate);
+      const optionsDate = {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      };
+      const optionsTime = { hour: "2-digit", minute: "2-digit" };
+
+      const formattedDate = new Intl.DateTimeFormat(
+        "vi-VN",
+        optionsDate
+      ).format(date);
+      const formattedTime = new Intl.DateTimeFormat(
+        "vi-VN",
+        optionsTime
+      ).format(date);
+
+      return `${formattedDate} ${formattedTime}`;
+    };
+    const orderDto = mapOrderToPayload(order)
+    console.log(JSON.stringify(orderDto))
+    res.render("order/orderDetail", {
+      title: "Chi tiết đơn hàng",
+      layout: layout,
+      data: {
+        id: id,
+        order: orderDto,
+        orderStatus: orderStatus,
+        serverUrl: serverUrl,
+      },
+    });
+  },
   update: async (req, res) => {
     let dto = req.body;
     dto = { ...dto, orderId: +req.params.id };
