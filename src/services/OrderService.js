@@ -31,7 +31,12 @@ export const OrderService = {
               attributes: ["size", "color"],
               include: {
                 model: Product,
-                attributes: ["product_name", "product_price", "thumbnail","product_id"],
+                attributes: [
+                  "product_name",
+                  "product_price",
+                  "thumbnail",
+                  "product_id",
+                ],
               },
             },
           },
@@ -53,7 +58,12 @@ export const OrderService = {
             attributes: ["size", "color"],
             include: {
               model: Product,
-              attributes: ["product_name", "product_price", "thumbnail","product_id"],
+              attributes: [
+                "product_name",
+                "product_price",
+                "thumbnail",
+                "product_id",
+              ],
             },
           },
         },
@@ -294,8 +304,11 @@ GROUP BY
         replacements: { userId: userId },
         type: Sequelize.QueryTypes.SELECT,
       });
-
-      return result;
+      if (result.length > 0) {
+        return result;
+      } else {
+        return [];
+      }
     } catch (error) {
       console.error("Lỗi:", error);
       throw error;
@@ -343,8 +356,8 @@ GROUP BY
         },
         {
           model: PaymentMethodType,
-          attributes: ['paymentMethodName']
-        }
+          attributes: ["paymentMethodName"],
+        },
       ],
     });
     return orders;
