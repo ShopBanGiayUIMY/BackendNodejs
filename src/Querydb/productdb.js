@@ -38,6 +38,9 @@ ORDER BY
   FROM product_ratings
   WHERE product_id = ?
   GROUP BY product_id;`,
+  Rating: `INSERT INTO product_ratings (user_id, product_id, rating)
+  VALUES (?, ?, ?);
+  `,
 };
 
 export default Queryproduct;

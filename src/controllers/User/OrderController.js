@@ -69,10 +69,12 @@ export const OrderController = {
     }
   },
   cancel: async (req, res) => {
+    
     const dto = {
       userId: req.user.id,
       orderId: req.params.id,
     };
+    console.log("cancel",req.user.id);
     // console.log(dto);
     const result = await OrderService.cancelOrder(dto);
     const { status, message } = result;

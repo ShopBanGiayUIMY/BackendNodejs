@@ -31,7 +31,7 @@ export const OrderService = {
               attributes: ["size", "color"],
               include: {
                 model: Product,
-                attributes: ["product_name", "product_price", "thumbnail"],
+                attributes: ["product_name", "product_price", "thumbnail","product_id"],
               },
             },
           },
@@ -53,7 +53,7 @@ export const OrderService = {
             attributes: ["size", "color"],
             include: {
               model: Product,
-              attributes: ["product_name", "product_price", "thumbnail"],
+              attributes: ["product_name", "product_price", "thumbnail","product_id"],
             },
           },
         },

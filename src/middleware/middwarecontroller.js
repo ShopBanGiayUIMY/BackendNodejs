@@ -60,17 +60,16 @@ const middwarecontroller = {
         next();
       });
     } else if (req.headers.authorization) {
-      let accessToken = req.headers.authorization.split(" ")[1]
+      let accessToken = req.headers.authorization.split(" ")[1];
       jwt.verify(accessToken, process.env.JWT_ACCESS_KEY, (err, user) => {
         if (err) {
-            // console.log("unauthn token");
-            return res.status(403).json("unauth token")
+          // console.log("unauthn token");
+          return res.status(403).json("unauth token");
         }
         req.user = user;
         next();
-      })
-
-    } else{
+      });
+    } else {
       // console.log("Bạn chưa đăng nhập");
       return res.status(403).json("Bạn chưa đăng nhập");
     }
