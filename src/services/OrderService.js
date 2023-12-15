@@ -133,8 +133,8 @@ export const OrderService = {
         userId: userId,
         vouchers: vouchers,
       });
-      console.log(JSON.stringify(vouchers));
-      console.log(vaildateProcess);
+      // console.log(JSON.stringify(vouchers));
+      // console.log(vaildateProcess);
       if (!vaildateProcess.status) {
         error.status = 400;
         error.data = vaildateProcess.error;
@@ -190,15 +190,31 @@ export const OrderService = {
             where: {
               item_id: e.item_id,
             },
-          });
+            transaction: transaction 
+          },
+          );
+          console.log(e.ProductDetail.stock, e.quantity)
+          const newQuantity = e.ProductDetail.stock - e.quantity
+          console.log(newQuantity)
+          await ProductDetail.update({
+            stock: +newQuantity
+          }, {
+            where: {
+              detail_id: e.product_detail_id
+            },
+            transaction: transaction
+          },)
         }
         await transaction.commit();
+        console.log('ok')
         return {
           status: 200,
           message: "ok",
           data: order.id,
         };
       } catch (e) {
+        console.log(e)
+        console.log(totalAmount)
         await transaction.rollback();
         return {
           status: 500,
