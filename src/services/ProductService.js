@@ -80,8 +80,8 @@ export const ProductService = {
       await ProductDetail.create({
         product_id,
         color: "red",
-        size: "M",
-        stock: 10,
+        size: "40",
+        stock: 100,
         quantity,
       });
       const urls = image_url;
