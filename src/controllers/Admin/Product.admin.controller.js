@@ -170,6 +170,7 @@ const ProductAdminController = {
         product: {
           id: product.product_id,
           name: product.product_name,
+          // price: formatCurrency(product.product_price),
           price: product.product_price,
           description: product.product_description,
           thumbnail: product.thumbnail,

@@ -304,17 +304,20 @@
                     <tbody>
 
                         <tr>
-                            <td>
+                            <td style="width: auto;">
                                 <%= product.id %>
                             </td>
-                            <td style="max-width: 150px;">
+                            <td>
                                 <%= product.name %>
                             </td>
                             <td>
-                                <%= product.category_id %>
+                                <%= product.category.name %>
                             </td>
                             <td class="text-center">
-                                <img class="product-img" src="<%= product.thumbnail %>" />
+                                <img class="product-img" style="max-width: 300px; 
+                                height: auto; 
+                                display: block; 
+                                margin: 0 auto;" src="<%= product.thumbnail %>" />
                             </td>
                             <td>
                                 <%= product.price %>
