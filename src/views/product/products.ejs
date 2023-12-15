@@ -209,12 +209,12 @@
                   <tbody>
                     <% data.map((product)=> { %>
                       <tr>
-                        <td style="width: 200px;">
+                        <td style="width: 50px;text-align: center;">
                           <a href="products/detail/<%= product.id %>" class="text-black">
                             <%= product.id %>
                           </a>
                         </td>
-                        <td style="max-width: 150px;">
+                        <td style="max-width: 150px">
                           <%= product.name %>
                         </td>
                         <td>
@@ -253,7 +253,7 @@
                             <%= detail.stock %><br />
                               <% }); %>
                         </td>
-                        <td class="text-center">
+                        <td class="" style="width: 150px;">
                           <button class="btn btn-primary  trash" data-bs-toggle="modal"
                             data-bs-target="#comfirmDeleteModal" onclick="onDeleteProduct('<%= product.id %>')">
                             <i class="fas fa-trash-alt"></i>
