@@ -9,6 +9,40 @@
     <meta name="author" content="">
     <link rel="stylesheet" type="text/css" href="/css/uploadimg.css">
     <style>
+        /* CSS để làm đẹp bảng */
+        #userTable {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        #userTable th,
+        #userTable td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        #userTable th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        #userTable tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        #userTable tbody tr:hover {
+            background-color: #f2f2f2;
+        }
+
+        #userTable tbody td {
+            border-bottom: 1px solid #ddd;
+        }
+
+        #userTable tbody td:last-child {
+            border-bottom: none;
+        }
+
         .show {
             width: calc(var(--nav-width) + 156px);
         }
@@ -320,10 +354,6 @@
                         </tr>
                     </tbody>
                 </table>
-
-
-
-
                 <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog"
                     aria-labelledby="exampleModalLabelLogout" aria-hidden="true">
                     <div class="modal-dialog" role="document">
