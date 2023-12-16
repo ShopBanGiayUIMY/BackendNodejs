@@ -228,7 +228,7 @@
             <i class="fa fa-bars"></i>
           </button>
           <ul class="navbar-nav ml-auto">
-            <li class="nav-item dropdown no-arrow">
+            <!-- <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-search fa-fw"></i>
@@ -378,7 +378,7 @@
                 </a>
                 <a class="dropdown-item text-center small text-gray-500" href="#">View All Taks</a>
               </div>
-            </li>
+            </li> -->
             <div class="topbar-divider d-none d-sm-block"></div>
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
@@ -467,8 +467,51 @@
                     <% } else { %>
                       <p>No data available for the current month.</p>
                       <% } %>
-                        <!-- Earnings (Annual) Card Example -->
+                      <% if (currentMonthData) { %>
                         <div class="col-xl-4 col-md-6 mb-4">
+                          <div class="card h-100">
+                            <div class="card-body">
+                              <div class="row align-items-center">
+                                <div class="col mr-2">
+                                  <div class="text-xs font-weight-bold text-uppercase mb-1">Số đơn hàng (Tháng <%=
+                                      currentMonthData.month %>)</div>
+                                  <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    <%= (+(currentMonthData.orderCount)).toLocaleString() %> Đơn hàng
+                                  </div>
+                                  <div class="mt-2 mb-0 text-muted text-xs">
+                                    <% if (data.monthlyData.length> 1) { %>
+                                      <% const prevMonth=currentMonth===1 ? 12 : currentMonth - 1; %>
+                                        <% const prevMonthData=data.monthlyData.find(monthData=> monthData.month ===
+                                          prevMonth); %>
+                                          <% const percentageChange=((currentMonthData.orderCount -
+                                            prevMonthData.orderCount) / prevMonthData.orderCount) * 100; %>
+                                            <span
+                                              class="<%= percentageChange >= 0 ? 'text-success' : 'text-danger' %> mr-2">
+                                              <% if (percentageChange>= 0) { %>
+                                                <i class="fas fa-arrow-up"></i>
+                                                <% } else { %>
+                                                  <i class="fas fa-arrow-down"></i>
+                                                  <% } %>
+                                                    <%= Math.abs(percentageChange).toFixed(2) %>%
+                                            </span>
+                                            <span>so với tháng trước</span>
+                                            <% } else { %>
+                                              <span>không có dữ liệu tháng trước</span>
+                                              <% } %>
+                                  </div>
+                                </div>
+                                <div class="col-auto">
+                                  <i class="fas fa-shopping-cart fa-2x text-success"></i>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <% } else { %>
+                          <p>No data available for the current month.</p>
+                          <% } %>
+                        <!-- Earnings (Annual) Card Example -->
+                        <!-- <div class="col-xl-4 col-md-6 mb-4">
                           <div class="card h-100">
                             <div class="card-body">
                               <div class="row no-gutters align-items-center">
@@ -481,12 +524,12 @@
                                   </div>
                                 </div>
                                 <div class="col-auto">
-                                  <i class="fas fa-shopping-cart fa-2x text-success"></i>
+                                  <i class="fas fa-users fa-2x text-info"></i>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        </div>
+                        </div> -->
                         <!-- New User Card Example -->
                         <div class="col-xl-4 col-md-6 mb-4">
                           <div class="card h-100">
@@ -827,6 +870,16 @@
     history.pushState(null, null, window.location.href);
     history.back();
     window.onpopstate = () => history.forward();
+  </script>
+  <script>
+    function calculatePercentageChange(currentValue, previousValue) {
+      if (previousValue === 0) {
+        return 'N/A';
+      }
+
+      const change = ((currentValue - previousValue) / Math.abs(previousValue)) * 100;
+      return `${change.toFixed(2)}%`;
+    }
   </script>
 </body>
 
