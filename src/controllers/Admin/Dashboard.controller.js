@@ -11,41 +11,50 @@ const DashboardController = {
 
     // Example: Get monthly data for the current month
     const currentDate = new Date();
-const currentYear = currentDate.getFullYear();
-const currentMonth = currentDate.getMonth() + 1; // Note: Months are zero-indexed, so we add 1
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth() + 1; // Note: Months are zero-indexed, so we add 1
 
-const startMonth = currentMonth - 6 <= 0 ? 12 + (currentMonth - 6) : currentMonth - 6;
+    const startMonth =
+      currentMonth - 6 <= 0 ? 12 + (currentMonth - 6) : currentMonth - 6;
 
-const monthlyRecord = await Order.findAll({
-  attributes: [
-    [sequelize.fn("MONTH", sequelize.col("order_date")), "month"],
-    [sequelize.fn("COUNT", sequelize.col("*")), "orderCount"],
-    [sequelize.fn("SUM", sequelize.col("total_amount")), "totalAmount"],
-  ],
-  where: {
-    orderDate: {
-      [Op.between]: [
-        new Date(currentYear, startMonth - 1, 1), // Start of the 6 months ago
-        new Date(currentYear, currentMonth - 1, 31, 23, 59, 59, 999), // End of the current month
+    const monthlyRecord = await Order.findAll({
+      attributes: [
+        [sequelize.fn("MONTH", sequelize.col("order_date")), "month"],
+        [sequelize.fn("COUNT", sequelize.col("*")), "orderCount"],
+        [sequelize.fn("SUM", sequelize.col("total_amount")), "totalAmount"],
       ],
-    },
-  },
-  group: [sequelize.fn("MONTH", sequelize.col("order_date"))],
-  raw: true,
-});
+      where: {
+        orderDate: {
+          [Op.between]: [
+            new Date(currentYear, startMonth - 1, 1), // Start of the 6 months ago
+            new Date(currentYear, currentMonth - 1, 31, 23, 59, 59, 999), // End of the current month
+          ],
+        },
+      },
+      group: [sequelize.fn("MONTH", sequelize.col("order_date"))],
+      raw: true,
+    });
 
-    const monthlyDataMap = Object.fromEntries(monthlyRecord.map(item => [item.month, item]));
+    const monthlyDataMap = Object.fromEntries(
+      monthlyRecord.map((item) => [item.month, item])
+    );
 
     // Merge the results with all months, filling in zero values for missing months
-    const monthlyDataMapResult = allMonths.map(month => ({
+    const monthlyDataMapResult = allMonths.map((month) => ({
       month,
-      orderCount: (monthlyDataMap[month] && monthlyDataMap[month].orderCount) || 0,
-      totalAmount: (monthlyDataMap[month] && monthlyDataMap[month].totalAmount) || '0.00',
+      orderCount:
+        (monthlyDataMap[month] && monthlyDataMap[month].orderCount) || 0,
+      totalAmount:
+        (monthlyDataMap[month] && monthlyDataMap[month].totalAmount) || "0.00",
     }));
-    console.log(monthlyDataMapResult)
-    res.render("Screen/dashboard", { title: "Dashboard", layout: layout, data: {
-      monthlyData: monthlyDataMapResult
-    }});
+    console.log(monthlyDataMapResult);
+    res.render("Screen/dashboard", {
+      title: "Dashboard",
+      layout: layout,
+      data: {
+        monthlyData: monthlyDataMapResult,
+      },
+    });
   },
   alert: (req, res) => {
     res.render("Screen/discount", { title: "Alert", layout: layout });
