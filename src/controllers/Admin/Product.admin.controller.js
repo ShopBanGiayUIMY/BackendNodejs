@@ -63,74 +63,37 @@ const ProductAdminController = {
         product_image,
         category_id,
         quantity,
-        color,
-        size,
-        stock,
       } = req.body;
 
-      // Xác định thông tin ảnh sản phẩm
-      let imageArray = [];
-      if (product_image) {
-        try {
-          imageArray = JSON.parse(`[${product_image}]`);
-        } catch (error) {
-          console.error("Error parsing product_image:", error);
-        }
-      }
+      const imageArray = JSON.parse(`[${product_image}]`);
       const thumbnail = imageArray[0];
-      const image_url = imageArray;
-
-      try {
-        // Tạo sản phẩm cơ bản
-        // const createdProduct = await Product.create({
-        //   product_name,
-        //   product_price,
-        //   product_description,
-        //   category_id,
-        //   thumbnail,
-        // });
-
-        // // Tạo thông tin chi tiết sản phẩm
-        // await ProductDetail.create({
-        //   product_id: createdProduct.product_id,
-        //   color,
-        //   size,
-        //   stock,
-        // });
-        const result = ProductService.createProduct(
-          product_name,
-          product_price,
-          product_description,
-          thumbnail,
-          category_id,
-          image_url,
-          color,
-          size,
-          stock
-        );
-
-        if (result) {
-          res.redirect("/admin/products");
-        }
-      } catch (error) {
-        console.error("Error creating product:", error);
-        res.status(500).send("Internal Server Error");
+      const image_url1 =  imageArray;
+      const image_url = image_url1;
+      const result = await ProductService.createProduct(
+        product_name,
+        product_price,
+        product_description,
+        thumbnail,
+        category_id,
+        image_url,
+        quantity
+      );
+      if (result) {
+        res.redirect("/admin/products");
       }
     }
-
-    try {
-      // Lấy danh sách danh mục
-      const categories = await Category.findAll();
-
-      res.render("product/addProduct", {
-        layout: layout,
-        title: "Create Product",
-        category: categories,
-      });
-    } catch (error) {
-      console.error("Error fetching categories:", error);
-      res.status(500).send("Internal Server Error");
-    }
+    const result = await CategoryService.getAllCategories();
+    const data = result.map((row) => {
+      return {
+        id: row.category_id,
+        name: row.name,
+      };
+    });
+    res.render("product/addProduct", {
+      layout: layout,
+      title: "Create Product",
+      category: data,
+    });
   },
 
   edit: async (req, res) => {

@@ -31,8 +31,17 @@ const User = sequelize.define(
     address: {
       type: DataTypes.STRING(255),
     },
+    gender: {
+      type: DataTypes.STRING(255),
+    },
+    avatar: {
+      type: DataTypes.STRING(255),
+    },
+    date_of_birth: {
+      type: DataTypes.DATE,
+    },
   },
-  {
+  { 
     sequelize,
     tableName: "users",
     createdAt: false,

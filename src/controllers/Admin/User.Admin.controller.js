@@ -3,26 +3,29 @@ const layout = "layouts/layout";
 
 const UserAdminController = {
   index: async (req, res) => {
-    // Lấy danh sách người dùng
     try {
       const userList = await UserService.getListUser();
+      const data = [];
 
-      const data = userList.map((user) => {
-        return {
+      for (const user of userList) {
+        const userAddress = await UserService.getListUserAddressbyid(user.user_id);
+        data.push({
           id: user.user_id,
           username: user.username,
           email: user.email,
           phone: user.phone,
           full_name: user.full_name,
-          address: user.address,
-        };
-      });
+          address: userAddress,
+        });
+      }
+
       res.render("User/users", { data, layout: layout, title: "User" });
     } catch (error) {
       console.error("Lỗi khi lấy danh sách người dùng:", error);
       res.status(500).send("Lỗi máy chủ nội bộ");
     }
-  },
+  }
+,
   createUserForm: async (req, res) => {
     res.render("User/addUser", {
       layout: layout,
@@ -52,19 +55,36 @@ const UserAdminController = {
   },
   edit: async (req, res) => {
     const userId = req.params.id;
+
     try {
-      const user = await UserService.getListUser(userId);
+      const user = await UserService.getListUserbyid(userId);
+      const user_auth = await UserService.getListUserAuthbyid(userId);
+      const user_address = await UserService.getListUserAddressbyid(userId);
+      const dateObject = new Date(user.dataValues.date_of_birth);
+      console.log(user_address);
+      // Lấy ngày, tháng và năm từ đối tượng Date
+      const day = dateObject.getDate();
+      const month = dateObject.getMonth() + 1; // Tháng bắt đầu từ 0, nên cộng thêm 1
+      const year = dateObject.getFullYear();
+
+      // Tạo chuỗi mới theo định dạng 'dd/mm/yyyy'
+      const newDateString = `${day}/${month}/${year}`;
       if (user) {
         res.render("User/editUser", {
           layout: layout,
           title: "Sửa thông tin người dùng",
           user: {
-            id: user.user_id,
-            username: user.username,
-            email: user.email,
-            phone: user.phone,
-            full_name: user.full_name,
-            address: user.address,
+            user_id: user.dataValues.user_id,
+            username: user.dataValues.username,
+            email: user.dataValues.email,
+            phone: user.dataValues.phone,
+            full_name: user.dataValues.full_name,
+            address: user_address,
+            gender: user.dataValues.gender,
+            avatar: user.dataValues.avatar,
+            date_of_birth: newDateString,
+            role: user_auth.role === 1 ? true : false,
+            status: user_auth.status === 1 ? true : false,
           },
         });
       } else {
