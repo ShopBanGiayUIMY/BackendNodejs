@@ -137,7 +137,8 @@
         <div class="sidebar-brand-icon">
           <img src="/img/logo/logo.png">
         </div>
-        <div class="sidebar-brand-text mx-3" style="font-weight: 500;" style="font-weight: 500;">Sneaker Nike Store</div>
+        <div class="sidebar-brand-text mx-3" style="font-weight: 500;" style="font-weight: 500;">Sneaker Nike Store
+        </div>
       </a>
       <hr class="sidebar-divider my-0">
       <li class="nav-item active">
@@ -251,8 +252,10 @@
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
-                <img class="img-profile rounded-circle" src="https://images.rawpixel.com/image_png_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA0L3BmLWljb240LWppcjIwNjItcG9yLWwtam9iNzg4LnBuZw.png" style="max-width: 60px">
-                <span class="ml-2 d-none d-lg-inline text-white small">MD-02</span>
+                <img class="img-profile rounded-circle"
+                  src="https://images.rawpixel.com/image_png_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA0L3BmLWljb240LWppcjIwNjItcG9yLWwtam9iNzg4LnBuZw.png"
+                  style="max-width: 60px">
+                <span class="ml-2 d-none d-lg-inline text-white small">MD-02 Fall 2023</span>
               </a>
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
                 <a class="dropdown-item" href="#">
@@ -456,7 +459,8 @@
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Cancel</button>
-                      <a href="admin/auth/login" class="btn btn-primary">Logout</a>
+                      <form action="/admin/auth/logout" method="POST">
+                        <button type="submit" class="btn btn-primary">Logout</button>
                     </div>
                   </div>
                 </div>

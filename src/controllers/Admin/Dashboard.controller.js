@@ -29,6 +29,8 @@ const DashboardController = {
             new Date(currentYear, startMonth - 1, 1), // Start of the 6 months ago
             new Date(currentYear, currentMonth - 1, 31, 23, 59, 59, 999), // End of the current month
           ],
+        },statusId: {
+          [Op.ne]: 6, // Exclude records where statusId is 6
         },
       },
       group: [sequelize.fn("MONTH", sequelize.col("order_date"))],
