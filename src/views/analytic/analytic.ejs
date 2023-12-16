@@ -438,11 +438,12 @@
                   </tr>
                 </thead>
                 <tbody>
-
-                  <% data.orders.forEach(order=> { %>
+                  <% let totalAmount = 0 %>
+                  <% data.orders.forEach(order=> { totalAmount += +(order.totalAmount) %>
+                    
                     <tr>
                       <td>
-                        <a href="#" style="text-decoration: underline;"> #<%= order.id %> </a>
+                        <a href="/admin/orders/<%= order.id %>" style="text-decoration: underline;"> #<%= order.id %> </a>
                       </td>
                       <td>
                         <%= order.User.username %> - <%= order.User.full_name %>
@@ -499,7 +500,17 @@
                     <% }); %>
 
                 </tbody>
-
+                <tfoot>
+                  <tr>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th>Tổng Tiền</th>
+                    <th><%= totalAmount.toLocaleString() %>VNĐ</th>
+                    <th></th>
+                  </tr>
+                </tfoot>
               </table>
             </div>
           </div>
