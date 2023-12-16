@@ -239,7 +239,14 @@ export const OrderService = {
   },
   //needed authn -> authn in middleware layer
   cancelOrder: async ({ userId, orderId }) => {
-    const order = await Order.findByPk(orderId);
+    const order = await Order.findByPk(orderId, {
+      include: [
+        {
+          model: OrderDetail,
+          include: ProductDetail
+        }
+      ]
+    });
     if (!order) {
       return {
         status: 404,
@@ -260,18 +267,45 @@ export const OrderService = {
         message: `cannot cancel an order in status isn't "PENDING" or "PROCESSING"`,
       };
     }
-    const result = await Order.update(
-      { statusId: 6 },
-      {
-        where: {
-          id: orderId,
-        },
+    console.log(JSON.stringify(order))
+    const orderDetails = order.OrderDetails;
+    
+    const transaction = await sequelize.transaction();
+    let result;
+    try {
+      for (const orderDetail of orderDetails) {
+        const productDetailId = orderDetail.productDetailId
+        const stockUpdated = orderDetail.quantity + orderDetail.ProductDetail.stock
+        await ProductDetail.update({
+          stock: stockUpdated
+        }, {
+          where: {
+            detail_id: productDetailId
+          },
+          transaction: transaction
+        })
       }
-    );
-    return {
-      status: 200,
-      message: `canceled ${result} order`,
-    };
+      const result = await Order.update(
+        { statusId: 6 },
+        {
+          where: {
+            id: orderId,
+          },
+          transaction: transaction
+        }
+      );
+      transaction.commit();
+      return {
+        status: 200,
+        message: `canceled ${result} order`,
+      };
+    } catch (e) {
+      transaction.rollback();
+      return {
+        status: 500,
+        message: 'server error'
+      }
+    }
   },
   verifyDeliveredOrder: async ({ userId, orderId }) => {
     const order = await Order.findByPk(orderId);

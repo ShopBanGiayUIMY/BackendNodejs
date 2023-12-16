@@ -36,6 +36,7 @@ const AddressController = {
         }
       }
     );
+    db.end();
   },
   getAddressDefault: async (req, res) => {
     const db = connection();
@@ -71,6 +72,7 @@ const AddressController = {
         }
       }
     );
+    db.end();
   },
   create: async (req, res) => {
     const {
