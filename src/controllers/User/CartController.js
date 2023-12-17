@@ -97,6 +97,7 @@ export const CartsController = {
               return {
                 total_cart_items: row.total_items,
               };
+
             });
             res.send(data);
           } else {
@@ -104,6 +105,7 @@ export const CartsController = {
           }
         }
       );
+      db.end();
     } catch (error) {
       res.status(400).json({ message: error.message });
     }

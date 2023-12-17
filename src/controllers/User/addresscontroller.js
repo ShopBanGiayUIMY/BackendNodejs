@@ -45,17 +45,20 @@ const AddressController = {
       attributes: ["address"],
     });
     const userAddress = user.dataValues.address;
+    console.log(userAddress);
     db.connect();
     db.query(
       QueryAddress.getAddressDefault,
-      [user_id,userAddress],
+      [user_id, userAddress],
       async (err, rows, fields) => {
         if (err) {
           res.status(500).send({ error: err });
           return;
         }
         if (rows.length === 0) {
-          res.status(200).send({status:-1, error: "Không tìm thấy địa chỉ mặc định" });
+          res
+            .status(200)
+            .send({ status: -1, error: "Không tìm thấy địa chỉ mặc định" });
           return;
         } else {
           const data = rows.map((row) => ({
@@ -230,10 +233,10 @@ const AddressController = {
       };
 
       const addressCount = await getAddress();
-
       if (addressCount === 0) {
         res.status(200).json({ success: false, message: "Address not found" });
         return;
+      } else {
       }
 
       await User.update({ address: null }, { where: { user_id } });
@@ -256,7 +259,5 @@ const AddressController = {
       db.end(); // Close the database connection
     }
   },
-
-
 };
 export default AddressController;
