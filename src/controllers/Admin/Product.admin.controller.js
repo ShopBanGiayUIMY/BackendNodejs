@@ -108,28 +108,31 @@ const ProductAdminController = {
     const {
       product_name,
       product_price,
-      product_description,
-      thumbnail,
       category_id,
-      image_url,
-      quantity,
+      thumbnail,
+      detail_color,
+      detail_size,
+      detail_stock,
+      product_description,
     } = req.body; // Lấy thông tin từ request body
 
     try {
+     
       if (req.method === "POST") {
         const result = await ProductService.updateProduct(
           productId,
           product_name,
           product_price,
-          product_description,
-          thumbnail,
           category_id,
-          image_url,
-          quantity
+          thumbnail,
+          detail_color,
+          detail_size,
+          detail_stock,
+          product_description
         );
+        console.log("productId", productId);
         if (result) {
           res.redirect("/admin/products");
-          res.end();
         }
       } else {
         const product = await Product.findByPk(productId);

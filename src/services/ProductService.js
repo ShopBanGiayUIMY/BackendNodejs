@@ -91,7 +91,7 @@ export const ProductService = {
         thumbnail,
       });
       const product_id = createdProduct.product_id;
-      if (items!==undefined) {
+      if (items !== undefined) {
         for (const detail of items) {
           const { color, size, stock } = detail;
 
@@ -134,11 +134,12 @@ export const ProductService = {
     productId,
     product_name,
     product_price,
-    product_description,
-    thumbnail,
     category_id,
-    image_url,
-    quantity
+    thumbnail,
+    detail_color,
+    detail_size,
+    detail_stock,
+    product_description
   ) => {
     try {
       const [updatedProduct] = await Product.update(
@@ -155,40 +156,37 @@ export const ProductService = {
           },
         }
       );
-
-      // Cập nhật thông tin chi tiết sản phẩm
-      await ProductDetail.update(
-        {
-          color: "red",
-          size: "M",
-          stock: 10,
-          quantity,
-        },
-        {
-          where: {
-            product_id: productId,
+  
+      let detailUpdates = [];
+      for (let i = 0; i < detail_color.length; i++) {
+        const updatedDetail = await ProductDetail.update(
+          {
+            color: detail_color[i],
+            size: detail_size[i],
+            stock: detail_stock[i],
           },
-        }
-      );
-
-      const urls = JSON.stringify(image_url);
-      await ProductImage.update(
-        {
-          image_url: urls,
-        },
-        {
-          where: {
-            product_id: productId,
-          },
-        }
-      );
-
-      return updatedProduct;
+          {
+            where: {
+              product_id: productId,
+              // Additional criteria to match the specific detail, if necessary
+            },
+          }
+        );
+        detailUpdates.push(updatedDetail);
+      }
+  
+      // If you have more updates like ProductImage, include them here as well
+  
+      return {
+        mainProduct: updatedProduct,
+        detailUpdates: detailUpdates,
+        // Include any other relevant update information here
+      };
     } catch (error) {
       throw error;
     }
   },
-
+  
   //TODO: need to fix
   deleteProduct: async (productId) => {
     try {
