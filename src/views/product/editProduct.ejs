@@ -257,7 +257,9 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img class="img-profile rounded-circle" src="https://images.rawpixel.com/image_png_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA0L3BmLWljb240LWppcjIwNjItcG9yLWwtam9iNzg4LnBuZw.png" style="max-width: 60px">
+                                <img class="img-profile rounded-circle"
+                                    src="https://images.rawpixel.com/image_png_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA0L3BmLWljb240LWppcjIwNjItcG9yLWwtam9iNzg4LnBuZw.png"
+                                    style="max-width: 60px">
                                 <span class="ml-2 d-none d-lg-inline text-white small">MD-02 Fall 2023</span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -398,9 +400,8 @@
                                                         alt="!lỗi hiển thị ảnh"
                                                         style="max-width: 200px; max-height: 200px;">
                                                     <div class="ml-3">
-                                                        <input type="file" id="new_product_image"
-                                                            name="new_product_image" accept="image/*">
-                                                        <button type="button" id="delete_image_button"
+                                                        
+                                                        <button type="button" id="delete_image_button" onclick="deleteImage()"
                                                             class="btn btn-sm btn-danger mt-2">Xóa ảnh</button>
                                                     </div>
                                                 </div>
@@ -408,16 +409,25 @@
 
                                             <div class="form-group col-md-12">
                                                 <label class="control-label">Thông tin chi tiết sản phẩm</label>
+                                                <input class="form-control" type="text" id="thumbnail"
+                                                name="thumbnail" value="<%= product.thumbnail %>">
                                                 <% if(product.productDetails && product.productDetails.length> 0) { %>
                                                     <% product.productDetails.forEach(detail=> { %>
                                                         <div class="detail-info">
+                                                            <label class="control-label">Color</label>
                                                             <input class="form-control" type="text"
                                                                 name="detail_color[]" value="<%= detail.color %>">
+                                                            <label class="control-label">Size</label>
                                                             <input class="form-control" type="text" name="detail_size[]"
                                                                 value="<%= detail.size %>">
+                                                            <label class="control-label">Stock</label>
                                                             <input class="form-control" type="number"
                                                                 name="detail_stock[]" value="<%= detail.stock %>">
+
                                                         </div>
+                                                        <hr style="  width: auto; height: 10px; background-color: #0091ff;
+                                                        ">
+
                                                         <% }); %>
                                                             <% } else { %>
                                                                 <p>Không có thông tin chi tiết sản phẩm.</p>
@@ -521,3 +531,10 @@
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
     <script src="js/ruang-admin.min.js"></script>
+    <script>
+        var thumbnail = document.getElementById('thumbnail');
+        function deleteImage() {
+            thumbnail.value = '';
+            $('#delete_image_button').hide();
+        }
+    </script>

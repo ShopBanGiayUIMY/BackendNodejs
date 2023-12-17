@@ -8,6 +8,7 @@ const Notification = {
     let pushTokens = [
       "ExponentPushToken[zjB8v7EFOAKxcSj9ATp_3g]",
       "ExponentPushToken[XrAwI2NA0RxhfQHaLPdA4S]",
+      "ExponentPushToken[5HKVZABGQEgvA6V2MhRA1Y]"
     ];
     for (let pushToken of pushTokens) {
       if (!Expo.isExpoPushToken(pushToken)) {
@@ -19,7 +20,7 @@ const Notification = {
         sound: "default",
         title: title,
         body: body,
-        data: { type: "ORDERSTATUS", status: "PENDING" },
+        data: { type: "ORDERSTATUS", status: "SHIPPING" },
       });
     }
     let chunks = expo.chunkPushNotifications(messages);

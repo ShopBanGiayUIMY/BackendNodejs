@@ -7,8 +7,6 @@ const CategoryController = {
       const categories = await Category.findAll({
         include: Product,
       });
-      console.log(JSON.stringify(categories));
-
       res.render("category/categories", {
         categories,
         layout: "layouts/layout",
@@ -39,16 +37,29 @@ const CategoryController = {
   },
 
   updateCategory: async (req, res) => {
+    console.log("req.body");
     const { id } = req.params;
     const { name, image } = req.body;
     try {
-      const category = await Category.findByPk(id);
-      if (!category) {
-        return res.status(404).send("Category not found");
+      if (req.method == "GET") {
+        const category = await Category.findByPk(id);
+        const categorybyid = await CategoryService.getCategoryById(id);
+        console.log("categorybyid", categorybyid);
+        if (categorybyid) {
+          res.render("category/editCategories", {
+            categorybyid,
+            layout: "layouts/layout",
+            title: "Edit Category",
+          });
+        }
+      } else if (req.method == "POST") {
+        const category = await Category.findByPk(id);
+        if (!category) {
+          return res.status(404).send("Category not found");
+        }
+        await Category.update({ name, image }, { where: { category_id: id } });
+        res.status(200).send("Category updated successfully");
       }
-
-      await Category.update({ name, image }, { where: { category_id: id } });
-      res.status(200).send("Category updated successfully");
     } catch (error) {
       console.error(error);
       res.status(500).send("Something went wrong");

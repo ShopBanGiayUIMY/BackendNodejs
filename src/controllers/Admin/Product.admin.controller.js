@@ -63,11 +63,13 @@ const ProductAdminController = {
         product_image,
         category_id,
         quantity,
+        color,
+        size,
+        items,
       } = req.body;
-
       const imageArray = JSON.parse(`[${product_image}]`);
       const thumbnail = imageArray[0];
-      const image_url1 =  imageArray;
+      const image_url1 = imageArray;
       const image_url = image_url1;
       const result = await ProductService.createProduct(
         product_name,
@@ -76,24 +78,29 @@ const ProductAdminController = {
         thumbnail,
         category_id,
         image_url,
-        quantity
+        quantity,
+        color,
+        size,
+        items
       );
       if (result) {
         res.redirect("/admin/products");
+        res.end();
       }
+    } else {
+      const result = await CategoryService.getAllCategories();
+      const data = result.map((row) => {
+        return {
+          id: row.category_id,
+          name: row.name,
+        };
+      });
+      res.render("product/addProduct", {
+        layout: layout,
+        title: "Create Product",
+        category: data,
+      });
     }
-    const result = await CategoryService.getAllCategories();
-    const data = result.map((row) => {
-      return {
-        id: row.category_id,
-        name: row.name,
-      };
-    });
-    res.render("product/addProduct", {
-      layout: layout,
-      title: "Create Product",
-      category: data,
-    });
   },
 
   edit: async (req, res) => {
@@ -109,50 +116,56 @@ const ProductAdminController = {
     } = req.body; // Lấy thông tin từ request body
 
     try {
-      await ProductService.updateProduct(
-        productId,
-        product_name,
-        product_price,
-        product_description,
-        thumbnail,
-        category_id,
-        image_url,
-        quantity
-      );
+      if (req.method === "POST") {
+        const result = await ProductService.updateProduct(
+          productId,
+          product_name,
+          product_price,
+          product_description,
+          thumbnail,
+          category_id,
+          image_url,
+          quantity
+        );
+        if (result) {
+          res.redirect("/admin/products");
+          res.end();
+        }
+      } else {
+        const product = await Product.findByPk(productId);
+        const productDetails = await ProductDetail.findAll({
+          where: { product_id: productId },
+          attributes: ["detail_id", "color", "size", "stock"],
+        });
+        const categories = await CategoryService.getAllCategories();
 
-      const product = await Product.findByPk(productId);
-      const productDetails = await ProductDetail.findAll({
-        where: { product_id: productId },
-        attributes: ["detail_id", "color", "size", "stock"],
-      });
-      const categories = await CategoryService.getAllCategories();
-
-      res.render("product/editProduct", {
-        layout: layout,
-        title: "Edit Product",
-        product: {
-          id: product.product_id,
-          name: product.product_name,
-          // price: formatCurrency(product.product_price),
-          price: product.product_price,
-          description: product.product_description,
-          thumbnail: product.thumbnail,
-          category_id: product.category_id,
-          quantity: product.quantity,
-          productDetails: productDetails.map((detail) => ({
-            detailId: detail.detail_id,
-            productId: detail.product_id,
-            color: detail.color,
-            size: detail.size,
-            stock: detail.stock,
+        res.render("product/editProduct", {
+          layout: layout,
+          title: "Edit Product",
+          product: {
+            id: product.product_id,
+            name: product.product_name,
+            // price: formatCurrency(product.product_price),
+            price: product.product_price,
+            description: product.product_description,
+            thumbnail: product.thumbnail,
+            category_id: product.category_id,
+            quantity: product.quantity,
+            productDetails: productDetails.map((detail) => ({
+              detailId: detail.detail_id,
+              productId: detail.product_id,
+              color: detail.color,
+              size: detail.size,
+              stock: detail.stock,
+            })),
+          },
+          categories: categories.map((category) => ({
+            id: category.category_id,
+            name: category.name,
+            selected: category.id === product.category_id ? "selected" : "",
           })),
-        },
-        categories: categories.map((category) => ({
-          id: category.category_id,
-          name: category.name,
-          selected: category.id === product.category_id ? "selected" : "",
-        })),
-      });
+        });
+      }
     } catch (error) {
       console.error("Error updating product:", error);
       res.status(500).send("Internal Server Error");
