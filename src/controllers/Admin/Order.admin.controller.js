@@ -232,32 +232,33 @@ const OrderController = {
         let body = ''
         if (statusId == 2) {
           body = 'Đơn hàng đã được của hàng xác nhận,vui lòng chờ vận chuyển.'
-          expo.chunkPushNotifications({
+          expo.chunkPushNotifications([{
             to: pushToken,
             sound: "default",
             title: 'Trạng thái đơn hàng mới cập nhật',
             body: body,
             data: { type: "ORDERSTATUS", status: "PROCESSING" },
-          });
+          }]);
         } else if (statusId == 3) {
           body = 'Đơn hàng đang được vận chuyển,vui lòng chờ giao hàng.'
-          expo.chunkPushNotifications({
+          expo.chunkPushNotifications([{
             to: pushToken,
             sound: "default",
             title: 'Trạng thái đơn hàng mới cập nhật',
             body: body,
             data: { type: "ORDERSTATUS", status: "SHIPPING" },
-          });
+          }]);
         } else if (statusId == 4) {
           body = 'Đơn hàng đã được vẩn chuyển chuyển, hãy xác nhận đơn hàng và đánh giá đơn hàng nhé.'
-          expo.chunkPushNotifications({
+          expo.chunkPushNotifications([{
             to: pushToken,
             sound: "default",
             title: 'Trạng thái đơn hàng mới cập nhật',
             body: body,
             data: { type: "ORDERSTATUS", status: "SHIPPED" },
-          });
+          }]);
         }
+        console.log('send message oke')
       }
       res.status(200).json({ message: "ok" });
       return;
