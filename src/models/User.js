@@ -45,6 +45,7 @@ const User = sequelize.define(
       allowNull: true,
       unique: true,
       defaultValue: null,
+      field: 'notify_token',
     }
   },
   { 
