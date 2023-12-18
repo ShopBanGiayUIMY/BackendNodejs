@@ -404,7 +404,9 @@
 
                         <td>Chi tiết đơn hàng</td>
                         <td>
-                          <% order.orderDetail.forEach(detail=> { %>
+                          <% 
+                          let totalDetailAmount = 0;
+                          order.orderDetail.forEach(detail=> { %>
                             <p>
                               <img src="<%= detail.thumbnail %>" style="width: 100px; height: 100px; border: 1px solid #000;" alt="ảnh thumbnail">
                               <%= detail.productName %>
@@ -423,7 +425,9 @@
                               thành tiền 
                               <%= detail.amount %>
                             </p>
-                            <% }); %>
+                            <% 
+                            totalDetailAmount += detail.amount
+                          }); %>
                         </td>
                       </tr>
                       <tr>
@@ -433,9 +437,9 @@
                         </td>
                       </tr>
                       <tr>
-                        <td>VOUCHER</td>
+                        <td>Giảm giá</td>
                         <td>
-                          <%= order.discount ? "- " + order.discount +"VNĐ" : "không có" %>
+                          <%= order.discount %> VNĐ
                         </td>
                       </tr>
                       <tr>
