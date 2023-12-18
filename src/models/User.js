@@ -40,6 +40,12 @@ const User = sequelize.define(
     date_of_birth: {
       type: DataTypes.DATE,
     },
+    notify_token: {
+      type: DataTypes.STRING(200),
+      allowNull: true,
+      unique: true,
+      defaultValue: null,
+    }
   },
   { 
     sequelize,
