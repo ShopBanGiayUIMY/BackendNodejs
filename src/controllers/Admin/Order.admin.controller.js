@@ -229,37 +229,67 @@ const OrderController = {
       if (!Expo.isExpoPushToken(pushToken)) {
         console.log(`Push token ${pushToken} is not a valid Expo push token`);
       } else {
-        let body = ''
+        let body = "";
+        let chunks;
         if (statusId == 2) {
-          body = 'Đơn hàng đã được của hàng xác nhận,vui lòng chờ vận chuyển.'
-          expo.chunkPushNotifications([{
-            to: pushToken,
-            sound: "default",
-            title: 'Trạng thái đơn hàng mới cập nhật',
-            body: body,
-            data: { type: "ORDERSTATUS", status: "PROCESSING" },
-          }]);
+          console.log(statusId)
+          body = "Đơn hàng đã được của hàng xác nhận,vui lòng chờ vận chuyển.";
+          chunks = expo.chunkPushNotifications([
+            {
+              to: pushToken,
+              sound: "default",
+              title: "Trạng thái đơn hàng mới cập nhật",
+              body: body,
+              data: { type: "ORDERSTATUS", status: "PROCESSING" },
+            },
+          ]);
         } else if (statusId == 3) {
-          body = 'Đơn hàng đang được vận chuyển,vui lòng chờ giao hàng.'
-          expo.chunkPushNotifications([{
-            to: pushToken,
-            sound: "default",
-            title: 'Trạng thái đơn hàng mới cập nhật',
-            body: body,
-            data: { type: "ORDERSTATUS", status: "SHIPPING" },
-          }]);
+          console.log(statusId)
+          body = "Đơn hàng đang được vận chuyển,vui lòng chờ giao hàng.";
+          chunks = expo.chunkPushNotifications([
+            {
+              to: pushToken,
+              sound: "default",
+              title: "Trạng thái đơn hàng mới cập nhật",
+              body: body,
+              data: { type: "ORDERSTATUS", status: "SHIPPING" },
+            },
+          ]);
         } else if (statusId == 4) {
-          body = 'Đơn hàng đã được vẩn chuyển chuyển, hãy xác nhận đơn hàng và đánh giá đơn hàng nhé.'
-          expo.chunkPushNotifications([{
-            to: pushToken,
-            sound: "default",
-            title: 'Trạng thái đơn hàng mới cập nhật',
-            body: body,
-            data: { type: "ORDERSTATUS", status: "SHIPPED" },
-          }]);
+          console.log(statusId)
+          body =
+            "Đơn hàng đã được vẩn chuyển chuyển, hãy xác nhận đơn hàng và đánh giá đơn hàng nhé.";
+          chunks = expo.chunkPushNotifications([
+            {
+              to: pushToken,
+              sound: "default",
+              title: "Trạng thái đơn hàng mới cập nhật",
+              body: body,
+              data: { type: "ORDERSTATUS", status: "SHIPPED" },
+            },
+          ]);
         }
-        console.log('send message oke')
+
+        let tickets = [];
+        (async () => {
+          for (let chunk of chunks) {
+            try {
+              let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+              tickets.push(...ticketChunk);
+            } catch (error) {
+              console.error(error);
+            }
+          }
+        })();
+        console.log("send message oke");
+        let receiptIds = [];
+        for (let ticket of tickets) {
+          if (ticket.id) {
+            receiptIds.push(ticket.id);
+          }
+        }
       }
+
       res.status(200).json({ message: "ok" });
       return;
     } catch (e) {
