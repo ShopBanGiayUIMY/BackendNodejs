@@ -32,6 +32,7 @@ const DashboardController = {
         },statusId: {
           [Op.ne]: 6, // Exclude records where statusId is 6
         },
+        paymentStatus: 'PAID'
       },
       group: [sequelize.fn("MONTH", sequelize.col("order_date"))],
       raw: true,
