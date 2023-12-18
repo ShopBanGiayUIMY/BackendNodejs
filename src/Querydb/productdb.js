@@ -13,6 +13,10 @@ LEFT JOIN
   product_details pd ON p.product_id = pd.product_id
 LEFT JOIN
   order_details od ON pd.detail_id = od.product_detail_id
+LEFT JOIN
+  orders o ON od.order_id = o.order_id
+WHERE
+  o.status_id IS NULL OR o.status_id <> 6
 GROUP BY
   p.product_id
 ORDER BY
@@ -34,7 +38,13 @@ GROUP BY
 ORDER BY
   total_quantity_sold DESC;
     `,
-  
+  GetRatingById: `SELECT product_id, AVG(rating) AS average_rating
+  FROM product_ratings
+  WHERE product_id = ?
+  GROUP BY product_id;`,
+  Rating: `INSERT INTO product_ratings (user_id, product_id, rating)
+  VALUES (?, ?, ?);
+  `,
 };
 
 export default Queryproduct;

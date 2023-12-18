@@ -65,12 +65,24 @@ export const ProductService = {
     thumbnail,
     category_id,
     image_url,
+    quantity,
     color,
     size,
-    stock
+    items
   ) => {
+    console.log("product_name", product_name);
+    console.log("product_price", product_price);
+    console.log("product_description", product_description);
+    console.log("thumbnail", thumbnail);
+    console.log("category_id", category_id);
+    console.log("image_url", image_url);
+    console.log("quantity", quantity);
+    console.log("color", color);
+    console.log("size", size);
+    console.log("items", items);
     try {
       // Tạo sản phẩm
+
       const createdProduct = await Product.create({
         product_name,
         product_description,
@@ -79,12 +91,28 @@ export const ProductService = {
         thumbnail,
       });
       const product_id = createdProduct.product_id;
-      await ProductDetail.create({
-        product_id,
-        color: color,
-        size: size,
-        stock: stock,
-      });
+      if (items !== undefined) {
+        for (const detail of items) {
+          const { color, size, stock } = detail;
+
+          // Thêm bản ghi vào cơ sở dữ liệu
+          await ProductDetail.create({
+            product_id,
+            color: color,
+            size: size,
+            stock: stock,
+            quantity: quantity,
+          });
+        }
+      } else {
+        await ProductDetail.create({
+          product_id,
+          color: color,
+          size: size,
+          stock: quantity,
+          quantity: quantity,
+        });
+      }
       const urls = image_url;
       await ProductImage.create({
         image_url: urls,
@@ -106,11 +134,12 @@ export const ProductService = {
     productId,
     product_name,
     product_price,
-    product_description,
-    thumbnail,
     category_id,
-    image_url,
-    quantity
+    thumbnail,
+    detail_color,
+    detail_size,
+    detail_stock,
+    product_description
   ) => {
     try {
       const [updatedProduct] = await Product.update(
@@ -127,40 +156,37 @@ export const ProductService = {
           },
         }
       );
-
-      // Cập nhật thông tin chi tiết sản phẩm
-      await ProductDetail.update(
-        {
-          color: "red",
-          size: "M",
-          stock: 10,
-          quantity,
-        },
-        {
-          where: {
-            product_id: productId,
+  
+      let detailUpdates = [];
+      for (let i = 0; i < detail_color.length; i++) {
+        const updatedDetail = await ProductDetail.update(
+          {
+            color: detail_color[i],
+            size: detail_size[i],
+            stock: detail_stock[i],
           },
-        }
-      );
-
-      const urls = JSON.stringify(image_url);
-      await ProductImage.update(
-        {
-          image_url: urls,
-        },
-        {
-          where: {
-            product_id: productId,
-          },
-        }
-      );
-
-      return updatedProduct;
+          {
+            where: {
+              product_id: productId,
+              // Additional criteria to match the specific detail, if necessary
+            },
+          }
+        );
+        detailUpdates.push(updatedDetail);
+      }
+  
+      // If you have more updates like ProductImage, include them here as well
+  
+      return {
+        mainProduct: updatedProduct,
+        detailUpdates: detailUpdates,
+        // Include any other relevant update information here
+      };
     } catch (error) {
       throw error;
     }
   },
-
+  
   //TODO: need to fix
   deleteProduct: async (productId) => {
     try {

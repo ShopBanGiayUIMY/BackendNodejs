@@ -31,7 +31,12 @@ export const OrderService = {
               attributes: ["size", "color"],
               include: {
                 model: Product,
-                attributes: ["product_name", "product_price", "thumbnail"],
+                attributes: [
+                  "product_name",
+                  "product_price",
+                  "thumbnail",
+                  "product_id",
+                ],
               },
             },
           },
@@ -53,7 +58,12 @@ export const OrderService = {
             attributes: ["size", "color"],
             include: {
               model: Product,
-              attributes: ["product_name", "product_price", "thumbnail"],
+              attributes: [
+                "product_name",
+                "product_price",
+                "thumbnail",
+                "product_id",
+              ],
             },
           },
         },
@@ -65,6 +75,20 @@ export const OrderService = {
   getAllOrder: async () => {
     const orders = await Order.findAll({
       include: [User, OrderStatus, PaymentMethodType, ShippingAddress],
+    });
+    // console.log(JSON.stringify(orders))
+    return orders;
+  },
+  getOrderById: async (orderId) => {
+    const orders = await Order.findByPk(orderId,
+      {
+      include: [User, OrderStatus, PaymentMethodType, ShippingAddress,{
+        model: OrderDetail,
+        include: {
+          model: ProductDetail,
+          include: Product
+        }
+      }],
     });
     // console.log(JSON.stringify(orders))
     return orders;
@@ -123,8 +147,8 @@ export const OrderService = {
         userId: userId,
         vouchers: vouchers,
       });
-      console.log(JSON.stringify(vouchers));
-      console.log(vaildateProcess);
+      // console.log(JSON.stringify(vouchers));
+      // console.log(vaildateProcess);
       if (!vaildateProcess.status) {
         error.status = 400;
         error.data = vaildateProcess.error;
@@ -180,15 +204,31 @@ export const OrderService = {
             where: {
               item_id: e.item_id,
             },
-          });
+            transaction: transaction 
+          },
+          );
+          console.log(e.ProductDetail.stock, e.quantity)
+          const newQuantity = e.ProductDetail.stock - e.quantity
+          console.log(newQuantity)
+          await ProductDetail.update({
+            stock: +newQuantity
+          }, {
+            where: {
+              detail_id: e.product_detail_id
+            },
+            transaction: transaction
+          },)
         }
         await transaction.commit();
+        console.log('ok')
         return {
           status: 200,
           message: "ok",
           data: order.id,
         };
       } catch (e) {
+        console.log(e)
+        console.log(totalAmount)
         await transaction.rollback();
         return {
           status: 500,
@@ -199,7 +239,14 @@ export const OrderService = {
   },
   //needed authn -> authn in middleware layer
   cancelOrder: async ({ userId, orderId }) => {
-    const order = await Order.findByPk(orderId);
+    const order = await Order.findByPk(orderId, {
+      include: [
+        {
+          model: OrderDetail,
+          include: ProductDetail
+        }
+      ]
+    });
     if (!order) {
       return {
         status: 404,
@@ -220,18 +267,45 @@ export const OrderService = {
         message: `cannot cancel an order in status isn't "PENDING" or "PROCESSING"`,
       };
     }
-    const result = await Order.update(
-      { statusId: 6 },
-      {
-        where: {
-          id: orderId,
-        },
+    console.log(JSON.stringify(order))
+    const orderDetails = order.OrderDetails;
+    
+    const transaction = await sequelize.transaction();
+    let result;
+    try {
+      for (const orderDetail of orderDetails) {
+        const productDetailId = orderDetail.productDetailId
+        const stockUpdated = orderDetail.quantity + orderDetail.ProductDetail.stock
+        await ProductDetail.update({
+          stock: stockUpdated
+        }, {
+          where: {
+            detail_id: productDetailId
+          },
+          transaction: transaction
+        })
       }
-    );
-    return {
-      status: 200,
-      message: `canceled ${result} order`,
-    };
+      const result = await Order.update(
+        { statusId: 6 },
+        {
+          where: {
+            id: orderId,
+          },
+          transaction: transaction
+        }
+      );
+      transaction.commit();
+      return {
+        status: 200,
+        message: `canceled ${result} order`,
+      };
+    } catch (e) {
+      transaction.rollback();
+      return {
+        status: 500,
+        message: 'server error'
+      }
+    }
   },
   verifyDeliveredOrder: async ({ userId, orderId }) => {
     const order = await Order.findByPk(orderId);
@@ -294,8 +368,11 @@ GROUP BY
         replacements: { userId: userId },
         type: Sequelize.QueryTypes.SELECT,
       });
-
-      return result;
+      if (result.length > 0) {
+        return result;
+      } else {
+        return [];
+      }
     } catch (error) {
       console.error("Lỗi:", error);
       throw error;
@@ -343,8 +420,8 @@ GROUP BY
         },
         {
           model: PaymentMethodType,
-          attributes: ['paymentMethodName']
-        }
+          attributes: ["paymentMethodName"],
+        },
       ],
     });
     return orders;

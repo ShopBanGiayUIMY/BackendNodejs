@@ -1,4 +1,5 @@
 import Queryuser from "../../Querydb/Userdb.js";
+import User from "../../models/User.js";
 const layout = "layouts/layout";
 const UserController = {
   getInfoUser: async (req, res) => {
@@ -57,6 +58,25 @@ const UserController = {
       res.status(500).json({ error: "Error logging in" });
     }
   },
+  updateVerifyToken: async (req, res) => {
+    console.log(req.body)
+    console.log(req.user.id)
+    if (req.body.notifyToken) {
+      const result = await User.update({
+        notify_token: req.body.notifyToken
+      }, {
+        where: {
+          user_id: req.user.id
+        }
+      })
+      console.log(result)
+      res.status(200).send('ok')
+    } else {
+      res.status(400).send({
+        message: 'invalid req'
+      })
+    }
+  }
 };
 
 export default UserController;

@@ -31,8 +31,24 @@ const User = sequelize.define(
     address: {
       type: DataTypes.STRING(255),
     },
+    gender: {
+      type: DataTypes.STRING(255),
+    },
+    avatar: {
+      type: DataTypes.STRING(255),
+    },
+    date_of_birth: {
+      type: DataTypes.DATE,
+    },
+    notify_token: {
+      type: DataTypes.STRING(200),
+      allowNull: true,
+      unique: true,
+      defaultValue: null,
+      field: 'notify_token',
+    }
   },
-  {
+  { 
     sequelize,
     tableName: "users",
     createdAt: false,

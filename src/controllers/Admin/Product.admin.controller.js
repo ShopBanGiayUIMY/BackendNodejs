@@ -65,71 +65,41 @@ const ProductAdminController = {
         quantity,
         color,
         size,
-        stock,
+        items,
       } = req.body;
-
-      // Xác định thông tin ảnh sản phẩm
-      let imageArray = [];
-      if (product_image) {
-        try {
-          imageArray = JSON.parse(`[${product_image}]`);
-        } catch (error) {
-          console.error("Error parsing product_image:", error);
-        }
-      }
+      const imageArray = JSON.parse(`[${product_image}]`);
       const thumbnail = imageArray[0];
-      const image_url = imageArray;
-
-      try {
-        // Tạo sản phẩm cơ bản
-        // const createdProduct = await Product.create({
-        //   product_name,
-        //   product_price,
-        //   product_description,
-        //   category_id,
-        //   thumbnail,
-        // });
-
-        // // Tạo thông tin chi tiết sản phẩm
-        // await ProductDetail.create({
-        //   product_id: createdProduct.product_id,
-        //   color,
-        //   size,
-        //   stock,
-        // });
-        const result = ProductService.createProduct(
-          product_name,
-          product_price,
-          product_description,
-          thumbnail,
-          category_id,
-          image_url,
-          color,
-          size,
-          stock
-        );
-
-        if (result) {
-          res.redirect("/admin/products");
-        }
-      } catch (error) {
-        console.error("Error creating product:", error);
-        res.status(500).send("Internal Server Error");
+      const image_url1 = imageArray;
+      const image_url = image_url1;
+      const result = await ProductService.createProduct(
+        product_name,
+        product_price,
+        product_description,
+        thumbnail,
+        category_id,
+        image_url,
+        quantity,
+        color,
+        size,
+        items
+      );
+      if (result) {
+        res.redirect("/admin/products");
+        res.end();
       }
-    }
-
-    try {
-      // Lấy danh sách danh mục
-      const categories = await Category.findAll();
-
+    } else {
+      const result = await CategoryService.getAllCategories();
+      const data = result.map((row) => {
+        return {
+          id: row.category_id,
+          name: row.name,
+        };
+      });
       res.render("product/addProduct", {
         layout: layout,
         title: "Create Product",
-        category: categories,
+        category: data,
       });
-    } catch (error) {
-      console.error("Error fetching categories:", error);
-      res.status(500).send("Internal Server Error");
     }
   },
 
@@ -138,58 +108,67 @@ const ProductAdminController = {
     const {
       product_name,
       product_price,
-      product_description,
-      thumbnail,
       category_id,
-      image_url,
-      quantity,
+      thumbnail,
+      detail_color,
+      detail_size,
+      detail_stock,
+      product_description,
     } = req.body; // Lấy thông tin từ request body
 
     try {
-      await ProductService.updateProduct(
-        productId,
-        product_name,
-        product_price,
-        product_description,
-        thumbnail,
-        category_id,
-        image_url,
-        quantity
-      );
+     
+      if (req.method === "POST") {
+        const result = await ProductService.updateProduct(
+          productId,
+          product_name,
+          product_price,
+          category_id,
+          thumbnail,
+          detail_color,
+          detail_size,
+          detail_stock,
+          product_description
+        );
+        console.log("productId", productId);
+        if (result) {
+          res.redirect("/admin/products");
+        }
+      } else {
+        const product = await Product.findByPk(productId);
+        const productDetails = await ProductDetail.findAll({
+          where: { product_id: productId },
+          attributes: ["detail_id", "color", "size", "stock"],
+        });
+        const categories = await CategoryService.getAllCategories();
 
-      const product = await Product.findByPk(productId);
-      const productDetails = await ProductDetail.findAll({
-        where: { product_id: productId },
-        attributes: ["detail_id", "color", "size", "stock"],
-      });
-      const categories = await CategoryService.getAllCategories();
-
-      res.render("product/editProduct", {
-        layout: layout,
-        title: "Edit Product",
-        product: {
-          id: product.product_id,
-          name: product.product_name,
-          // price: formatCurrency(product.product_price),
-          price: product.product_price,
-          description: product.product_description,
-          thumbnail: product.thumbnail,
-          category_id: product.category_id,
-          quantity: product.quantity,
-          productDetails: productDetails.map((detail) => ({
-            detailId: detail.detail_id,
-            productId: detail.product_id,
-            color: detail.color,
-            size: detail.size,
-            stock: detail.stock,
+        res.render("product/editProduct", {
+          layout: layout,
+          title: "Edit Product",
+          product: {
+            id: product.product_id,
+            name: product.product_name,
+            // price: formatCurrency(product.product_price),
+            price: product.product_price,
+            description: product.product_description,
+            thumbnail: product.thumbnail,
+            category_id: product.category_id,
+            quantity: product.quantity,
+            productDetails: productDetails.map((detail) => ({
+              detailId: detail.detail_id,
+              productId: detail.product_id,
+              color: detail.color,
+              size: detail.size,
+              stock: detail.stock,
+            })),
+          },
+          categories: categories.map((category) => ({
+            id: category.category_id,
+            name: category.name,
+            selected: category.id === product.category_id ? "selected" : "",
           })),
-        },
-        categories: categories.map((category) => ({
-          id: category.category_id,
-          name: category.name,
-          selected: category.id === product.category_id ? "selected" : "",
-        })),
-      });
+        });
+      }
     } catch (error) {
       console.error("Error updating product:", error);
       res.status(500).send("Internal Server Error");

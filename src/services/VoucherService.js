@@ -64,14 +64,14 @@ const VoucherService = {
     const queryTemp = `
     SELECT *
     FROM vouchers
-    WHERE (voucher_purpose = 0 OR voucher_purpose = 1)
+    WHERE (voucher_purpose IN (0, 1))
       AND (
-        item_user_id_list ->> '$[0]' = '4'
+        JSON_SEARCH(item_user_id_list, 'one', ?) IS NOT NULL
         AND (
           use_history IS NULL
-          OR use_history ->> '$[0]' IS NULL
+          OR JSON_SEARCH(use_history, 'one', ?) IS NULL
         )
-      );
+      );    
     `;
     try {
       const user = await AuthUser.findOne({
@@ -81,7 +81,6 @@ const VoucherService = {
         attributes: ["role"],
       });
       const voucher = await Discount.findAll();
-      console.log(voucher);
       console.log("user.dataValues.role", user.dataValues.role);
 
       if (user.dataValues.role == 0) {
@@ -189,9 +188,6 @@ const VoucherService = {
       if (!Array.isArray(use_history)) {
         use_history = [];
       }
-
-      console.log("use_history", use_history);
-      console.log("userId", userId);
 
       if (!use_history.includes(userId)) {
         use_history.push(userId);
