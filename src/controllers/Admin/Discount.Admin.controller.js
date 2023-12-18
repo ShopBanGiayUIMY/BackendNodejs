@@ -7,6 +7,7 @@ const VoucherAdminController = {
     try {
       const result = await VoucherService.getListVoucherAdmin();
       const data = result.map((row) => {
+        const useHistoryLength = row.use_history ? row.use_history.length : 0;
         return {
           id: row.voucher_id,
           name: row.voucher_name,
@@ -23,16 +24,20 @@ const VoucherAdminController = {
           usage_quantity: row.usage_quantity,
           start_time: formatDate(row.start_time),
           end_time: formatDate(row.end_time),
-          use_history: row.use_history,
+          use_history: useHistoryLength,
         };
       });
 
       function formatDate(timestamp) {
-        const date = new Date(timestamp * 1000);
-        const day = date.getDate().toString().padStart(2, "0");
-        const month = (date.getMonth() + 1).toString().padStart(2, "0");
+        const date = new Date(timestamp * 1000); // Nhân với 1000 để chuyển từ giây thành mili-giây
+        const day = date.getDate().toString().padStart(2, '0'); // Lấy ngày và định dạng 2 chữ số
+        const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Lấy tháng (đánh số từ 0) và định dạng 2 chữ số
         const year = date.getFullYear();
-        return `${day}/${month}/${year}`;
+        const hours = date.getHours().toString().padStart(2, '0'); // Lấy giờ và định dạng 2 chữ số
+        const minutes = date.getMinutes().toString().padStart(2, '0'); // Lấy phút và định dạng 2 chữ số
+        const seconds = date.getSeconds().toString().padStart(2, '0'); // Lấy giây và định dạng 2 chữ số
+      
+        return `${day}/${month}/${year} (${hours}:${minutes}:${seconds})`;
       }
       function formatVoucherType(voucherType) {
         switch (voucherType) {
@@ -70,23 +75,30 @@ const VoucherAdminController = {
     }
   },
   create: async (req, res) => {
+    const GetFullIdProduct = await ProductService.GetFullIdProduct();
+    const dataFullIdProduct = await GetFullIdProduct.map(
+      (row) => row.product_id
+    );
     try {
       if (req.method === "POST") {
+        console.log("voucher đã gửi đến", req.body);
         const {
           voucher_name,
           voucher_code,
+          reward_type,
           discount_amount_phamtram,
           discount_amount_vnd,
-          max_price,
           voucher_type,
-          reward_type,
           item_product_id_list,
+          customerSelection,
           item_user_id_list,
           usage_quantity,
           start_date,
+          start_time,
           end_date,
+          end_time,
         } = req.body;
-        console.log("req.body", req.body);
+
         let discount_amount = 0;
 
         if (discount_amount_phamtram !== "") {
@@ -94,35 +106,50 @@ const VoucherAdminController = {
         } else if (discount_amount_vnd !== "") {
           discount_amount = discount_amount_vnd;
         }
+
+        if (reward_type == 3) {
+          discount_amount = 10000;
+        }
+
         const item_product_id_list_arr = item_product_id_list
           .split(",")
           .map(Number);
         const item_user_id_list_arr = item_user_id_list.split(",").map(Number);
 
+        let processedItemProductIdList = null;
+
+        if (voucher_type == 1) {
+          processedItemProductIdList = JSON.stringify(dataFullIdProduct);
+        } else if (voucher_type == 2 && item_product_id_list !== "") {
+          processedItemProductIdList = JSON.stringify(item_product_id_list_arr);
+        }
+
+        function dateTimeStringToTimestamp(dateString, timeString) {
+          const [day, month, year] = dateString.split("-");
+          const [hours, minutes] = timeString.split(":");
+          const timestamp = new Date(year, month - 1, day, hours, minutes).getTime();
+          return timestamp / 1000; // Chia cho 1000 để tính theo giây
+        }
+
         const voucher = {
           voucher_name,
           voucher_code,
           discount_amount,
-          max_price,
+          max_price: 0,
           voucher_type,
           reward_type,
-          item_product_id_list:
-            item_product_id_list != ""
-              ? JSON.stringify(item_product_id_list_arr)
-              : null,
+          item_product_id_list: processedItemProductIdList,
           item_user_id_list:
-            item_user_id_list != ""
+            item_user_id_list !== ""
               ? JSON.stringify(item_user_id_list_arr)
               : null,
           usage_quantity,
-          start_time: start_date,
-          end_time: end_date,
+          start_time: dateTimeStringToTimestamp(start_date, start_time),
+          end_time: dateTimeStringToTimestamp(end_date, end_time),
           voucher_purpose: 0,
           use_history: null,
         };
-        console.log("Creating Voucher:", voucher);
-        console.log("item_product_id_list_arr", JSON.stringify(item_product_id_list_arr));
-         const result = await VoucherService.createVoucher(voucher);
+        const result = await VoucherService.createVoucher(voucher);
 
         if (result) {
           res.redirect("/admin/voucher");

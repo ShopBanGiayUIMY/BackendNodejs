@@ -9,12 +9,13 @@ import Favorites from './Favorites.js';
 import OrderStatus from './OrderStatus.js';
 import Order from './Order.js';
 import OrderDetail from './OrderDetail.js';
-
+import PaymentMethodType from './PaymentMethodType.js';
+import ShippingAddress from './ShippingAddress.js';
 export default () => {
   console.log('associate model');
   User.hasMany(Cart, { foreignKey: 'user_id' });
   Cart.belongsTo(User, { foreignKey: 'user_id' });
-
+  User.hasMany(ShippingAddress, {foreignKey: 'user_id'})
   CartItem.belongsTo(Cart, { foreignKey: 'cart_id' });
   Cart.hasMany(CartItem, { foreignKey: 'cart_id' });
   CartItem.belongsTo(ProductDetail, { foreignKey: 'product_detail_id'})
@@ -36,6 +37,13 @@ export default () => {
   Order.belongsTo(OrderStatus, {foreignKey: 'status_id'})
   OrderStatus.hasMany(Order, {foreignKey: 'status_id'})
 
+  User.hasMany(Order, {foreignKey: 'order_id'})
+  Order.belongsTo(User, {foreignKey: 'user_id'})
+  Order.belongsTo(PaymentMethodType, {foreignKey: 'payment_method_id'})
+  Order.belongsTo(ShippingAddress, {foreignKey: 'shipping_address_id'})
+
   Order.hasMany(OrderDetail, {foreignKey: 'order_id'})
+
+  OrderDetail.belongsTo(ProductDetail, {foreignKey: 'product_detail_id'})
 }
 

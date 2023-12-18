@@ -31,6 +31,7 @@ const CategoryController = {
               price: row.product_price,
               description: row.product_description,
               thumbnail: row.thumbnail,
+              total_quantity_sold: row.total_quantity_sold,
             };
           });
           res.status(200).json(data);

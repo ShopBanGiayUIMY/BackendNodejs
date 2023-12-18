@@ -26,6 +26,11 @@ const ProductDetail = sequelize.define('ProductDetail', {
     allowNull: false,
     defaultValue: 0,
   },
+  quantity: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 0,
+  },
 }, {
   sequelize,
   tableName: 'product_details',
