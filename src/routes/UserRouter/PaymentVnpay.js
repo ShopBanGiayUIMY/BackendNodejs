@@ -30,7 +30,7 @@ router.post(
     let returnUrl = process.env.VNP_RETURNURL;
     let transactionId = moment(date).format("DDHHmmss");
 
-    const userId = req.user.id;
+    const userId = req.user.user_id;
     const bankCode = req.body?.bankCode;
     const orderId = req.body?.orderId;
     const locale = req.body?.language;
@@ -86,7 +86,8 @@ router.post(
       vnp_Params = sortObject(vnp_Params);
       let signData = querystring.stringify(vnp_Params, { encode: false });
       let hmac = crypto.createHmac("sha512", secretKey);
-      let signed = hmac.update(new Buffer(signData, "utf-8")).digest("hex");
+      let signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
+
       vnp_Params["vnp_SecureHash"] = signed;
       vnpUrl += "?" + querystring.stringify(vnp_Params, { encode: false });
       //TODO: update database
@@ -113,7 +114,8 @@ router.get("/vnpay_return", function (req, res, next) {
 
   let signData = querystring.stringify(vnp_Params, { encode: false });
   let hmac = crypto.createHmac("sha512", secretKey);
-  let signed = hmac.update(new Buffer(signData, "utf-8")).digest("hex");
+  let signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
+
 
   if (secureHash === signed) {
     //Kiem tra xem du lieu trong db co hop le hay khong va thong bao ket qua
@@ -142,7 +144,8 @@ router.get("/vnpay_ipn", async function (req, res, next) {
   let secretKey = process.env.VNP_HASHSECRET;
   let signData = querystring.stringify(vnp_Params, { encode: false });
   let hmac = crypto.createHmac("sha512", secretKey);
-  let signed = hmac.update(new Buffer(signData, "utf-8")).digest("hex");
+  let signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
+
 
   let paymentStatus = "0"; // Giả sử '0' là trạng thái khởi tạo giao dịch, chưa có IPN. Trạng thái này được lưu khi yêu cầu thanh toán chuyển hướng sang Cổng thanh toán VNPAY tại đầu khởi tạo đơn hàng.
   //let paymentStatus = '1'; // Giả sử '1' là trạng thái thành công bạn cập nhật sau IPN được gọi và trả kết quả về nó

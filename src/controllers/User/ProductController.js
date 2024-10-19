@@ -1,27 +1,48 @@
 import connection from "../../config/Connection.js";
 import ProductService from "../../services/ProductService.js";
 import ProductDb from "../../Querydb/productdb.js";
+import pool from "../../config/Connection.js";
 const ProductController = {
-  index: async (req, res) => {
-    const db = connection();
-    db.connect();
-    db.query(ProductDb.GetListProducts, async (err, rows, fields) => {
-      if (err) {
-        res.status(500).send({ error: err });
-        return;
-      }
-      const data = rows.map((row) => {
-        return {
+  index : async (req, res) => {
+    const skip = parseInt(req.query.skip, 10) || 0; // Default to 0 if `skip` is not provided
+    const limit = parseInt(req.query.limit, 10) || 10; // Default to 10 if `limit` is not provided
+  
+    // Validate `skip` and `limit`
+    if (isNaN(skip) || isNaN(limit) || skip < 0 || limit <= 0) {
+      return res.status(400).json({ error: 'Invalid skip or limit parameters' });
+    }
+  
+    try {
+      // Get a connection from the pool
+      const connection = await pool.getConnection();
+  
+      try {
+        // Execute the query
+        const [rows] = await connection.query(ProductDb.GetListProducts, [limit, skip]);
+  
+        // Process data received from the database
+        const data = rows.map((row) => ({
           id: row.product_id,
           name: row.product_name,
           price: row.product_price,
           description: row.product_description,
           thumbnail: row.thumbnail,
           total_quantity_sold: row.total_quantity_sold,
-        };
-      });
-      res.send(data);
-    });
+        }));
+  
+        // Send data back to the client
+        res.status(200).json({ data });
+      } catch (queryError) {
+        console.error('Database query error:', queryError);
+        res.status(500).json({ error: 'Database query error' });
+      } finally {
+        // Release the connection back to the pool
+        connection.release();
+      }
+    } catch (error) {
+      console.error('Database connection error:', error);
+      res.status(500).json({ error: 'Error connecting to database' });
+    }
   },
 
   // const dataJson = {
@@ -77,118 +98,139 @@ const ProductController = {
         res.status(500).json({ message: e.message });
       });
   },
-  GetSolidProductById: async (req, res) => {
-    const db = connection();
-    db.connect();
-    const id = req.query.id;
-    const query = ProductDb.GetSolidProductById;
+  GetSolidProductById : async (req, res) => {
+    const id = req.params.id;
+  
     if (!id) {
-      res.status(400).send({ message: "id is required" });
-      return;
-    } else {
-      db.query(query, id, async (err, rows) => {
-        if (err) {
-          console.log(err);
-          res.status(500).send({ error: "server error" });
-          return;
-        }
+      return res.status(400).json({ message: "ID is required" });
+    }
+  
+    const query = ProductDb.GetSolidProductById;
+  
+    try {
+      // Get a connection from the pool
+      const connection = await pool.getConnection();
+  
+      try {
+        // Execute the query
+        const [rows] = await connection.query(query, [id]);
+  
+        // Check if any rows are returned
         if (rows.length === 0) {
-          res
-            .status(404)
-            .send({ message: `Not found product with id = ${req.params.id}` });
-          return;
+          return res.status(404).json({ message: `Product with ID ${id} not found` });
         }
-
-        res.status(200).json(rows[0]);
-      });
+  
+        // Map the rows to a structured format
+        const data = {
+          total_quantity_sold: rows[0].total_quantity_sold,
+        };
+  
+        // Send the data back to the client
+        res.status(200).json(data);
+      } catch (queryError) {
+        console.error('Database query error:', queryError);
+        res.status(500).json({ error: 'Server error' });
+      } finally {
+        // Release the connection back to the pool
+        connection.release();
+      }
+    } catch (error) {
+      console.error('Database connection error:', error);
+      res.status(500).json({ error: 'Unexpected server error' });
     }
   },
-  GetRatingById: async (req, res) => {
-    const db = connection();
-    db.connect();
+
+
+  GetRatingById : async (req, res) => {
     const id = req.params.id;
     const query = ProductDb.GetRatingById;
+  
     if (!id) {
-      res.status(400).send({ message: "id is required" });
-      return;
-    } else {
-      db.query(query, id, async (err, rows) => {
-        if (err) {
-          console.log(err);
-          res.status(500).send({ error: "server error" });
-          return;
-        }
+      return res.status(400).json({ message: "ID is required" });
+    }
+  
+    try {
+      // Get a connection from the pool
+      const connection = await pool.getConnection();
+  
+      try {
+        // Execute the query
+        const [rows] = await connection.query(query, [id]);
+  
+        // Check if any rows are returned
         if (rows.length === 0) {
-          res
-            .status(404)
-            .send({ message: `Not found product with id = ${req.params.id}` });
-          return;
+          return res.status(404).json({ message: `Product with ID ${id} not found` });
         }
-
-        res.status(200).json(rows[0]);
-      });
-    }
-  },
-  Rating: async (req, res) => {
-    const db = connection();
-    db.connect();
-
-    const user_id = req.user.id;
-    const product_id = req.params.id;
-    const rating = parseInt(req.query.score);
-
-    // Validate the rating value
-    if (isNaN(rating) || rating < 1 || rating > 5) {
-      res.status(400).send({ message: "Invalid rating value" });
-      return;
-    }
-
-    if (!product_id) {
-      res.status(400).send({ message: "Product ID is required" });
-      return;
-    }
-
-    // Check if the user has already rated the product
-    const checkQuery =
-      "SELECT * FROM product_ratings WHERE user_id = ? AND product_id = ?";
-    db.query(checkQuery, [user_id, product_id], (err, rows) => {
-      if (err) {
-        console.error(err);
-        res.status(500).send({ error: "Server error" });
-        return;
+  
+        // Process the result
+        const result = rows[0];
+        if (result.averageRating) {
+          result.averageRating = Math.round(parseFloat(result.averageRating));
+        }
+  
+        // Send the data back to the client
+        res.status(200).json(result);
+      } catch (queryError) {
+        console.error('Database query error:', queryError);
+        res.status(500).json({ error: 'Server error' });
+      } finally {
+        // Release the connection back to the pool
+        connection.release();
       }
+    } catch (error) {
+      console.error('Database connection error:', error);
+      res.status(500).json({ error: 'Unexpected server error' });
+    }
+  }
+,  
+
+Rating : async (req, res) => {
+  const user_id = req.user.user_id;
+  const product_id = req.params.id;
+  const rating = parseInt(req.query.score);
+
+  // Validate the rating value
+  if (isNaN(rating) || rating < 1 || rating > 5) {
+    return res.status(400).json({ message: "Invalid rating value" });
+  }
+
+  if (!product_id) {
+    return res.status(400).json({ message: "Product ID is required" });
+  }
+
+  const checkQuery = "SELECT * FROM product_ratings WHERE user_id = ? AND product_id = ?";
+  const updateQuery = "UPDATE product_ratings SET rating = ?, rating_date = NOW() WHERE user_id = ? AND product_id = ?";
+  const insertQuery = "INSERT INTO product_ratings (user_id, product_id, rating) VALUES (?, ?, ?)";
+
+  try {
+    // Get a connection from the pool
+    const connection = await pool.getConnection();
+
+    try {
+      // Check if the user has already rated the product
+      const [rows] = await connection.query(checkQuery, [user_id, product_id]);
 
       if (rows.length > 0) {
         // User has already rated the product, update the existing rating
-        const updateQuery =
-          "UPDATE product_ratings SET rating = ?, rating_date = NOW() WHERE user_id = ? AND product_id = ?";
-        db.query(updateQuery, [rating, user_id, product_id], (err, result) => {
-          if (err) {
-            console.error(err);
-            res.status(500).send({ error: "Server error" });
-            return;
-          }
-          res
-            .status(200)
-            .json({ status: 1, message: "Rating updated successfully" });
-        });
+        await connection.query(updateQuery, [rating, user_id, product_id]);
+        res.status(200).json({ status: 1, message: "Rating updated successfully" });
       } else {
         // User has not rated the product, insert a new rating
-        const insertQuery =
-          "INSERT INTO product_ratings (user_id, product_id, rating) VALUES (?, ?, ?)";
-        db.query(insertQuery, [user_id, product_id, rating], (err, result) => {
-          if (err) {
-            console.error(err);
-            res.status(500).send({ error: "Server error" });
-            return;
-          }
-          res
-            .status(200)
-            .json({ status: 1, message: "Rating added successfully" });
-        });
+        await connection.query(insertQuery, [user_id, product_id, rating]);
+        res.status(200).json({ status: 1, message: "Rating added successfully" });
       }
-    });
-  },
+    } catch (queryError) {
+      console.error('Database query error:', queryError);
+      res.status(500).json({ error: 'Server error' });
+    } finally {
+      // Release the connection back to the pool
+      connection.release();
+    }
+  } catch (connectionError) {
+    console.error('Database connection error:', connectionError);
+    res.status(500).json({ error: 'Unexpected server error' });
+  }
+},
 };
 
 export default ProductController;

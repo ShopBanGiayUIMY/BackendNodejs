@@ -12,7 +12,7 @@ import PaymentMethodType from "../models/PaymentMethodType.js";
 import ShippingAddress from "../models/ShippingAddress.js";
 import Voucher from "../models/Voucher.js";
 import VoucherService from "./VoucherService.js";
-
+import pool from "../config/Connection.js";
 export const OrderService = {
   //needed authn
   getOrderOfUser: async ({ userId, statusId }) => {
@@ -93,150 +93,117 @@ export const OrderService = {
     // console.log(JSON.stringify(orders))
     return orders;
   },
-  createOrderFromCart: async ({
+  createOrderFromCart : async ({
     userId,
     shippingAddressId,
     paymentMethodId,
     cartsId,
     cartItems,
-    voucherIds,
     freightCost,
   }) => {
-    //TODO: should be validate data
-
-    const cartItemInOrder = await CartItem.findAll({
-      where: Sequelize.and(
-        {
-          cart_id: cartsId,
-        },
-        Sequelize.or({
-          item_id: cartItems,
-        })
-      ),
-      include: {
-        model: ProductDetail,
-        attributes: ["product_id", "stock"],
-        include: {
-          model: Product,
-          attributes: ["product_price"],
-        },
-      },
-    });
-    const cartItemIdInOrder = await cartItemInOrder.map((e) => e.item_id);
-    if (cartItemInOrder.length !== cartItems.length) {
-      const cartItem = await cartItems.filter(
-        async (e) => !{ cartItemId: await cartItemIdInOrder.includes(e) }
-      );
-      return {
-        status: 400,
-        message: `cart items does not belong to User ${userId}`,
-        data: cartItem,
-      };
-    }
-    const error = { data: [] };
-    let totalAmount = freightCost;
-    if (voucherIds) {
-      const vouchers = await Voucher.findAll({
-        where: {
-          voucher_id: {
-            [Sequelize.Op.in]: voucherIds,
-          },
-        },
-      });
-      const vaildateProcess = await VoucherService.voucherValidating({
-        userId: userId,
-        vouchers: vouchers,
-      });
-      // console.log(JSON.stringify(vouchers));
-      // console.log(vaildateProcess);
-      if (!vaildateProcess.status) {
-        error.status = 400;
-        error.data = vaildateProcess.error;
-        error.message = "invalid voucher id list";
-        return error;
-      } else {
-        const discountAmount = await VoucherService.useVouchers(
-          userId,
-          vouchers
-        );
-        totalAmount -= discountAmount;
+    // Kết nối tới cơ sở dữ liệu
+    const connection = await pool.getConnection();
+  
+    try {
+      // Bắt đầu giao dịch
+      await connection.beginTransaction();
+  
+      // Bước 1: Xác thực giỏ hàng thuộc về người dùng
+      const [cartCheckResult] = await connection.query(`
+        SELECT cart_id FROM carts WHERE cart_id = ? AND user_id = ?
+      `, [cartsId, userId]);
+  
+      if (cartCheckResult.length === 0) {
+        throw new Error(`Cart ID ${cartsId} does not belong to User ${userId}`);
       }
-    }
-    for (const e of cartItemInOrder) {
-      e.canOrder = true;
-      if (e.quantity > e.ProductDetail.stock) {
-        error.data.push({ cartItemId: e.item_id });
-        e.canOrder = false;
-      }
-      e.amount = e.quantity * e.ProductDetail.Product.product_price;
-      totalAmount += e.amount;
-    }
-    if (error.data.length > 0) {
-      error.status = 401;
-      error.message = "cannot create order with item quantity not available";
-      return error;
-    } else {
-      const transaction = await sequelize.transaction();
-      try {
-        const order = await Order.create(
-          {
-            userId: userId,
-            shippingAddressId: shippingAddressId,
-            paymentMethodId: paymentMethodId,
-            statusId: 1,
-            freightCost: freightCost,
-            totalAmount: totalAmount,
-            orderDate: new Date(),
-          },
-          { transaction: transaction }
+  
+      // Bước 2: Lấy thông tin chi tiết về sản phẩm trong giỏ hàng
+      const [cartItemInOrder] = await connection.query(`
+        SELECT ci.item_id, ci.quantity, pd.detail_id AS product_detail_id, pd.product_id, pd.stock, p.product_price
+        FROM cart_items ci
+        JOIN product_details pd ON ci.product_detail_id = pd.detail_id
+        JOIN products p ON pd.product_id = p.product_id
+        WHERE ci.cart_id = ? AND ci.item_id IN (?)
+      `, [cartsId, cartItems]);
+  
+      // Kiểm tra xem tất cả các item trong cartItems có nằm trong cartsId hay không
+      const cartItemIdInOrder = cartItemInOrder.map((e) => e.item_id);
+      if (cartItemInOrder.length !== cartItems.length) {
+        const cartItem = cartItems.filter(
+          (e) => !cartItemIdInOrder.includes(e)
         );
-        for (const e of cartItemInOrder) {
-          await OrderDetail.create(
-            {
-              orderId: order.id,
-              productDetailId: e.product_detail_id,
-              quantity: e.quantity,
-              price: e.ProductDetail.Product.product_price,
-            },
-            { transaction: transaction }
-          );
-          await CartItem.destroy({
-            where: {
-              item_id: e.item_id,
-            },
-            transaction: transaction 
-          },
-          );
-          console.log(e.ProductDetail.stock, e.quantity)
-          const newQuantity = e.ProductDetail.stock - e.quantity
-          console.log(newQuantity)
-          await ProductDetail.update({
-            stock: +newQuantity
-          }, {
-            where: {
-              detail_id: e.product_detail_id
-            },
-            transaction: transaction
-          },)
+        throw new Error(`Some cart items do not belong to Cart ID ${cartsId}`);
+      }
+  
+      // Bước 3: Tính toán tổng tiền của đơn hàng
+      let totalAmount = freightCost;
+      const errorItems = [];
+  
+      for (const item of cartItemInOrder) {
+        if (item.quantity > item.stock) {
+          errorItems.push(item.item_id);
         }
-        await transaction.commit();
-        console.log('ok')
-        return {
-          status: 200,
-          message: "ok",
-          data: order.id,
-        };
-      } catch (e) {
-        console.log(e)
-        console.log(totalAmount)
-        await transaction.rollback();
-        return {
-          status: 500,
-          message: `server error`,
-        };
+        totalAmount += item.quantity * item.product_price;
       }
+  
+      if (errorItems.length > 0) {
+        throw new Error(`Cannot create order with item quantity not available for items: ${errorItems.join(', ')}`);
+      }
+  
+      // Bước 4: Tạo đơn hàng mới
+      const [orderResult] = await connection.query(`
+        INSERT INTO orders (user_id, shipping_address_id, payment_method_id, status_id, freight_cost, total_amount, order_date, payment_status)
+        VALUES (?, ?, ?, 1, ?, ?, NOW(), 'UNPAID')
+      `, [userId, shippingAddressId, paymentMethodId, freightCost, totalAmount]);
+  
+      const orderId = orderResult.insertId;
+  
+      // Bước 5: Thêm các chi tiết đơn hàng vào bảng order_details
+      const orderDetailsQuery = cartItemInOrder.map(item => `
+        (${orderId}, ${item.product_detail_id}, ${item.quantity}, ${item.product_price})
+      `).join(',');
+  
+      await connection.query(`
+        INSERT INTO order_details (order_id, product_detail_id, quantity, price)
+        VALUES ${orderDetailsQuery}
+      `);
+  
+      // Bước 6: Xóa các sản phẩm khỏi giỏ hàng
+      await connection.query(`
+        DELETE FROM cart_items WHERE cart_id = ? AND item_id IN (?)
+      `, [cartsId, cartItems]);
+  
+      // Bước 7: Cập nhật số lượng tồn kho
+      for (const item of cartItemInOrder) {
+        const newQuantity = item.stock - item.quantity;
+        await connection.query(`
+          UPDATE product_details SET stock = ? WHERE detail_id = ?
+        `, [newQuantity, item.product_detail_id]);
+      }
+  
+      // Commit giao dịch
+      await connection.commit();
+  
+      return {
+        status: 200,
+        message: "Order created successfully",
+        data: orderId,
+      };
+    } catch (error) {
+      // Rollback giao dịch nếu có lỗi
+      await connection.rollback();
+      return {
+        status: 500,
+        message: `Server error: ${error.message}`,
+      };
+    } finally {
+      // Giải phóng kết nối
+      connection.release();
     }
-  },
+  }
+  ,
+  
+  
   //needed authn -> authn in middleware layer
   cancelOrder: async ({ userId, orderId }) => {
     const order = await Order.findByPk(orderId, {

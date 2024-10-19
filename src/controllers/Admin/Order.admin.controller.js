@@ -192,6 +192,7 @@ const OrderController = {
   update: async (req, res) => {
     let dto = req.body;
     dto = { ...dto, orderId: +req.params.id };
+    console.log(dto);
     try {
       const { orderId, statusId } = dto;
       if (

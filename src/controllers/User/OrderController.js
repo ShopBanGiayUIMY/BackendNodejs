@@ -2,7 +2,7 @@ import { OrderService } from "../../services/OrderService.js";
 
 export const OrderController = {
   index: async (req, res) => {
-    const userId = req.user.id;
+    const userId = req.user.user_id;
     const orderStatusQueryParam = req.query?.statusCode;
     console.log(orderStatusQueryParam);
     if (orderStatusQueryParam) {
@@ -49,15 +49,14 @@ export const OrderController = {
   show: async (req, res) => {},
   create: async (req, res) => {
     const dto = {
-      userId: req.user?.id,
+      userId: req.user?.user_id,
       shippingAddressId: req.body?.shippingAddressId,
       paymentMethodId: req.body?.paymentMethodId,
       cartsId: req.body?.cartId,
       freightCost: req.body?.freightCost,
-      voucherIds: req.body?.voucherIds,
       cartItems: req.body?.cartItems,
     };
-    console.log("dto from controller to service: ", dto);
+    console.log("dto from controller to service1: ", dto);
     const result = await OrderService.createOrderFromCart(dto);
     const { status, message, data } = result;
     if (status === 200) {
@@ -71,10 +70,10 @@ export const OrderController = {
   cancel: async (req, res) => {
     
     const dto = {
-      userId: req.user.id,
+      userId: req.user.user_id,
       orderId: req.params.id,
     };
-    console.log("cancel",req.user.id);
+    console.log("cancel",req.user.user_id);
     // console.log(dto);
     const result = await OrderService.cancelOrder(dto);
     const { status, message } = result;
@@ -83,7 +82,7 @@ export const OrderController = {
   destroy: async (req, res) => {},
   verifyDelivered: async (req, res) => {
     const dto = {
-      userId: req.user.id,
+      userId: req.user.user_id,
       orderId: req.params.id,
     };
     const result = await OrderService.verifyDeliveredOrder(dto);
@@ -91,7 +90,7 @@ export const OrderController = {
     res.status(status).json({ message: message });
   },
   totalOrderStatus: async (req, res) => {
-    const userId = req.user.id;
+    const userId = req.user.user_id;
     const statusId = req.query?.statusId;
 
     const result = await OrderService.totalOrderStatus(userId);

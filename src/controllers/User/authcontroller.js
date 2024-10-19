@@ -4,6 +4,7 @@ import Queryuser from "../../Querydb/Userdb.js";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
 import Cart from "../../models/Cart.js";
+import pool from "../../config/Connection.js";
 // generate token
 let refreshTokens = [];
 const authController = {
@@ -14,7 +15,7 @@ const authController = {
       service: "gmail",
       auth: {
         user: "huynvph20687@fpt.edu.vn",
-        pass: "mosklpvfiuqhlrij",
+        pass: "zguosqrklrixixlo",
       },
     });
     const HOST_NAME = process.env.HOST_NAME;
@@ -53,79 +54,87 @@ const authController = {
       console.error("Error sending verification email:", error);
     }
   },
-  sendVerificationOTP: async (username, email, OTP) => {
+  sendVerificationOTP : async (username, email, OTP) => {
+    // Validate email address
+    if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+      console.error("Invalid email address:", email);
+      return;
+    }
+  
     // Create a Nodemailer transporter
     const transporter = nodemailer.createTransport({
-      // Configure the email service or SMTP details here
       service: "gmail",
       auth: {
         user: "huynvph20687@fpt.edu.vn",
         pass: "mosklpvfiuqhlrij",
       },
     });
-
+  
     // Compose the email message
     const mailOptions = {
-      from: "amazon.com",
+      from: "huynvph20687@fpt.edu.vn", // Change to the sender's email address
       to: email,
       subject: "Xác thực tài khoản",
-      text: `Xin chào '${username}', Mã OTP của bạn là: ${OTP} , Bạn không được chia sẻ cho bất kì ai!`,
+      text: `Xin chào '${username}', Mã OTP của bạn là: ${OTP}. Bạn không được chia sẻ cho bất kì ai!`,
     };
+  
     // Send the email
     try {
-      await transporter.sendMail(mailOptions);
+      const info = await transporter.sendMail(mailOptions);
       console.log("Đã gửi otp đến email", email);
+      console.log("Message ID:", info.messageId);
     } catch (error) {
       console.error("Error sending verification email:", error);
     }
   },
-  verifyUser: async (req, res) => {
+  verifyUser : async (req, res) => {
+    const verificationToken = req.params.token;
+  
+    if (!verificationToken) {
+      return res.status(400).json({ error: "Verification token is required" });
+    }
+  
     try {
-      // Lấy verificationToken từ url
-      const verificationToken = req.params.token;
-      // Kiểm tra xem verificationToken có tồn tại trong database hay không
-      req.getConnection((err, conn) => {
-        if (err) {
-          return res
-            .status(500)
-            .json({ error: "Error connecting to database" });
-        }
-        conn.query(
+      // Get a connection from the pool
+      const connection = await pool.getConnection();
+  
+      try {
+        // Check if the verification token exists
+        const [results] = await connection.query(
           "SELECT * FROM auth_users WHERE verificationToken = ?",
-          [verificationToken],
-          async (err, result) => {
-            if (err) {
-              return res.status(500).json({ error: "Error verifying user" });
-            }
-            if (result.length === 0) {
-              return res.status(404).json({ error: "User not found" });
-            }
-            const auth = result[0];
-            // Cập nhật trường verified trong bảng Users thành true
-            conn.query(
-              'UPDATE auth_users SET verified = "true", verificationToken = "đã xác nhận" WHERE auth_id = ?;',
-              [auth.auth_id],
-              async (err, result) => {
-                if (err) {
-                  return res
-                    .status(500)
-                    .json({ error: "Lỗi xác thực tài khoản" });
-                }
-                const temp = await Cart.create({
-                  user_id: auth.user_id
-                })
-                console.log(JSON.stringify(temp))
-                res
-                  .status(200)
-                  .json({ message: "Tài khoản đã được xác thực thành công" });
-              }
-            );
-          }
+          [verificationToken]
         );
-      });
+  
+        if (results.length === 0) {
+          return res.status(404).json({ error: "User not found" });
+        }
+  
+        const auth = results[0];
+  
+        // Update the verified field in the auth_users table
+        await connection.query(
+          'UPDATE auth_users SET verified = "true", verificationToken = "đã xác nhận" WHERE auth_id = ?;',
+          [auth.auth_id]
+        );
+  
+        // Create a cart for the user
+        const temp = await Cart.create({
+          user_id: auth.user_id
+        });
+  
+        console.log(JSON.stringify(temp));
+  
+        res.status(200).json({ message: "Tài khoản đã được xác thực thành công" });
+      } catch (error) {
+        console.error('Query processing error:', error);
+        res.status(500).json({ error: "Error processing verification" });
+      } finally {
+        // Release the connection back to the pool
+        connection.release();
+      }
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Error verifying user" });
+      console.error('Database connection error:', error);
+      res.status(500).json({ error: "Error connecting to the database" });
     }
   },
   // random 6 số
@@ -138,188 +147,159 @@ const authController = {
   },
   // register
   registerUser: async (req, res) => {
+    const { username, email, password, fullName } = req.body;
+    console.log(req.body);
     try {
       const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(req.body.password, salt);
+      const hashedPassword = await bcrypt.hash(password, salt);
       const verificationToken = crypto.randomBytes(20).toString("hex");
       const auth_code = authController.generateRandomSixDigits();
-      // create user
-      const username = req.body.username;
-      const email = req.body.email;
-      req.getConnection((err, conn) => {
-        const kq = conn.query(
+  
+      // Get a connection from the pool
+      const connection = await pool.getConnection();
+  
+      try {
+        // Check if username exists
+        const [usernameResult] = await connection.query(
           "SELECT COUNT(*) as count FROM users WHERE username = ?",
-          [username],
-          (err, usernameResult) => {
-            if (err) {
-              console.log(err);
-              return res
-                .status(500)
-                .json({ error: "Error checking username existence" });
-            }
-
-            if (usernameResult[0].count > 0) {
-              return res.status(200).json({
-                message: "Tên đăng nhập đã tồn tại trong hệ thống!",
-                success: false,
-              });
-            }
-
-            // Kiểm tra xem email đã tồn tại hay chưa
-            conn.query(
-              "SELECT COUNT(*) as count FROM users WHERE email = ?",
-              [email],
-              (err, emailResult) => {
-                if (err) {
-                  console.log(err);
-                  return res
-                    .status(500)
-                    .json({ error: "Error checking email existence" });
-                }
-
-                if (emailResult[0].count > 0) {
-                  return res.status(200).json({
-                    message: "Email đã tồn tại trong hệ thống!",
-                    success: false,
-                  });
-                }
-
-                // Nếu cả username và email đều không tồn tại, thực hiện đăng ký
-                const kq = conn.query(
-                  Queryuser.registerUser,
-                  {
-                    username: username,
-                    password: hashedPassword,
-                    email: email,
-                    full_name: req.body.fullname,
-                  },
-                  async (err, result) => {
-                    if (err) {
-                      console.log(err);
-                      return res
-                        .status(500)
-                        .json({ error: "Error registering the user" });
-                    }
-
-                    const user_id = result.insertId;
-                    console.log(user_id);
-
-                    // Thêm dữ liệu vào bảng auth_users với user_id và verificationToken
-                    conn.query(
-                      "INSERT INTO auth_users (user_id, verificationToken) VALUES (?, ?)",
-                      [user_id, verificationToken, auth_code],
-                      (err, authUserResult) => {
-                        if (err) {
-                          console.log(err);
-                          return res
-                            .status(500)
-                            .json({ error: "Error adding verification token" });
-                        } else {
-                          res.status(200).json({
-                            message: "Đăng ký thành công!",
-                            success: true,
-                          });
-                          // Gửi email xác thực
-                          authController.sendVerificationEmail(
-                            username,
-                            email,
-                            verificationToken
-                          );
-                          console.log(
-                            "Đăng ký thành công tài khoản: " + username
-                          );
-                        }
-                      }
-                    );
-                  }
-                );
-              }
-            );
-          }
+          [username]
         );
-      });
+  
+        if (usernameResult[0].count > 0) {
+          return res.status(400).json({
+            message: "Tên đăng nhập đã tồn tại trong hệ thống!",
+            success: false,
+          });
+        }
+  
+        // Check if email exists
+        const [emailResult] = await connection.query(
+          "SELECT COUNT(*) as count FROM users WHERE email = ?",
+          [email]
+        );
+  
+        if (emailResult[0].count > 0) {
+          return res.status(400).json({
+            message: "Email đã tồn tại trong hệ thống!",
+            success: false,
+          });
+        }
+  
+        // Register the user
+        const [result] = await connection.query(
+          Queryuser.registerUser,
+          [username, hashedPassword, email, fullName]
+        );
+        const user_id = result.insertId;
+  
+        // Add verification token
+        await connection.query(
+          "INSERT INTO auth_users (user_id, verificationToken, auth_code) VALUES (?, ?, ?)",
+          [user_id, verificationToken, auth_code]
+        );
+  
+        // Send verification email
+        authController.sendVerificationEmail(username, email, verificationToken);
+  
+        res.status(200).json({
+          message: "Đăng ký thành công!",
+          success: true,
+        });
+        console.log("Đăng ký thành công tài khoản: " + username);
+      } catch (error) {
+        console.error('Query processing error:', error);
+        res.status(500).json({ error: "Error processing registration" });
+      } finally {
+        // Release the connection back to the pool
+        connection.release();
+      }
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Error registering the user" });
+      console.error('Database connection error:', error);
+      res.status(500).json({ error: "Error connecting to the database" });
     }
   },
   generateAccessToken: (user) => {
+    const { accessToken, ...userWithoutAccessToken } = user;
+
     return jwt.sign(
       {
-        id: user.user_id,
-        admin: user.admin,
+        ...userWithoutAccessToken,
       },
-      process.env.JWT_ACCESS_KEY,
-      { expiresIn: "30d" }
+      process.env.JWT_REFRESH_KEY,
+      { expiresIn: '365d' }
     );
   },
   generateRefreshToken: (user) => {
+    const { accessToken, ...userWithoutAccessToken } = user;
+
     return jwt.sign(
       {
-        id: user.user_id,
-        admin: user.admin,
+        ...userWithoutAccessToken,
       },
       process.env.JWT_REFRESH_KEY,
-      { expiresIn: "365d" }
+      { expiresIn: '365d' }
     );
   },
 
   // login
-  loginUser: async (req, res) => {
+  loginUser : async (req, res) => {
+    const { username, email, password } = req.body;
+  
+    if (!username && !email) {
+      return res.status(400).json({ error: "Username or email is required" });
+    }
+  
     try {
-      // Kiểm tra username có tồn tại trong database hay không
-      const { username, email } = req.body;
-
-      req.getConnection((err, conn) => {
-        if (err) {
-          return res
-            .status(500)
-            .json({ error: "Error connecting to database" });
-        }
-        conn.query(
+      // Get a connection from the pool
+      const connection = await pool.getConnection();
+  
+      try {
+        const [results] = await connection.query(
           Queryuser.loginUser,
-          [username, email],
-          async (err, result) => {
-            if (err) {
-              return res.status(500).json({ error: "Error logging in" });
-            }
-            if (result.length === 0) {
-              return res.status(200).json({ message: "Tài khoản không tồn tại!" ,success: false });
-            }
-            const user = result[0];
-            console.log("user: " + user.verified + " đã đăng nhập");
-          
-            // So sánh password nhập vào và password trong database
-            const validPassword = await bcrypt.compare(
-              req.body.password,
-              user.password
-            );
-            if (!validPassword) {
-              return res.status(200).json({ message: "Sai mật khẩu!" ,success: false });
-            }
-            if (user && validPassword) {
-              // tạo accesstoken
-              const accesstoken = authController.generateAccessToken(user);
-              // tạo refreshtoken
-              const refreshtoken = authController.generateRefreshToken(user);
-              // lưu refreshtoken vào mảng
-              refreshTokens.push(refreshtoken);
-              res.cookie("refreshToken", refreshtoken, {
-                httpOnly: true,
-                path: "/",
-                sameSite: "strict",
-                secure: false,
-              });
-              const { password, ...info } = user; // lấy hết các trường trong user._doc trừ password
-              res.status(200).json({ ...info, accesstoken , message: "Đăng nhập thành công",success: true });
-              console.log("đăng nhập thành công tài khoản " + user.username);
-            }
-          }
-        );
-      });
+          [username || '', email || '']
+      );
+
+      if (results.length === 0) {
+          return res.status(404).json({ message: "Tài khoản không tồn tại!", success: false });
+      }
+
+      const user = results[0];
+
+      // Xác minh mật khẩu
+      const validPassword = await bcrypt.compare(password, user.password);
+      if (!validPassword) {
+          return res.status(401).json({ message: "Sai mật khẩu!", success: false });
+      }
+
+      // Kiểm tra tài khoản đã được xác thực hay chưa
+      if (user.verified === 'false') {
+          return res.status(403).json({ message: "Tài khoản chưa được xác thực!", success: false });
+      }
+
+      // Tạo token
+      const accesstoken = authController.generateAccessToken(user);
+      const refreshtoken = authController.generateRefreshToken(user);
+      refreshTokens.push(refreshtoken);
+  
+        // Set refresh token as a cookie
+        res.cookie("refreshToken", refreshtoken, {
+          httpOnly: true,
+          path: "/",
+          sameSite: "strict",
+          secure: false,
+        });
+  
+        res.status(200).json({ accesstoken, message: "Đăng nhập thành công", success: true });
+      } catch (error) {
+        console.error('Query processing error:', error);
+        res.status(500).json({ error: "Error processing login" });
+      } finally {
+        // Release the connection back to the pool
+        connection.release();
+      }
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Error logging in" });
+      console.error('Database connection error:', error);
+      res.status(500).json({ error: "Error connecting to the database" });
     }
   },
 
@@ -352,144 +332,176 @@ const authController = {
     });
   },
 
-  GetEmailOrPhone: async (req, res) => {
+  GetEmailOrPhone : async (req, res) => {
+    const userid = req.params.id;
+  
+    if (!userid) {
+      return res.status(400).json({ error: "User ID is required" });
+    }
+  
     try {
-      const userid = req.params.id;
-      req.getConnection((err, conn) => {
-        if (err) {
-          return res
-            .status(500)
-            .json({ error: "Error connecting to database" });
+      // Get a connection from the pool
+      const connection = await pool.getConnection();
+  
+      try {
+        // Query to get user details by user ID
+        const [results] = await connection.query(
+          Queryuser.GetEmailOrPhone,
+          [userid]
+        );
+  
+        if (results.length === 0) {
+          return res.status(404).json({ error: "User not found" });
         }
-        conn.query(Queryuser.GetEmailOrPhone, userid, async (err, result) => {
-          if (err) {
-            return res.status(500).json({ error: "Error logging in" });
-          }
-          if (result.length === 0) {
-            return res.status(404).json({ error: "User not found" });
-          }
-          const user = result[0];
-          res.status(200).json(user);
-        });
-      });
+  
+        const user = results[0];
+        res.status(200).json(user);
+      } catch (error) {
+        console.error('Query processing error:', error);
+        res.status(500).json({ error: "Error retrieving user data" });
+      } finally {
+        // Release the connection back to the pool
+        connection.release();
+      }
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Error logging in" });
+      console.error('Database connection error:', error);
+      res.status(500).json({ error: "Error connecting to the database" });
     }
   },
   // change password
-  ResetPassword: async (req, res) => {
+  ResetPassword : async (req, res) => {
+    const { email, username, phone } = req.body;
+  
+    if (!username || !email || !phone) {
+      return res.status(400).json({ error: "Username, email, and phone are required" });
+    }
+  
     try {
-      const { email, username, phone } = req.body;
-      req.getConnection((err, conn) => {
-        if (err) {
-          return res
-            .status(500)
-            .json({ error: "Error connecting to database" });
-        }
-        conn.query(
+      // Get a connection from the pool
+      const connection = await pool.getConnection();
+  
+      try {
+        // Query to get user details
+        const [results] = await connection.query(
           Queryuser.GetUserResetPassword,
-          [username, email, phone],
-          async (err, result) => {
-            if (err) {
-              return res.status(500).json({ error: "Error logging in" });
-            }
-            if (result.length === 0) {
-              return res.status(404).json({ error: "User not found" });
-            }
-            const user = result[0];
-            const auth_code = authController.generateRandomSixDigits();
-            console.log("mã otp là", auth_code);
-            conn.query(
-              "UPDATE auth_users SET auth_code = ? WHERE user_id = ?;",
-              [auth_code, user.user_id],
-              (err, result) => {
-                if (err) {
-                  console.log(err);
-                  return res
-                    .status(500)
-                    .json({ error: "Error adding verification token" });
-                }
-                res.status(200).json(result);
-                // Gửi email xác thực
-                authController.sendVerificationOTP(
-                  user.username,
-                  user.email,
-                  auth_code
-                );
-                console.log(
-                  "Reset tài khoản thành công: " + JSON.stringify(result)
-                );
-              }
-            );
-          }
+          [username, email, phone]
         );
-      });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Error logging in" });
+  
+        if (results.length === 0) {
+          return res.status(404).json({ error: "User not found" });
+        }
+  
+        const user = results[0];
+        const auth_code = authController.generateRandomSixDigits();
+        console.log("Generated OTP code:", auth_code);
+  
+        // Update auth_code in the database
+        const [updateResult] = await connection.query(
+          "UPDATE auth_users SET auth_code = ? WHERE user_id = ?;",
+          [auth_code, user.user_id]
+        );
+  
+        // Respond to the client
+        res.status(200).json({ message: "Reset request successful", result: updateResult });
+  
+        // Send verification OTP
+        authController.sendVerificationOTP(user.username, user.email, auth_code);
+        console.log("Password reset successful for user:", user.username);
+  
+      } catch (queryError) {
+        console.error('Query processing error:', queryError);
+        res.status(500).json({ error: "Error processing reset request" });
+      } finally {
+        // Release the connection back to the pool
+        connection.release();
+      }
+    } catch (connectionError) {
+      console.error('Database connection error:', connectionError);
+      res.status(500).json({ error: "Error connecting to the database" });
     }
   },
   // xác thực otp
-  authenticationOTP: async (req, res, next) => {
+  authenticationOTP : async (req, res, next) => {
     const { password, auth_code } = req.body;
     const id = req.params.id;
-    console.log(id);
+  
+    if (!auth_code || !id) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+  
     try {
-      req.getConnection((err, conn) => {
-        const kq = conn.query(Queryuser.GetOtp, id, async (err, result) => {
-          if (err) {
-            console.log(err);
-            return res
-              .status(500)
-              .json({ error: "Error registering the user" });
-          }
-          if (result.length === 0) {
-            return res.status(404).json({ error: "User not found" });
-          }
-          const user = result[0];
-          if (user.auth_code == auth_code) {
-            if (password == undefined) {
-              res.status(200).json({ message: true });
-              console.log("mã otp đúng");
-            } else {
-              next();
-            }
+      // Get a connection from the pool
+      const connection = await pool.getConnection();
+  
+      try {
+        // Query to get OTP from the database
+        const [results] = await connection.query(
+          Queryuser.GetOtp,
+          [id]
+        );
+  
+        if (results.length === 0) {
+          return res.status(404).json({ error: "User not found" });
+        }
+  
+        const user = results[0];
+  
+        if (user.auth_code === auth_code) {
+          if (password === undefined) {
+            res.status(200).json({ message: true });
+            console.log("OTP code is correct");
           } else {
-            res.status(400).json({ message: "Mã OTP không đúng" });
+            next();
           }
-        });
-      });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Error registering the user" });
+        } else {
+          res.status(400).json({ message: "Incorrect OTP code" });
+        }
+      } catch (queryError) {
+        console.error('Query processing error:', queryError);
+        res.status(500).json({ error: "Error processing OTP verification" });
+      } finally {
+        // Release the connection back to the pool
+        connection.release();
+      }
+    } catch (connectionError) {
+      console.error('Database connection error:', connectionError);
+      res.status(500).json({ error: "Error connecting to the database" });
     }
   },
-  UpdatePassword: async (req, res) => {
+  UpdatePassword : async (req, res) => {
     const { password } = req.body;
     const id = req.params.id;
-    console.log(id);
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+  
+    if (!password || !id) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+  
     try {
-      req.getConnection((err, conn) => {
-        const kq = conn.query(
+      // Generate salt and hash the new password
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+  
+      // Get a connection from the pool
+      const connection = await pool.getConnection();
+  
+      try {
+        // Update the password in the database
+        const [result] = await connection.query(
           Queryuser.UpdatePassword,
-          [hashedPassword, id],
-          (err, result) => {
-            if (err) {
-              console.log(err);
-              return res
-                .status(500)
-                .json({ error: "Error adding verification token" });
-            }
-            res.status(200).json({ message: "Đổi mật khẩu thành công" });
-          }
+          [hashedPassword, id]
         );
-      });
+  
+        res.status(200).json({ message: "Password updated successfully" });
+      } catch (queryError) {
+        console.error('Query processing error:', queryError);
+        res.status(500).json({ error: "Error updating the password" });
+      } finally {
+        // Release the connection back to the pool
+        connection.release();
+      }
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Error registering the user" });
+      console.error('Error hashing password:', error);
+      res.status(500).json({ error: "Error processing request" });
     }
   },
   // logout
@@ -499,6 +511,7 @@ const authController = {
       (token) => token !== req.cookies.RefreshToken
     );
     res.status(200).json("Đăng xuất thành công");
+
   },
 };
 

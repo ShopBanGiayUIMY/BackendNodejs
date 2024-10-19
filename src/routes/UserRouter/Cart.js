@@ -10,17 +10,15 @@ router.get('/',middwarecontroller.verifyUser, CartsController.index);
 // router.get('/:id', middwarecontroller.verifyUser, CartsController.show);
 
 // POST /carts
-// router.post('/', middwarecontroller.verifyUser, CartsController.create);
+ router.post('/create', middwarecontroller.verifyUser, CartsController.create);
 
+// add product to cart
+router.post('/add-product-cart', middwarecontroller.verifyUser, CartsController.addtocart);
 // PUT /carts/:id
-router.patch('/:id', middwarecontroller.verifyUser, CartsController.update);
+router.put('/update', middwarecontroller.verifyUser, CartsController.update);
 router.get('/total-cart', middwarecontroller.verifyUser, CartsController.getTotalCart);
 
 // DELETE /carts/:id
-// router.delete('/:id', (req, res) => {
-//   res.send('DELETE /carts/:id')
-//   // Delete a specific cart by ID
-// });
-
+router.delete('/delete-cart-user/:id', middwarecontroller.verifyUser, CartsController.delete);
 
 export default router;

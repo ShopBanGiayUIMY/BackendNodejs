@@ -1,10 +1,11 @@
 import VoucherService from "../../services/VoucherService.js";
 import AuthUser from "../../models/auth.model.js";
+import pool from "../../config/Connection.js";
 const VoucherController = {
   index: async (req, res) => {
     try {
-      if (req.user.id) {
-        const result = await VoucherService.getListVoucher(req.user.id);
+      if (req.user.user_id) {
+        const result = await VoucherService.getListVoucher(req.user.user_id);
         console.log("result", result);
         const kq = result.map((item) => {
           let usage_remaining1;
@@ -39,130 +40,69 @@ const VoucherController = {
       console.log(e.message);
     }
   },
-  findandaddvoucherformuser: async (req, res) => {
+  findandaddvoucherformuser : async (req, res) => {
+    const { voucher_code } = req.body;
+    const userId = req.user.user_id;
+  
     try {
-      const user_item = await AuthUser.findOne({
-        where: {
-          user_id: req.user.id,
-        },
-        attributes: ["role"],
+      // Fetch user role from the database
+      const userItem = await AuthUser.findOne({
+        where: { user_id: userId },
+        attributes: ['role'],
       });
-      req.getConnection(function (err, conn) {
-        if (err) return next("Cannot Connect");
-        var query = conn.query(
+  
+      if (!userItem) {
+        return res.status(404).json({ error: "User not found" });
+      }
+  
+      // Get a connection from the pool
+      const connection = await pool.getConnection();
+  
+      try {
+        // Check if the voucher exists
+        const [rows] = await connection.query(
           "SELECT * FROM vouchers WHERE voucher_code = ?",
-          req.body.voucher_code,
-          (err, rows) => {
-            if (err) {
-              console.log(err);
-              return next("Mysql error, check your query");
-            }
-            if (rows.length > 0) {
-              const use_history_user = JSON.parse(rows[0].use_history);
-              const userIdList = JSON.parse(rows[0].item_user_id_list);
-              const usage_quantity = JSON.parse(rows[0].usage_quantity);
-
-              if (use_history_user == null) {
-                if (userIdList == null) {
-                  if (rows[0].voucher_purpose == 0 && user_item.role == 0) {
-                    const result = conn.query(
-                      `UPDATE vouchers
-                      SET item_user_id_list = JSON_ARRAY_APPEND(
-                        COALESCE(item_user_id_list, JSON_ARRAY()),
-                        '$',?
-                      )
-                      WHERE voucher_code = ?;
-                      `,
-                      [req.user.id, req.body.voucher_code],
-                      (err, rows) => {
-                        if (err) {
-                          console.log(err);
-                          return next("Mysql error, check your query");
-                        }
-                        res.status(200).json({
-                          message: "Đã thêm voucher vào giỏ của bạn",
-                          success: true,
-                        });
-                      }
-                    );
-                  }
-                } else {
-                  if (rows[0].voucher_purpose == 0 && user_item.role == 0) {
-                    if (!userIdList.includes(req.user.id)) {
-                      const result = conn.query(
-                        `UPDATE vouchers
-                        SET item_user_id_list = JSON_ARRAY_APPEND(
-                          COALESCE(item_user_id_list, JSON_ARRAY()),
-                          '$',?
-                        )
-                        WHERE voucher_code = ?;
-                        `,
-                        [req.user.id, req.body.voucher_code],
-                        (err, rows) => {
-                          if (err) {
-                            console.log(err);
-                            return next("Mysql error, check your query");
-                          }
-                          res.status(200).json({
-                            message: "Đã thêm voucher vào giỏ của bạn",
-                            success: true,
-                          });
-                        }
-                      );
-                    }else{
-                      res.status(200).json({
-                        message: "Voucher đã tồn tại trong giỏ của bạn",
-                        success: true,
-                      });
-                    }
-                  }
-                }
-              } else if (use_history_user != null) {
-                if (rows[0].voucher_purpose == 0 && user_item.role == 0) {
-                  if (use_history_user.includes(req.user.id)) {
-                    res.status(200).json({
-                      message: "Bạn đã sử dụng voucher này rồi",
-                      success: true,
-                    });
-                  } else if (userIdList.includes(req.user.id)) {
-                    res.status(200).json({
-                      message: "Voucher đã tồn tại trong giỏ của bạn",
-                      success: true,
-                    });
-                  } else if (usage_quantity == use_history_user.length) {
-                    res.status(200).json({
-                      message: "Số lượng voucher đã hết hoặc đã hết hạn",
-                      success: true,
-                    });
-                  } else if (
-                    !use_history_user.includes(req.user.id) &&
-                    !userIdList.includes(req.user.id)
-                  ) {
-                    conn.query(
-                      `UPDATE vouchers
-                      SET item_user_id_list = JSON_ARRAY_APPEND(item_user_id_list, '$', ?)
-                      WHERE voucher_code = ?;`,
-                      [req.user.id, req.body.voucher_code],
-                      (err, rows) => {
-                        if (err) {
-                          console.log(err);
-                          return next("Mysql error, check your query");
-                        }
-                        res.status(200).json({
-                          message: "Đã thêm voucher vào giỏ của bạn ",
-                          success: true,
-                        });
-                      }
-                    );
-                  }
-                }
-              }
-            }
-          }
+          [voucher_code]
         );
-      });
-    } catch (e) {
-      console.log(e.message);
+  
+        if (rows.length === 0) {
+          return res.status(404).json({ message: "Voucher not found" });
+        }
+  
+        const voucher = rows[0];
+        const useHistoryUser = JSON.parse(voucher.use_history) || [];
+        const userIdList = JSON.parse(voucher.item_user_id_list) || [];
+        const usageQuantity = JSON.parse(voucher.usage_quantity) || [];
+  
+        if (voucher.voucher_purpose === 0 && userItem.role === 0) {
+          if (useHistoryUser.includes(userId)) {
+            return res.status(200).json({ message: "Bạn đã sử dụng voucher này rồi", success: true });
+          } else if (userIdList.includes(userId)) {
+            return res.status(200).json({ message: "Voucher đã tồn tại trong giỏ của bạn", success: true });
+          } else if (usageQuantity.length === useHistoryUser.length) {
+            return res.status(200).json({ message: "Số lượng voucher đã hết hoặc đã hết hạn", success: true });
+          } else {
+            await connection.query(
+              `UPDATE vouchers
+               SET item_user_id_list = JSON_ARRAY_APPEND(COALESCE(item_user_id_list, JSON_ARRAY()), '$', ?)
+               WHERE voucher_code = ?;`,
+              [userId, voucher_code]
+            );
+            return res.status(200).json({ message: "Đã thêm voucher vào giỏ của bạn", success: true });
+          }
+        } else {
+          return res.status(403).json({ message: "Voucher không hợp lệ cho bạn", success: false });
+        }
+      } catch (queryError) {
+        console.error('Query processing error:', queryError);
+        return res.status(500).json({ error: "Error processing voucher query" });
+      } finally {
+        // Release the connection back to the pool
+        connection.release();
+      }
+    } catch (error) {
+      console.error('Error fetching user or database connection:', error);
+      return res.status(500).json({ error: "Error handling voucher" });
     }
   },
 };

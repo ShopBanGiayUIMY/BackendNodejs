@@ -1,5 +1,5 @@
 const Queryuser = {
-  registerUser: `INSERT INTO users SET ?`,
+  registerUser: `INSERT INTO users (username, password, email, full_name) VALUES (?, ?, ?, ?)`,
   loginUser: ` SELECT u.*, au.verified
   FROM users u
   LEFT JOIN auth_users au ON u.user_id = au.user_id

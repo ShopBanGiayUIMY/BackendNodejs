@@ -33,6 +33,7 @@ const middwarecontroller = {
   },
   verifyAdmin: (req, res, next) => {
     middwarecontroller.verifyToken(req, res, () => {
+      console.log(req.user);
       if (!req.user) {
         return res.redirect("/admin/auth/login");
       } else {
@@ -51,12 +52,14 @@ const middwarecontroller = {
     if (req.headers.token) {
       // console.log("Token từ user gửi đến sever: " + req.headers.token);
       const accessToken = req.headers.token.split(" ")[1];
+      console.log(accessToken);
       jwt.verify(accessToken, process.env.JWT_ACCESS_KEY, (err, user) => {
         if (err) {
           // console.log("Token đã hết hạn hoặc không hợp lệ");
           return res.status(403).json("Token đã hết hạn hoặc không hợp lệ");
         }
         req.user = user;
+        console.log("Đã xác thực token");
         next();
       });
     } else if (req.headers.authorization) {

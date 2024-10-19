@@ -9,7 +9,7 @@ router.post('/login',authController.loginUser);
 router.post('/refresh_token',authController.refreshToken);
 router.post('/logout',middwarecontroller.verifyToken, authController.logoutUser);
 router.get('/verify/:token',authController.verifyUser, async (req, res) => {
-  console.log(req.user.id)
+  console.log(req.user.user_id)
 });
 
 router.post('/verify-user/:id',middwarecontroller.verifyUser, authController.ResetPassword);

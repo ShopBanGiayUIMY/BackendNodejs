@@ -5,11 +5,7 @@ const Notification = {
     console.log(title, body, data);
     const expo = new Expo();
     const messages = [];
-    let pushTokens = [
-      "ExponentPushToken[zjB8v7EFOAKxcSj9ATp_3g]",
-      "ExponentPushToken[XrAwI2NA0RxhfQHaLPdA4S]",
-      "ExponentPushToken[5HKVZABGQEgvA6V2MhRA1Y]"
-    ];
+    let pushTokens = ["ExponentPushToken[un5g0DFUqG0cgJ2Fw0fOyo]"];
     for (let pushToken of pushTokens) {
       if (!Expo.isExpoPushToken(pushToken)) {
         console.log(`Push token ${pushToken} is not a valid Expo push token`);

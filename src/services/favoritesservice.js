@@ -77,6 +77,19 @@ const  FavoritesService = {
         } catch (e) {
             throw e.message;
         }
+    },
+    getAllCountFavorites: async (productId) => {
+        try {
+            const result = await Favorite.count({
+                where: {
+                    product_id: productId
+                }
+              
+            })
+            return result;
+        } catch (e) {
+            throw e.message;
+        }
     }
     
 }

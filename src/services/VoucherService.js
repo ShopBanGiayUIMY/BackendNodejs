@@ -3,6 +3,7 @@ import AuthUser from "../models/auth.model.js";
 
 import connection from "../config/Connection.js";
 import Voucher from "../models/Voucher.js";
+import pool from "../config/Connection.js";
 const VoucherService = {
   createVoucher: async (voucher) => {
     try {
@@ -57,69 +58,50 @@ const VoucherService = {
       throw e.message;
     }
   },
-
-  getListVoucher: async (user_id) => {
-    const db = connection();
-    db.connect();
-    const queryTemp = `
-    SELECT *
-    FROM vouchers
-    WHERE (voucher_purpose IN (0, 1))
-      AND (
-        JSON_SEARCH(item_user_id_list, 'one', ?) IS NOT NULL
-        AND (
-          use_history IS NULL
-          OR JSON_SEARCH(use_history, 'one', ?) IS NULL
-        )
-      );    
-    `;
-    try {
-      const user = await AuthUser.findOne({
-        where: {
-          user_id: user_id,
-        },
-        attributes: ["role"],
-      });
-      const voucher = await Discount.findAll();
-      console.log("user.dataValues.role", user.dataValues.role);
-
-      if (user.dataValues.role == 0) {
-        return new Promise((resolve, reject) => {
-          db.query(
-            //             `
-            //             SELECT *
-            // FROM vouchers
-            // WHERE (voucher_purpose = 0 OR voucher_purpose = 1)
-            //   AND (
-            //     JSON_SEARCH(item_user_id_list, 'one', ?) IS NOT NULL
-            //     AND (
-            //       use_history IS NULL
-            //       OR JSON_SEARCH(use_history, 'one', ?) IS NULL
-            //     )
-            //   );`,
-            queryTemp,
-            [user_id, user_id],
-            (err, rows) => {
-              if (err) {
-                console.log(err);
-                reject(err);
-              } else if (rows.length > 0) {
-                resolve(rows);
-              } else {
-                resolve([]);
-              }
-            }
-          );
+    getListVoucher: async (user_id) => {
+      const queryTemp = `
+        SELECT *
+        FROM vouchers
+        WHERE (voucher_purpose IN (0, 1))
+          AND (
+            JSON_SEARCH(item_user_id_list, 'one', ?) IS NOT NULL
+            AND (
+              use_history IS NULL
+              OR JSON_SEARCH(use_history, 'one', ?) IS NULL
+            )
+          );    
+      `;
+      try {
+        // Get user role from AuthUser model
+        const user = await AuthUser.findOne({
+          where: {
+            user_id: user_id,
+          },
+          attributes: ["role"],
         });
-      } else {
-        return {
-          status: false,
-        };
+  
+        if (!user) {
+          throw new Error(`User with id ${user_id} not found`);
+        }
+  
+        console.log("user.dataValues.role", user.dataValues.role);
+  
+        if (user.dataValues.role == 0) {
+          // Use the connection pool to execute the query
+          const connection = await pool.getConnection();
+          try {
+            const [rows] = await connection.query(queryTemp, [user_id, user_id]);
+            return rows.length > 0 ? rows : [];
+          } finally {
+            connection.release(); // Always release the connection back to the pool
+          }
+        } else {
+          return { status: false };
+        }
+      } catch (e) {
+        throw new Error(e.message);
       }
-    } catch (e) {
-      throw e.message;
-    }
-  },
+    },
   voucherValidating: async ({ userId, vouchers }) => {
     let error = [];
     const currentTime = new Date();

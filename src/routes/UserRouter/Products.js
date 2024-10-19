@@ -12,8 +12,8 @@ router.get("/:id", ProductController.show);
 // router.get('/category/:id/sort/:sort',ProductController.categorySort);
 // router.get('/category/:id/search/:name/sort/:sort',ProductController.categorySearchSort);
 // router.get('/sort/:sort',ProductController.sort);
-router.post("/solidproduct/", ProductController.GetSolidProductById);
-router.get("/:id/rating", ProductController.GetRatingById);
+router.get("/soldcountproduct/:id", ProductController.GetSolidProductById);
+router.get("/rating/:id", ProductController.GetRatingById);
 router.post("/:id/rating",middwarecontroller.verifyUser, ProductController.Rating);
 
 export default router;
